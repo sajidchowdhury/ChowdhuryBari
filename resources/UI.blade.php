@@ -1,0 +1,3342 @@
+<!DOCTYPE html>
+<html lang="bn">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>চৌধুরীপাড়াস্থ সমাজ উন্নায়ন সংস্থা • Chowdhuripara Development Society</title>
+    <meta name="description" content="চৌধুরীপাড়ার ৯০+ ভবন ও ১৫টি রাস্তার নিরাপত্তা, পরিচ্ছন্নতা ও উন্নয়নের জন্য নিবেদিত সমাজ-চালিত সংস্থা।">
+    
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css">
+    <!-- Premium Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Playfair+Display:wght@700&family=Noto+Sans+Bengali:wght@400;500;600;700&display=swap" rel="stylesheet">
+    
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Playfair+Display:wght@700&family=Noto+Sans+Bengali:wght@400;500;600;700&display=swap');
+        
+        :root {
+            --green: #065F46;
+            --green-light: #059669;
+            --gold: #C9A227;
+            --gold-light: #E8D48B;
+        }
+        
+        body {
+            font-family: 'Inter', 'Noto Sans Bengali', system-ui, -apple-system, sans-serif;
+        }
+        
+        .heading-serif {
+            font-family: 'Playfair Display', 'Noto Sans Bengali', Georgia, serif;
+            font-weight: 700;
+            letter-spacing: -0.02em;
+        }
+
+        .nav-active {
+            color: #065F46;
+            position: relative;
+        }
+        .nav-active:after {
+            content: '';
+            position: absolute;
+            bottom: -2px;
+            left: 0;
+            width: 100%;
+            height: 2px;
+            background: linear-gradient(to right, #065F46, #C9A227);
+        }
+
+        .premium-card {
+            transition: all 0.4s cubic-bezier(0.4, 0.0, 0.2, 1);
+        }
+        .premium-card:hover {
+            transform: translateY(-12px);
+            box-shadow: 0 30px 70px -15px rgb(0 0 0 / 0.12), 0 10px 20px -5px rgb(0 0 0 / 0.08);
+        }
+
+        .section-header {
+            position: relative;
+            display: inline-block;
+        }
+        .section-header:after {
+            content: '';
+            position: absolute;
+            left: 0;
+            bottom: -10px;
+            height: 3px;
+            width: 60px;
+            background: linear-gradient(to right, #065F46, #C9A227);
+            border-radius: 999px;
+        }
+
+        .glass {
+            background: rgba(255,255,255,0.95);
+            backdrop-filter: blur(20px);
+        }
+
+        .modern-shadow {
+            box-shadow: 0 10px 30px -10px rgb(0 0 0 / 0.1), 0 4px 6px -1px rgb(0 0 0 / 0.06);
+        }
+
+        .nav-link {
+            transition: all 0.2s ease;
+        }
+        .nav-link:hover {
+            color: #065F46;
+            transform: translateY(-1px);
+        }
+
+        .stat-number {
+            font-variant-numeric: tabular-nums;
+        }
+
+        .road-card {
+            transition: transform 0.4s cubic-bezier(0.34, 1.56, 0.64, 1), box-shadow 0.3s ease;
+        }
+        .road-card:hover {
+            transform: translateY(-8px) scale(1.01);
+        }
+
+        .modal {
+            animation: modalEnter 0.2s cubic-bezier(0.32, 0.72, 0, 1);
+        }
+        @keyframes modalEnter {
+            from { opacity: 0; transform: translateY(40px) scale(0.96); }
+            to { opacity: 1; transform: translateY(0) scale(1); }
+        }
+
+        .masonry-grid {
+            column-count: 2;
+            column-gap: 12px;
+        }
+        @media (min-width: 768px) {
+            .masonry-grid { column-count: 3; column-gap: 16px; }
+        }
+        @media (min-width: 1024px) {
+            .masonry-grid { column-count: 4; column-gap: 16px; }
+        }
+        .masonry-item {
+            break-inside: avoid;
+            margin-bottom: 12px;
+        }
+
+        .gallery-img {
+            transition: transform 0.5s cubic-bezier(0.34, 1.56, 0.64, 1), box-shadow 0.3s;
+        }
+        .gallery-img:hover {
+            transform: scale(1.04);
+        }
+
+        .premium-btn {
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            position: relative;
+            overflow: hidden;
+        }
+        .premium-btn:after {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -100%;
+            width: 40%;
+            height: 200%;
+            background: linear-gradient(
+                90deg,
+                transparent,
+                rgba(255,255,255,0.35),
+                transparent
+            );
+            transition: left 0.6s;
+        }
+        .premium-btn:hover:after {
+            left: 250%;
+        }
+
+        .nav-drawer {
+            transition: transform 0.4s cubic-bezier(0.32, 0.72, 0, 1);
+        }
+
+        .value-pill {
+            transition: all 0.3s ease;
+        }
+        .value-pill:hover {
+            transform: translateY(-3px);
+            background-color: #f0fdf4;
+        }
+
+        .notice-card {
+            transition: all 0.3s ease;
+        }
+        .notice-card:hover {
+            border-color: #065F46;
+        }
+
+        .light-box {
+            animation: lightboxEnter 0.2s ease forwards;
+        }
+
+        .community-gradient {
+            background: linear-gradient(145deg, #065F46 0%, #0F766E 100%);
+        }
+
+        .gold-gradient {
+            background: linear-gradient(90deg, #C9A227, #E8D48B);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .floating-action {
+            box-shadow: 0 10px 25px -5px rgb(6 95 70 / 0.4), 0 8px 10px -6px rgb(6 95 70 / 0.4);
+            transition: all 0.3s ease;
+        }
+        .floating-action:hover {
+            transform: translateY(-3px) scale(1.05);
+            box-shadow: 0 20px 35px -8px rgb(6 95 70 / 0.45);
+        }
+
+        /* ===== MEMBER PORTAL STYLES ===== */
+        .member-portal {
+            animation: portalEnter 0.35s cubic-bezier(0.32, 0.72, 0, 1);
+        }
+        @keyframes portalEnter {
+            from { opacity: 0; transform: translateY(30px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .dashboard-tab {
+            transition: all 0.2s ease;
+        }
+        .dashboard-tab.active {
+            background: white;
+            box-shadow: 0 1px 3px rgb(0 0 0 / 0.05);
+            color: #065F46;
+            font-weight: 600;
+        }
+
+        .score-badge {
+            font-variant-numeric: tabular-nums;
+        }
+
+        .upload-zone {
+            transition: all 0.2s ease;
+        }
+        .upload-zone.dragover {
+            background: #f0fdf4;
+            border-color: #065F46;
+        }
+
+        .yard-photo {
+            transition: transform 0.3s ease, box-shadow 0.3s;
+        }
+        .yard-photo:hover {
+            transform: scale(1.015);
+            box-shadow: 0 15px 25px -8px rgb(0 0 0 / 0.12);
+        }
+
+        .payment-row {
+            transition: background 0.1s ease;
+        }
+        .payment-row:hover {
+            background: #f8fafc;
+        }
+
+        .otp-input {
+            font-size: 28px;
+            letter-spacing: 12px;
+            font-weight: 600;
+        }
+
+        .stat-pill {
+            background: linear-gradient(145deg, #ffffff, #f8fafc);
+        }
+
+        .smooth-scroll {
+            scroll-behavior: smooth;
+        }
+
+        .metric {
+            transition: all 0.4s ease;
+        }
+    </style>
+</head>
+<body class="bg-slate-50 text-slate-800 smooth-scroll">
+    
+   <!-- ==================== PREMIUM NAVBAR ==================== -->
+<nav class="bg-white/95 backdrop-blur-xl border-b border-slate-200 sticky top-0 z-[100]">
+    <div class="max-w-7xl mx-auto">
+        <div class="px-5 lg:px-8 py-4 flex items-center justify-between">
+            
+            <!-- Logo - Now Much More Prominent & Clean -->
+            <a href="#home" class="flex items-center gap-3.5 group">
+                <div class="w-14 h-14 lg:w-[58px] lg:h-[58px] rounded-2xl overflow-hidden 
+                            bg-white shadow-lg ring-1 ring-emerald-900/10 
+                            group-hover:ring-emerald-700/30 group-active:scale-95 
+                            transition-all duration-300 flex items-center justify-center p-1.5">
+                    <img src="img/logo.png" 
+                         alt="চৌধুরীপাড়াস্থ সমাজ উন্নায়ন সংস্থা" 
+                         class="w-full h-full object-contain">
+                </div>
+                <div class="leading-none">
+                    <div class="font-bold text-[21px] lg:text-[23px] tracking-tighter heading-serif 
+                                text-emerald-900 group-hover:text-emerald-800 transition">
+                        চৌধুরীপাড়াস্থ
+                    </div>
+                    <div class="text-[9.5px] text-emerald-700 -mt-0.5 font-semibold tracking-[1.6px]">
+                        সমাজ উন্নায়ন সংস্থা
+                    </div>
+                </div>
+            </a>
+
+            <!-- Desktop Navigation -->
+            <div class="hidden lg:flex items-center gap-x-8 text-[14.5px]">
+                <a href="#services" class="nav-link font-medium text-slate-600 hover:text-emerald-800 transition">সেবাসমূহ</a>
+                <a href="#coverage" class="nav-link font-medium text-slate-600 hover:text-emerald-800 transition">এলাকা</a>
+                <a href="#leadership" class="nav-link font-medium text-slate-600 hover:text-emerald-800 transition">নেতৃত্ব</a>
+                <a href="#notices" class="nav-link font-medium text-slate-600 hover:text-emerald-800 transition">নোটিশ</a>
+                <a href="#gallery" class="nav-link font-medium text-slate-600 hover:text-emerald-800 transition">গ্যালারি</a>
+                <a href="#classifieds" class="nav-link font-medium text-slate-600 hover:text-emerald-800 transition">বিজ্ঞাপন</a>
+                
+                <!-- Special Delivery Link with Gold Accent -->
+                <a href="#" onclick="openDeliveryFinder(); return false;" 
+                   class="nav-link font-semibold text-emerald-700 hover:text-emerald-900 flex items-center gap-1.5 transition">
+                    <i class="fas fa-motorcycle text-sm"></i>
+                    <span>ডেলিভারি লোকেশন</span>
+                </a>
+            </div>
+
+            <!-- Desktop CTA -->
+            <div class="hidden lg:flex items-center">
+                <button onclick="openMemberLoginModal()"
+                   class="px-6 py-2.5 text-sm font-semibold rounded-2xl border border-emerald-700/70 
+                          hover:bg-emerald-50 hover:border-emerald-700 text-emerald-800 transition-all 
+                          flex items-center gap-2 active:scale-[0.985]">
+                    <i class="fas fa-user-check"></i>
+                    <span>সদস্য লগইন</span>
+                </button>
+            </div>
+
+            <!-- Mobile Menu Button -->
+            <button id="mobile-menu-btn"
+                    class="lg:hidden w-11 h-11 flex items-center justify-center text-2xl text-emerald-800 
+                           hover:bg-emerald-50 rounded-2xl transition-colors">
+                <i class="fas fa-bars"></i>
+            </button>
+        </div>
+    </div>
+</nav>
+
+    <!-- ==================== MOBILE DRAWER ==================== -->
+    <div id="mobile-drawer" class="hidden fixed inset-0 z-[200] lg:hidden">
+        <!-- Backdrop -->
+        <div onclick="closeMobileMenu()" class="absolute inset-0 bg-black/50 backdrop-blur-sm"></div>
+        
+        <!-- Drawer -->
+        <div class="nav-drawer absolute right-0 top-0 h-full w-[82%] max-w-[320px] bg-white shadow-2xl flex flex-col">
+            <div class="px-6 pt-6 pb-4 border-b flex items-center justify-between">
+                <div class="flex items-center gap-3">
+                    <div class="w-10 h-10 rounded-2xl bg-gradient-to-br from-emerald-800 to-emerald-700 flex items-center justify-center text-white">
+                        <i class="fas fa-users"></i>
+                    </div>
+                    <span class="font-bold text-xl heading-serif text-emerald-900">চৌধুরীপাড়া</span>
+                </div>
+                <button onclick="closeMobileMenu()" class="w-10 h-10 flex items-center justify-center text-3xl text-slate-400 hover:text-slate-600">×</button>
+            </div>
+
+            <div class="flex-1 px-3 py-6 text-[17px]">
+                <a href="#about" onclick="closeMobileMenu()" class="flex items-center gap-4 px-5 py-[15px] hover:bg-emerald-50 rounded-2xl text-slate-700 font-medium"><i class="fas fa-info-circle w-5 text-emerald-700"></i> আমাদের সম্পর্কে</a>
+                <a href="#services" onclick="closeMobileMenu()" class="flex items-center gap-4 px-5 py-[15px] hover:bg-emerald-50 rounded-2xl text-slate-700 font-medium"><i class="fas fa-hand-holding-heart w-5 text-emerald-700"></i> সেবাসমূহ</a>
+                <a href="#coverage" onclick="closeMobileMenu()" class="flex items-center gap-4 px-5 py-[15px] hover:bg-emerald-50 rounded-2xl text-slate-700 font-medium"><i class="fas fa-map-marked w-5 text-emerald-700"></i> আওতাধীন এলাকা</a>
+                <a href="#leadership" onclick="closeMobileMenu()" class="flex items-center gap-4 px-5 py-[15px] hover:bg-emerald-50 rounded-2xl text-slate-700 font-medium"><i class="fas fa-user-tie w-5 text-emerald-700"></i> নেতৃত্ব</a>
+                <a href="#notices" onclick="closeMobileMenu()" class="flex items-center gap-4 px-5 py-[15px] hover:bg-emerald-50 rounded-2xl text-slate-700 font-medium"><i class="fas fa-bullhorn w-5 text-emerald-700"></i> নোটিশ বোর্ড</a>
+                <a href="#gallery" onclick="closeMobileMenu()" class="flex items-center gap-4 px-5 py-[15px] hover:bg-emerald-50 rounded-2xl text-slate-700 font-medium"><i class="fas fa-images w-5 text-emerald-700"></i> গ্যালারি</a>
+                <a href="#classifieds" onclick="closeMobileMenu()" class="flex items-center gap-4 px-5 py-[15px] hover:bg-emerald-50 rounded-2xl text-slate-700 font-medium"><i class="fas fa-home w-5 text-emerald-700"></i> ভাড়া ও বিজ্ঞাপন</a>
+                <a href="#" onclick="closeMobileMenu(); openDeliveryFinder(); return false;" class="flex items-center gap-4 px-5 py-[15px] hover:bg-emerald-50 rounded-2xl text-emerald-800 font-semibold">
+                    <i class="fas fa-motorcycle w-5 text-emerald-700"></i> ডেলিভারি লোকেশন খুঁজুন
+                </a>
+                <div class="h-px bg-slate-200 my-3 mx-5"></div>
+                <a href="#events" onclick="closeMobileMenu()" class="flex items-center gap-4 px-5 py-[15px] hover:bg-emerald-50 rounded-2xl text-slate-700 font-medium"><i class="fas fa-calendar-alt w-5 text-emerald-700"></i> আসন্ন অনুষ্ঠান</a>
+            </div>
+
+            <div class="p-6 border-t bg-slate-50 space-y-3">
+                <button onclick="closeMobileMenu(); openMemberLoginModal()" 
+                   class="w-full flex items-center justify-center gap-2 text-center py-3.5 border border-emerald-700/60 rounded-2xl font-semibold text-emerald-800 hover:bg-emerald-50">
+                    <i class="fas fa-user-check"></i>
+                    <span>সদস্য লগইন</span>
+                </button>
+                <a href="#join" onclick="closeMobileMenu()" 
+                   class="block w-full text-center py-3.5 bg-emerald-800 hover:bg-emerald-900 transition-colors rounded-2xl font-semibold text-white">সদস্য হোন</a>
+            </div>
+        </div>
+    </div>
+
+    <!-- ==================== HERO ==================== -->
+    <section id="home" class="relative min-h-[100dvh] flex items-center justify-center overflow-hidden bg-slate-950">
+        <!-- Background -->
+        <div class="absolute inset-0 bg-[radial-gradient(#ffffff15_0.8px,transparent_1px)] bg-[length:4px_4px]"></div>
+        <div class="absolute inset-0" style="background: linear-gradient(160deg, #065F46 0%, #0F172A 45%, #020617 100%);"></div>
+        
+        <!-- Subtle pattern -->
+        <div class="absolute inset-0 opacity-[0.07]" 
+             style="background-image: url('data:image/svg+xml,%3Csvg width=%2260%22 height=%2260%22 viewBox=%220 0 60 60%22 xmlns=%22http://www.w3.org/2000/svg%22%3E%3Cg fill-rule=%22evenodd%22%3E%3Cpath d=%22M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-10V8h-2v16h-4v2h4v4h2v-4h4v-2h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 6v-4H4v4H0v2h4v4h2V8h4V6H6z%22/%3E%3C/g%3E%3C/svg%27');"></div>
+
+        <div class="relative max-w-5xl mx-auto px-6 pt-8 pb-16 text-center z-10">
+            <!-- Trust badge -->
+            <div class="inline-flex items-center gap-2.5 bg-white/10 backdrop-blur-md border border-white/20 text-white px-5 py-1.5 rounded-3xl mb-7 text-sm">
+                <div class="flex -space-x-1.5">
+                    <div class="w-5 h-5 bg-emerald-400 rounded-full ring-1 ring-white/70"></div>
+                    <div class="w-5 h-5 bg-amber-400 rounded-full ring-1 ring-white/70"></div>
+                    <div class="w-5 h-5 bg-sky-400 rounded-full ring-1 ring-white/70"></div>
+                </div>
+                <span class="font-medium tracking-tight">২০১৮ সাল থেকে সেবায় নিয়োজিত</span>
+            </div>
+
+            <h1 class="text-white text-[52px] md:text-[72px] leading-[1.05] font-bold tracking-tighter heading-serif mb-5">
+                সম্মিলিত প্রয়াসে<br>উন্নত সমাজ গড়ি
+            </h1>
+            
+            <p class="max-w-[620px] mx-auto text-xl md:text-2xl text-white/75 font-light tracking-tight">
+                নিরাপত্তা • পরিচ্ছন্নতা • উন্নয়ন<br class="hidden md:block">
+                ৯০+ পরিবারের আস্থার প্রতীক
+            </p>
+
+            <div class="mt-9 flex flex-col sm:flex-row items-center justify-center gap-4">
+                <a href="#coverage" 
+                   class="w-full sm:w-auto group inline-flex items-center justify-center gap-3 bg-white text-emerald-900 font-semibold px-9 py-[17px] rounded-3xl hover:bg-amber-50 active:scale-[0.985] transition-all text-base shadow-xl">
+                    <span>আমাদের এলাকা দেখুন</span> 
+                    <i class="fas fa-arrow-right group-hover:translate-x-1 transition"></i>
+                </a>
+                <a href="#join" 
+                   class="w-full sm:w-auto inline-flex items-center justify-center gap-3 border border-white/70 hover:bg-white/10 text-white font-semibold px-9 py-[17px] rounded-3xl transition-all text-base">
+                    <i class="fas fa-users"></i>
+                    <span>সদস্য হোন</span>
+                </a>
+            </div>
+
+            <!-- Quick trust row -->
+            <div class="mt-14 flex justify-center gap-x-10 text-white/50 text-sm tracking-widest">
+                <div>২৪/৭ নিরাপত্তা</div>
+                <div class="hidden sm:block">•</div>
+                <div>স্বচ্ছ আর্থিক হিসাব</div>
+                <div class="hidden sm:block">•</div>
+                <div>সক্রিয় কমিটি</div>
+            </div>
+        </div>
+
+        <div class="absolute bottom-8 left-1/2 -translate-x-1/2 hidden md:flex flex-col items-center text-white/40 text-xs tracking-[3px]">
+            <div>SCROLL</div>
+            <i class="fas fa-chevron-down mt-1 text-sm"></i>
+        </div>
+    </section>
+
+    <!-- ==================== IMPACT STATS ==================== -->
+    <section class="border-b bg-white py-8">
+        <div class="max-w-7xl mx-auto px-6">
+            <div class="grid grid-cols-2 md:grid-cols-4 gap-4 md:gap-6">
+                <div class="metric bg-slate-50 border border-slate-100 rounded-3xl px-7 py-6 text-center">
+                    <div class="text-5xl font-semibold text-emerald-800 tabular-nums stat-number" data-target="90">90</div>
+                    <div class="text-slate-500 text-sm mt-1 font-medium tracking-wide">আচ্ছাদিত ভবন</div>
+                </div>
+                <div class="metric bg-slate-50 border border-slate-100 rounded-3xl px-7 py-6 text-center">
+                    <div class="text-5xl font-semibold text-emerald-800 tabular-nums stat-number" data-target="15">15</div>
+                    <div class="text-slate-500 text-sm mt-1 font-medium tracking-wide">রাস্তা ও লেন</div>
+                </div>
+                <div class="metric bg-slate-50 border border-slate-100 rounded-3xl px-7 py-6 text-center">
+                    <div class="text-5xl font-semibold text-emerald-800 tabular-nums stat-number" data-target="520">520</div>
+                    <div class="text-slate-500 text-sm mt-1 font-medium tracking-wide">সদস্য পরিবার</div>
+                </div>
+                <div class="metric bg-slate-50 border border-slate-100 rounded-3xl px-7 py-6 text-center">
+                    <div class="text-5xl font-semibold text-emerald-800 tabular-nums">২৪<span class="text-3xl align-super">/</span><span class="text-4xl">৭</span></div>
+                    <div class="text-slate-500 text-sm mt-1 font-medium tracking-wide">নিরাপত্তা ও সেবা</div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ==================== ABOUT ==================== -->
+    <section id="about" class="max-w-7xl mx-auto px-6 pt-20 pb-16">
+        <div class="grid lg:grid-cols-12 gap-x-12 items-center">
+            <div class="lg:col-span-7">
+                <div class="inline text-emerald-700 text-sm font-semibold tracking-[1.5px] mb-2">EST. 2018</div>
+                <h2 class="section-header text-5xl lg:text-[56px] leading-none tracking-tighter font-bold heading-serif mb-8">আমরা কারা?</h2>
+                
+                <div class="max-w-2xl text-[17px] leading-relaxed text-slate-600">
+                    চৌধুরীপাড়াস্থ সমাজ উন্নায়ন সংস্থা একটি সম্পূর্ণ স্বেচ্ছাসেবী, সমাজ-চালিত সংগঠন। আমরা বিশ্বাস করি একটি নিরাপদ, পরিচ্ছন্ন ও সুন্দর আবাসিক এলাকা গড়ে তোলা সম্ভব যখন প্রতিটি পরিবার একসাথে কাজ করে।
+                </div>
+
+                <div class="mt-9 grid sm:grid-cols-3 gap-3">
+                    <div class="value-pill flex items-start gap-3 rounded-2xl border border-slate-100 bg-white p-5">
+                        <i class="fas fa-shield-alt text-emerald-700 mt-0.5 text-xl"></i>
+                        <div>
+                            <div class="font-semibold">নিরাপত্তা</div>
+                            <div class="text-sm text-slate-500 mt-0.5">নাইট গার্ড, সিসিটিভি, পেট্রোলিং</div>
+                        </div>
+                    </div>
+                    <div class="value-pill flex items-start gap-3 rounded-2xl border border-slate-100 bg-white p-5">
+                        <i class="fas fa-leaf text-emerald-700 mt-0.5 text-xl"></i>
+                        <div>
+                            <div class="font-semibold">পরিচ্ছন্নতা</div>
+                            <div class="text-sm text-slate-500 mt-0.5">নিয়মিত বর্জ্য ব্যবস্থাপনা</div>
+                        </div>
+                    </div>
+                    <div class="value-pill flex items-start gap-3 rounded-2xl border border-slate-100 bg-white p-5">
+                        <i class="fas fa-hammer text-emerald-700 mt-0.5 text-xl"></i>
+                        <div>
+                            <div class="font-semibold">উন্নয়ন</div>
+                            <div class="text-sm text-slate-500 mt-0.5">রাস্তা, আলো, ড্রেনেজ</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="lg:col-span-5 mt-12 lg:mt-0">
+                <div class="relative rounded-3xl overflow-hidden shadow-2xl ring-1 ring-slate-900/10">
+                    <img src="img/3tSQB.jpg" alt="চৌধুরীপাড়া কমিউনিটি হাউস" class="w-full aspect-[16/13] object-cover">
+                    <div class="absolute inset-x-0 bottom-0 h-1/2 bg-gradient-to-t from-black/60 to-transparent"></div>
+                    <div class="absolute bottom-6 left-6 text-white">
+                        <div class="text-xs tracking-[2px] text-white/60">OUR HOME</div>
+                        <div class="text-2xl font-semibold">চৌধুরীপাড়াস্থ • সমাজ উন্নায়ন সংস্থা</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ==================== SERVICES ==================== -->
+    <section id="services" class="bg-white py-20 border-y">
+        <div class="max-w-7xl mx-auto px-6">
+            <div class="flex items-end justify-between mb-10">
+                <div>
+                    <div class="uppercase text-xs tracking-[2px] text-emerald-700 font-semibold mb-1">WHAT WE DO</div>
+                    <h2 class="section-header text-5xl tracking-tighter font-bold heading-serif">আমাদের সেবাসমূহ</h2>
+                </div>
+                <a href="#contact" class="hidden md:flex items-center gap-2 text-sm font-semibold text-emerald-700 hover:text-emerald-800">
+                    সব সেবা দেখুন <i class="fas fa-arrow-right"></i>
+                </a>
+            </div>
+
+            <div class="grid md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-5">
+                <div class="premium-card group bg-white border border-slate-100 rounded-3xl p-8 hover:border-emerald-100">
+                    <div class="w-14 h-14 flex items-center justify-center rounded-2xl bg-emerald-100 text-emerald-700 mb-7 text-3xl group-hover:scale-110 transition-transform">🛡️</div>
+                    <h4 class="font-semibold text-2xl tracking-tight mb-3">২৪ ঘণ্টা নিরাপত্তা</h4>
+                    <p class="text-slate-600 leading-relaxed">পেশাদার নাইট গার্ড, নিয়মিত পেট্রোলিং এবং সিসিটিভি নজরদারি।</p>
+                    <div class="text-emerald-700 text-sm mt-6 font-medium flex items-center gap-1.5">বিস্তারিত <i class="fas fa-chevron-right text-xs"></i></div>
+                </div>
+
+                <div class="premium-card group bg-white border border-slate-100 rounded-3xl p-8 hover:border-emerald-100">
+                    <div class="w-14 h-14 flex items-center justify-center rounded-2xl bg-amber-100 text-amber-700 mb-7 text-3xl group-hover:scale-110 transition-transform">🗑️</div>
+                    <h4 class="font-semibold text-2xl tracking-tight mb-3">পরিচ্ছন্নতা ও বর্জ্য ব্যবস্থাপনা</h4>
+                    <p class="text-slate-600 leading-relaxed">প্রতিদিনের বর্জ্য অপসারণ, ড্রেন পরিষ্কার ও পরিবেশ সুরক্ষা কার্যক্রম।</p>
+                    <div class="text-emerald-700 text-sm mt-6 font-medium flex items-center gap-1.5">বিস্তারিত <i class="fas fa-chevron-right text-xs"></i></div>
+                </div>
+
+                <div class="premium-card group bg-white border border-slate-100 rounded-3xl p-8 hover:border-emerald-100">
+                    <div class="w-14 h-14 flex items-center justify-center rounded-2xl bg-sky-100 text-sky-700 mb-7 text-3xl group-hover:scale-110 transition-transform">🛣️</div>
+                    <h4 class="font-semibold text-2xl tracking-tight mb-3">অবকাঠামো উন্নয়ন</h4>
+                    <p class="text-slate-600 leading-relaxed">রাস্তা সংস্কার, স্ট্রিট লাইট স্থাপন, ড্রেনেজ ও পানি নিষ্কাশন ব্যবস্থা।</p>
+                    <div class="text-emerald-700 text-sm mt-6 font-medium flex items-center gap-1.5">বিস্তারিত <i class="fas fa-chevron-right text-xs"></i></div>
+                </div>
+
+                <div class="premium-card group bg-white border border-slate-100 rounded-3xl p-8 hover:border-emerald-100">
+                    <div class="w-14 h-14 flex items-center justify-center rounded-2xl bg-rose-100 text-rose-700 mb-7 text-3xl group-hover:scale-110 transition-transform">🤝</div>
+                    <h4 class="font-semibold text-2xl tracking-tight mb-3">সামাজিক সহায়তা</h4>
+                    <p class="text-slate-600 leading-relaxed">অসহায় পরিবারকে সহায়তা, শিক্ষা সহায়তা ও সামাজিক অনুষ্ঠান আয়োজন।</p>
+                    <div class="text-emerald-700 text-sm mt-6 font-medium flex items-center gap-1.5">বিস্তারিত <i class="fas fa-chevron-right text-xs"></i></div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ==================== COVERAGE / INTERACTIVE AREA ==================== -->
+    <section id="coverage" class="max-w-7xl mx-auto px-6 pt-20 pb-24">
+        <div class="flex flex-col lg:flex-row lg:items-end justify-between gap-y-3 mb-10">
+            <div>
+                <div class="uppercase text-xs tracking-[2px] text-emerald-700 font-semibold mb-1">OUR AREA</div>
+                <h2 class="section-header text-5xl tracking-tighter font-bold heading-serif">আওতাধীন এলাকা</h2>
+            </div>
+            <p class="text-lg text-slate-600 max-w-sm">১৫টি রাস্তায় ৯০+ ভবন — সবকিছু এক নজরে</p>
+        </div>
+
+        <!-- Interactive Road Grid -->
+        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5 gap-4" id="roadGrid">
+            <!-- Populated by JS -->
+        </div>
+
+        <div class="mt-6 text-center">
+            <div onclick="showAllRoadsModal()" class="inline-flex cursor-pointer items-center gap-2 text-sm font-medium text-emerald-700 hover:text-emerald-800">
+                <span>সম্পূর্ণ তালিকা ও বিস্তারিত দেখুন</span> <i class="fas fa-expand-arrows-alt"></i>
+            </div>
+        </div>
+
+        <!-- Delivery Location Quick Tool -->
+        <div class="mt-8 max-w-md mx-auto">
+            <button onclick="openDeliveryFinder()" 
+                    class="w-full flex items-center justify-center gap-3 px-6 py-4 bg-sky-50 hover:bg-sky-100 border border-sky-200 text-sky-800 font-semibold rounded-3xl transition-all active:scale-[0.985]">
+                <i class="fas fa-motorcycle text-xl"></i>
+                <span>ডেলিভারি ম্যানকে লোকেশন পাঠাতে চান?</span>
+            </button>
+            <div class="text-center text-[11px] text-sky-600 mt-2">ফোন নম্বর বা বাড়ির নম্বর দিয়ে সহজে খুঁজুন → কপি/শেয়ার করুন</div>
+        </div>
+    </section>
+
+    <!-- ==================== LEADERSHIP (NEW) ==================== -->
+    <section id="leadership" class="bg-white border-y py-20">
+        <div class="max-w-7xl mx-auto px-6">
+            <div class="flex items-end justify-between mb-9">
+                <div>
+                    <div class="text-xs tracking-[2px] uppercase text-emerald-700 font-semibold mb-1">THE TEAM</div>
+                    <h2 class="section-header text-5xl tracking-tighter font-bold heading-serif">আমাদের নেতৃত্ব</h2>
+                </div>
+                <div class="text-sm text-slate-500 hidden md:block">স্বেচ্ছাসেবী কমিটি • ২০২৪-২৬</div>
+            </div>
+
+            <div class="grid md:grid-cols-2 lg:grid-cols-4 gap-5" id="leadershipGrid">
+                <!-- Populated by JS -->
+            </div>
+        </div>
+    </section>
+
+    <!-- ==================== NOTICES ==================== -->
+    <section id="notices" class="max-w-7xl mx-auto px-6 pt-20 pb-16">
+        <div class="flex items-center justify-between mb-9">
+            <div>
+                <h2 class="section-header text-5xl tracking-tighter font-bold heading-serif">নোটিশ ও ঘোষণা</h2>
+            </div>
+            <button onclick="showAllNotices()" 
+                    class="text-sm hidden md:flex items-center gap-2 font-semibold px-5 py-2.5 text-emerald-700 hover:bg-emerald-50 rounded-2xl">
+                সব দেখুন <i class="fas fa-arrow-right text-xs"></i>
+            </button>
+        </div>
+
+        <div class="grid md:grid-cols-3 gap-5" id="noticesGrid">
+            <!-- Populated by JS -->
+        </div>
+    </section>
+
+    <!-- ==================== GALLERY (PREMIUM + LIGHTBOX) ==================== -->
+    <section id="gallery" class="bg-slate-900 py-20">
+        <div class="max-w-7xl mx-auto px-6">
+            <div class="flex items-end justify-between mb-9">
+                <div>
+                    <div class="text-emerald-400 text-xs tracking-[2px] font-semibold">MOMENTS</div>
+                    <h2 class="text-white text-5xl tracking-tighter font-bold heading-serif">গ্যালারি</h2>
+                </div>
+                <button onclick="openGalleryModal()" 
+                        class="text-emerald-400 hover:text-emerald-300 text-sm flex items-center gap-2 font-medium">
+                    সম্পূর্ণ গ্যালারি <i class="fas fa-images"></i>
+                </button>
+            </div>
+
+            <div class="masonry-grid" id="galleryGrid">
+                <!-- Populated by JS -->
+            </div>
+        </div>
+    </section>
+
+    <!-- ==================== TOP CLEANEST YARDS (PUBLIC) ==================== -->
+    <section id="clean-yards" class="bg-gradient-to-b from-white to-emerald-50/40 py-20 border-t">
+        <div class="max-w-7xl mx-auto px-6">
+            <div class="flex flex-col md:flex-row md:items-end md:justify-between gap-4 mb-9">
+                <div>
+                    <div class="flex items-center gap-2 text-emerald-700">
+                        <i class="fas fa-trophy"></i>
+                        <span class="uppercase tracking-[2px] text-xs font-semibold">MONTHLY STARS</span>
+                    </div>
+                    <h2 class="section-header text-5xl tracking-tighter font-bold heading-serif mt-1">সেরা পরিচ্ছন্ন উঠান</h2>
+                    <p class="text-slate-600 mt-2">যারা তাদের সামনের উঠান সবচেয়ে পরিচ্ছন্ন রাখেন — এই মাসের টপ ১০</p>
+                </div>
+                <div class="text-sm text-emerald-700 font-medium flex items-center gap-2">
+                    <i class="fas fa-info-circle"></i>
+                    <span>সদস্যদের আপলোড করা ছবি • অ্যাডমিন রেটিং</span>
+                </div>
+            </div>
+
+            <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-4" id="topCleanYards">
+                <!-- Populated by JS from top-rated uploads -->
+            </div>
+
+            <div class="mt-8 text-center">
+                <div class="inline-flex items-center gap-2 text-xs bg-white border border-emerald-100 px-4 py-2 rounded-3xl text-emerald-700">
+                    <i class="fas fa-leaf"></i>
+                    <span>প্রতি মাসে নতুন করে র‍্যাঙ্কিং হয় • সবচেয়ে বেশি স্কোর পাওয়া সদস্যরা পান বিশেষ সম্মাননা</span>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ==================== CLASSIFIEDS / RENT ADS ==================== -->
+    <section id="classifieds" class="max-w-7xl mx-auto px-6 pt-20 pb-16">
+        <div class="flex items-center justify-between mb-8">
+            <div>
+                <h2 class="section-header text-5xl tracking-tighter font-bold heading-serif">ভাড়া ও বিজ্ঞাপন</h2>
+                <p class="text-slate-600 mt-1">এলাকার ভিতরে বাসা ভাড়া ও অন্যান্য সেবা</p>
+            </div>
+            <button onclick="showPostAdModal()" 
+                    class="inline-flex items-center gap-2 px-6 py-3 rounded-2xl bg-emerald-800 hover:bg-emerald-900 text-white text-sm font-semibold shadow-sm transition-all">
+                <i class="fas fa-plus"></i> <span class="hidden sm:inline">বিজ্ঞাপন দিন</span>
+            </button>
+        </div>
+
+        <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-5" id="classifiedsGrid">
+            <!-- Populated dynamically by JS -->
+        </div>
+    </section>
+
+    <!-- ==================== UPCOMING EVENTS (NEW) ==================== -->
+    <section id="events" class="bg-gradient-to-b from-white to-slate-50 border-t py-20">
+        <div class="max-w-7xl mx-auto px-6">
+            <div class="mb-9">
+                <div class="uppercase text-xs tracking-[2px] text-emerald-700 font-semibold mb-1">CALENDAR</div>
+                <h2 class="section-header text-5xl tracking-tighter font-bold heading-serif">আসন্ন অনুষ্ঠান ও সভা</h2>
+            </div>
+
+            <div class="grid md:grid-cols-3 gap-5" id="eventsGrid">
+                <!-- Populated by JS -->
+            </div>
+        </div>
+    </section>
+
+    <!-- ==================== TESTIMONIALS (NEW) ==================== -->
+    <section class="max-w-7xl mx-auto px-6 py-20 border-b">
+        <div class="text-center mb-10">
+            <div class="text-xs tracking-[2px] uppercase text-emerald-700 font-semibold mb-1">FROM THE COMMUNITY</div>
+            <h2 class="text-5xl tracking-tighter font-bold heading-serif">সদস্যদের কথা</h2>
+        </div>
+
+        <div class="grid md:grid-cols-3 gap-5" id="testimonialsGrid">
+            <!-- Populated by JS -->
+        </div>
+    </section>
+
+    <!-- ==================== JOIN / MEMBERSHIP CTA (NEW) ==================== -->
+    <section id="join" class="py-16 bg-emerald-900 text-white">
+        <div class="max-w-4xl mx-auto px-6 text-center">
+            <div class="inline-block px-5 py-1 rounded-full bg-white/10 text-xs tracking-[3px] mb-5">BECOME A MEMBER</div>
+            <h2 class="text-5xl tracking-tighter font-bold heading-serif mb-3">সমাজের অংশ হোন</h2>
+            <p class="max-w-lg mx-auto text-lg text-emerald-100">মাসিক সদস্য ফি মাত্র ৩০০ টাকা। আপনার পরিবারের নিরাপত্তা ও উন্নয়নে সরাসরি অবদান রাখুন।</p>
+
+            <div class="mt-8 flex flex-col sm:flex-row gap-3 justify-center">
+                <button onclick="showJoinModal()" 
+                        class="premium-btn px-10 py-4 rounded-3xl font-semibold bg-white text-emerald-900 hover:bg-amber-50 transition text-base shadow-xl">সদস্য হিসেবে যোগ দিন</button>
+                <button onclick="document.getElementById('contact').scrollIntoView({ behavior: 'smooth' })" 
+                        class="px-9 py-4 rounded-3xl border border-white/40 hover:bg-white/5 transition font-semibold">আরও জানুন</button>
+            </div>
+            <div class="text-xs text-emerald-400 mt-5">একবার যোগ দিলে আজীবন সুবিধা • পরিবার প্রতি একটি সদস্যপদ</div>
+        </div>
+    </section>
+
+    <!-- ==================== CONTACT ==================== -->
+    <section id="contact" class="max-w-7xl mx-auto px-6 py-20">
+        <div class="grid lg:grid-cols-2 gap-x-16 gap-y-12">
+            <div>
+                <div class="uppercase text-xs tracking-[2px] text-emerald-700 font-semibold mb-2">GET IN TOUCH</div>
+                <h2 class="text-6xl tracking-[-1.6px] leading-none font-bold heading-serif mb-8">যোগাযোগ করুন</h2>
+                
+                <div class="space-y-6 text-[15px]">
+                    <div class="flex gap-4">
+                        <i class="fas fa-map-marker-alt text-emerald-700 mt-1 w-5"></i>
+                        <div>
+                            <div class="font-semibold">অফিস</div>
+                            <div class="text-slate-600">চৌধুরীপাড়া</div>
+                        </div>
+                    </div>
+                    <div class="flex gap-4">
+                        <i class="fas fa-phone text-emerald-700 mt-1 w-5"></i>
+                        <div>
+                            <div class="font-semibold">হটলাইন</div>
+                            <a href="tel:017XXXXXXXX" class="text-emerald-700 hover:underline">০১৭১১-২২৩৩৪৪</a>
+                            <div class="text-xs text-slate-500">সকাল ৮টা — রাত ১০টা</div>
+                        </div>
+                    </div>
+                    <div class="flex gap-4">
+                        <i class="fas fa-envelope text-emerald-700 mt-1 w-5"></i>
+                        <div>
+                            <div class="font-semibold">ইমেইল</div>
+                            <a href="mailto:info@chowdhuripara.org" class="text-emerald-700 hover:underline">info@chowdhuripara.org</a>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="mt-9 flex gap-3">
+                    <a href="https://wa.me/8801711223344" target="_blank" 
+                       class="inline-flex items-center gap-2 px-6 py-3 rounded-2xl border border-emerald-200 hover:bg-emerald-50 text-emerald-700 text-sm font-medium">
+                        <i class="fab fa-whatsapp"></i> WhatsApp
+                    </a>
+                    <a href="#" onclick="copyToClipboard('01711223344')" 
+                       class="inline-flex items-center gap-2 px-6 py-3 rounded-2xl border border-emerald-200 hover:bg-emerald-50 text-emerald-700 text-sm font-medium">
+                        <i class="fas fa-copy"></i> নম্বর কপি করুন
+                    </a>
+                </div>
+            </div>
+
+            <!-- Contact Form (UI only) -->
+            <div class="bg-white rounded-3xl p-8 border border-slate-100 modern-shadow">
+                <form id="contactForm" onsubmit="handleContactSubmit(event)">
+                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                        <div>
+                            <label class="block text-xs font-semibold text-slate-500 mb-1.5">আপনার নাম</label>
+                            <input type="text" required class="w-full border border-slate-200 focus:border-emerald-700 transition rounded-2xl px-4 py-3 text-sm outline-none">
+                        </div>
+                        <div>
+                            <label class="block text-xs font-semibold text-slate-500 mb-1.5">মোবাইল নম্বর</label>
+                            <input type="tel" required class="w-full border border-slate-200 focus:border-emerald-700 transition rounded-2xl px-4 py-3 text-sm outline-none">
+                        </div>
+                    </div>
+                    <div class="mt-4">
+                        <label class="block text-xs font-semibold text-slate-500 mb-1.5">বিষয়</label>
+                        <select class="w-full border border-slate-200 focus:border-emerald-700 transition rounded-2xl px-4 py-3 text-sm outline-none">
+                            <option>সাধারণ অনুসন্ধান</option>
+                            <option>নিরাপত্তা সংক্রান্ত</option>
+                            <option>রাস্তা/ড্রেনেজ সমস্যা</option>
+                            <option>সদস্যপদ / ফি</option>
+                            <option>ভাড়া সংক্রান্ত</option>
+                            <option>অন্যান্য</option>
+                        </select>
+                    </div>
+                    <div class="mt-4">
+                        <label class="block text-xs font-semibold text-slate-500 mb-1.5">আপনার বার্তা</label>
+                        <textarea rows="4" required class="w-full border border-slate-200 focus:border-emerald-700 transition rounded-3xl px-4 py-3 text-sm outline-none resize-y"></textarea>
+                    </div>
+                    <button type="submit" 
+                            class="mt-5 w-full py-[15px] bg-emerald-800 hover:bg-emerald-900 active:bg-black transition-all text-white font-semibold rounded-2xl text-sm tracking-wide">
+                        বার্তা পাঠান
+                    </button>
+                    <div class="text-center text-[11px] text-slate-400 mt-3">আমরা সাধারণত ২৪ ঘণ্টার মধ্যে উত্তর দেই</div>
+                </form>
+            </div>
+        </div>
+    </section>
+
+    <!-- ==================== FOOTER ==================== -->
+    <footer class="bg-slate-950 text-slate-400 py-16 text-sm">
+        <div class="max-w-7xl mx-auto px-6 grid md:grid-cols-12 gap-y-12">
+            <div class="md:col-span-5">
+                <div class="flex items-center gap-3 text-white mb-4">
+                    <div class="w-9 h-9 bg-white/10 backdrop-blur flex items-center justify-center rounded-2xl text-lg">👥</div>
+                    <span class="font-bold text-2xl heading-serif tracking-tight text-white">চৌধুরীপাড়াস্থ সমাজ উন্নায়ন সংস্থা</span>
+                </div>
+                <p class="max-w-xs text-slate-500">স্বচ্ছতা, সম্প্রদায় ও উন্নয়নের প্রতীক। ২০১৮ সাল থেকে চৌধুরীপাড়ার পাশে।</p>
+                
+                <div class="flex gap-4 mt-7 text-xl">
+                    <a href="#" class="hover:text-white"><i class="fab fa-facebook"></i></a>
+                    <a href="#" class="hover:text-white"><i class="fab fa-whatsapp"></i></a>
+                    <a href="#" class="hover:text-white"><i class="fab fa-youtube"></i></a>
+                </div>
+            </div>
+
+            <div class="md:col-span-3">
+                <div class="font-semibold text-white mb-4 tracking-wide text-xs">দ্রুত লিঙ্ক</div>
+                <div class="space-y-[10px] text-[13.5px]">
+                    <a href="#coverage" class="block hover:text-white">আওতাধীন এলাকা</a>
+                    <a href="#notices" class="block hover:text-white">নোটিশ বোর্ড</a>
+                    <a href="#classifieds" class="block hover:text-white">ভাড়া বিজ্ঞাপন</a>
+                    <a href="#events" class="block hover:text-white">আসন্ন অনুষ্ঠান</a>
+                </div>
+            </div>
+
+            <div class="md:col-span-4">
+                <div class="font-semibold text-white mb-4 tracking-wide text-xs">যোগাযোগ</div>
+                <div class="text-[13.5px] leading-relaxed">
+                    চৌধুরীপাড়া<br>
+                    হটলাইন: <span class="text-emerald-400">০১৭১১-২২৩৩৪৪</span><br>
+                    ইমেইল: info@chowdhuripara.org
+                </div>
+                <div class="text-[11px] mt-7 text-slate-600">© ২০২৬ চৌধুরীপাড়াস্থ সমাজ উন্নায়ন সংস্থা। সকল অধিকার সংরক্ষিত।</div>
+            </div>
+        </div>
+    </footer>
+
+    <!-- ==================== FLOATING ACTIONS ==================== -->
+    <div class="fixed bottom-5 right-5 flex flex-col gap-3 z-[90]">
+        <!-- WhatsApp -->
+        <a href="https://wa.me/8801711223344" target="_blank"
+           class="w-12 h-12 flex items-center justify-center bg-[#25D366] text-white rounded-2xl shadow-xl hover:scale-105 transition floating-action"
+           title="WhatsApp করুন">
+            <i class="fab fa-whatsapp text-3xl"></i>
+        </a>
+
+        <!-- Quotation Button -->
+        <div class="relative group">
+            <button onclick="openQuotationPage()"
+                    class="w-12 h-12 flex items-center justify-center bg-gradient-to-br from-amber-600 to-amber-700 text-white rounded-2xl shadow-xl hover:scale-105 transition floating-action"
+                    title="প্রজেক্ট কোটেশন দেখুন">
+                <i class="fas fa-file-invoice-dollar text-2xl"></i>
+            </button>
+            <div class="hidden lg:block absolute right-14 top-1/2 -translate-y-1/2 bg-zinc-800 text-white text-xs px-3 py-1.5 rounded-2xl opacity-0 group-hover:opacity-100 transition whitespace-nowrap pointer-events-none">
+                কোটেশন দেখুন
+            </div>
+        </div>
+
+        <!-- Quick Report -->
+        <button onclick="showReportModal()"
+                class="w-12 h-12 flex items-center justify-center bg-white border border-slate-300 shadow-xl text-emerald-800 rounded-2xl hover:scale-105 transition floating-action"
+                title="সমস্যা রিপোর্ট করুন">
+            <i class="fas fa-exclamation-triangle"></i>
+        </button>
+
+        <!-- Delivery Location Finder (very useful for members) -->
+        <button onclick="openDeliveryFinder()"
+                class="w-12 h-12 flex items-center justify-center bg-sky-600 hover:bg-sky-700 text-white rounded-2xl shadow-xl hover:scale-105 transition floating-action ring-4 ring-sky-200/50"
+                title="ডেলিভারির জন্য লোকেশন খুঁজুন ও শেয়ার করুন">
+            <i class="fas fa-motorcycle text-2xl"></i>
+        </button>
+    </div>
+
+    <!-- ==================== ROAD DETAIL MODAL ==================== -->
+    <div id="roadModal" onclick="if (event.target.id === 'roadModal') closeRoadModal()" class="hidden fixed inset-0 z-[200] flex items-center justify-center bg-black/70 backdrop-blur-sm p-4">
+        <div onclick="event.stopImmediatePropagation()" class="modal bg-white rounded-3xl w-full max-w-[960px] max-h-[92dvh] overflow-hidden flex flex-col">
+            <div class="px-7 py-5 border-b flex items-center justify-between">
+                <div>
+                    <div id="roadModalTitle" class="font-bold text-3xl heading-serif tracking-tight"></div>
+                    <div id="roadModalSubtitle" class="text-sm text-emerald-700"></div>
+                </div>
+                <button onclick="closeRoadModal()" class="text-4xl text-slate-300 hover:text-slate-400 leading-none">×</button>
+            </div>
+
+            <div class="p-7 overflow-auto flex-1">
+                <!-- Search -->
+                <div class="relative mb-5">
+                    <i class="fas fa-search absolute left-5 top-4 text-slate-400"></i>
+                    <input id="buildingSearch" onkeyup="filterBuildings()" type="text" 
+                           class="w-full pl-12 bg-slate-50 border border-slate-200 focus:border-emerald-300 transition rounded-2xl py-[13px] text-sm outline-none" 
+                           placeholder="ভবন নম্বর বা মালিকের নাম দিয়ে খুঁজুন...">
+                </div>
+
+                <div id="buildingsGrid" class="grid grid-cols-1 md:grid-cols-2 gap-3 text-sm">
+                    <!-- Populated by JS -->
+                </div>
+            </div>
+
+            <div class="px-7 py-4 bg-slate-50 border-t flex justify-between items-center text-xs text-slate-500">
+                <div>সব তথ্য সদস্যদের জন্য উন্মুক্ত</div>
+                <button onclick="closeRoadModal()" class="font-semibold text-emerald-800">বন্ধ করুন</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- ==================== BUILDING DETAIL MODAL (with Google Map) ==================== -->
+    <div id="buildingModal" onclick="if (event.target.id === 'buildingModal') closeBuildingModal()" class="hidden fixed inset-0 z-[210] flex items-center justify-center bg-black/70 backdrop-blur-sm p-4">
+        <div onclick="event.stopImmediatePropagation()" class="modal bg-white rounded-3xl w-full max-w-[820px] max-h-[94dvh] overflow-hidden flex flex-col">
+            <!-- Header -->
+            <div class="px-7 py-5 border-b flex items-center justify-between bg-gradient-to-r from-emerald-800 to-emerald-900 text-white">
+                <div>
+                    <div id="buildingModalTitle" class="font-bold text-2xl tracking-tight"></div>
+                    <div id="buildingModalRoad" class="text-emerald-200 text-sm"></div>
+                </div>
+                <button onclick="closeBuildingModal()" class="text-4xl text-white/70 hover:text-white leading-none">×</button>
+            </div>
+
+            <div class="p-7 overflow-auto flex-1 space-y-6">
+                <!-- Building Info -->
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-x-8 gap-y-4">
+                    <div>
+                        <div class="text-xs uppercase tracking-[1.5px] text-emerald-700 font-semibold mb-1">মালিক / দায়িত্বশীল</div>
+                        <div id="buildingOwner" class="font-semibold text-xl"></div>
+                    </div>
+                    <div class="flex flex-wrap gap-2">
+                        <div>
+                            <div class="text-xs text-slate-500">ফ্লোর</div>
+                            <div id="buildingFloor" class="font-medium"></div>
+                        </div>
+                        <div>
+                            <div class="text-xs text-slate-500">ধরন</div>
+                            <div id="buildingType" class="font-medium text-emerald-700"></div>
+                        </div>
+                        <div id="buildingMembersWrap">
+                            <div class="text-xs text-slate-500">নিবন্ধিত সদস্য</div>
+                            <div id="buildingMembers" class="font-medium"></div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Contact row -->
+                <div class="flex items-center gap-3 pt-2">
+                    <a id="buildingCallBtn" href="#" 
+                       class="flex-1 md:flex-none inline-flex items-center justify-center gap-2 px-6 py-3 bg-emerald-800 hover:bg-emerald-900 active:bg-black transition text-white font-semibold rounded-2xl text-sm">
+                        <i class="fas fa-phone"></i>
+                        <span>কল করুন</span>
+                    </a>
+                    <button id="buildingCopyBtn"
+                            class="flex-1 md:flex-none inline-flex items-center justify-center gap-2 px-6 py-3 border border-emerald-200 hover:bg-emerald-50 text-emerald-800 font-medium rounded-2xl text-sm">
+                        <i class="fas fa-copy"></i>
+                        <span>নম্বর কপি করুন</span>
+                    </button>
+                    <button onclick="quickReportForBuilding()" 
+                            class="hidden md:inline-flex items-center justify-center gap-2 px-5 py-3 text-sm border border-amber-200 text-amber-700 hover:bg-amber-50 rounded-2xl font-medium">
+                        <i class="fas fa-exclamation-triangle"></i>
+                        <span class="hidden lg:inline">সমস্যা রিপোর্ট</span>
+                    </button>
+                </div>
+
+                <!-- Map Section -->
+                <div>
+                    <div class="flex items-center justify-between mb-3">
+                        <div>
+                            <div class="font-semibold flex items-center gap-2">
+                                <i class="fas fa-map-marker-alt text-emerald-700"></i> 
+                                <span>অবস্থান</span>
+                            </div>
+                            <div id="buildingCoords" class="text-xs text-slate-500 font-mono mt-0.5"></div>
+                        </div>
+                        <a id="buildingGoogleMapsLink" target="_blank" 
+                           class="text-xs flex items-center gap-1.5 px-4 py-2 rounded-2xl border border-emerald-200 text-emerald-700 hover:bg-emerald-50 font-medium">
+                            <i class="fas fa-external-link-alt text-[10px]"></i>
+                            <span>Google Maps-এ খুলুন</span>
+                        </a>
+                    </div>
+
+                    <div class="rounded-3xl overflow-hidden border border-slate-200 shadow-inner bg-slate-100">
+                        <div id="buildingMapContainer" class="w-full" style="height: 320px;">
+                            <!-- Google Maps iframe injected here -->
+                        </div>
+                    </div>
+                    <div class="text-[11px] text-slate-400 mt-2 flex items-center gap-1">
+                        <i class="fas fa-info-circle"></i>
+                        <span>সঠিক অবস্থান আনুমানিক। প্রকৃত ঠিকানার জন্য সদস্যের সাথে যোগাযোগ করুন।</span>
+                    </div>
+                </div>
+
+                <!-- Extra info / status -->
+                <div class="bg-slate-50 border border-slate-100 rounded-2xl p-4 text-sm">
+                    <div class="uppercase text-emerald-700 text-xs tracking-widest font-semibold mb-2">অতিরিক্ত তথ্য</div>
+                    <div class="grid grid-cols-2 gap-y-2 text-slate-600">
+                        <div class="flex items-center gap-2">
+                            <i class="fas fa-shield-alt w-4 text-emerald-700"></i>
+                            <span id="buildingSecurity">২৪/৭ নিরাপত্তা কভারেজ</span>
+                        </div>
+                        <div class="flex items-center gap-2">
+                            <i class="fas fa-leaf w-4 text-emerald-700"></i>
+                            <span id="buildingCleanStatus">পরিচ্ছন্নতা: সক্রিয়</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="px-7 py-4 bg-slate-50 border-t flex justify-end gap-3 text-sm">
+                <button onclick="closeBuildingModal()" class="px-6 py-2.5 rounded-2xl border border-slate-200 font-medium">বন্ধ করুন</button>
+                <button onclick="closeBuildingModal(); showRoadDetailsFromBuilding()" 
+                        class="px-6 py-2.5 rounded-2xl bg-emerald-800 hover:bg-emerald-900 text-white font-semibold">
+                    রাস্তার অন্যান্য ভবন দেখুন
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- ==================== DELIVERY LOCATION FINDER MODAL ==================== -->
+    <div id="deliveryLocationModal" onclick="if (event.target.id === 'deliveryLocationModal') closeDeliveryModal()" class="hidden fixed inset-0 z-[230] flex items-end lg:items-center justify-center bg-black/70 backdrop-blur-sm p-0 lg:p-4">
+        <div onclick="event.stopImmediatePropagation()" class="modal bg-white w-full lg:w-[620px] lg:rounded-3xl lg:m-6 rounded-t-3xl max-h-[92dvh] flex flex-col overflow-hidden">
+            <!-- Header -->
+            <div class="px-6 py-5 border-b flex items-center justify-between bg-emerald-900 text-white">
+                <div class="flex items-center gap-3">
+                    <div class="w-10 h-10 bg-white/20 rounded-2xl flex items-center justify-center">
+                        <i class="fas fa-motorcycle text-xl"></i>
+                    </div>
+                    <div>
+                        <div class="font-bold text-xl">ডেলিভারি লোকেশন খুঁজুন</div>
+                        <div class="text-emerald-200 text-xs">ফুডপান্ডা, পাঠাও, উবার ইত্যাদির জন্য সঠিক লোকেশন শেয়ার করুন</div>
+                    </div>
+                </div>
+                <button onclick="closeDeliveryModal()" class="text-3xl text-white/70 hover:text-white leading-none w-9 h-9 flex items-center justify-center">×</button>
+            </div>
+
+            <div class="p-6 flex-1 overflow-auto">
+                <!-- Search -->
+                <div class="mb-4">
+                    <label class="text-xs font-semibold text-emerald-700 tracking-wider">ফোন নম্বর বা বাড়ির নম্বর লিখুন</label>
+                    <div class="relative mt-1.5">
+                        <i class="fas fa-search absolute left-5 top-4 text-emerald-600"></i>
+                        <input id="deliverySearchInput" 
+                               onkeyup="searchDeliveryLocations()"
+                               type="text" 
+                               class="w-full pl-12 pr-4 py-3.5 border border-emerald-200 focus:border-emerald-700 rounded-2xl text-lg outline-none"
+                               placeholder="01711-445566 অথবা ১/ক">
+                    </div>
+                    <div class="text-[11px] text-slate-500 mt-1.5 px-1">ফোনের শেষ ৪-৫ ডিজিট দিলেও খুঁজে পাবেন</div>
+                </div>
+
+                <!-- Results -->
+                <div id="deliveryResults" class="space-y-2 min-h-[120px]">
+                    <!-- Populated by JS -->
+                    <div class="text-center py-8 text-slate-400 text-sm" id="deliveryResultsPlaceholder">
+                        ফোন নম্বর বা বাড়ির নম্বর (যেমন ১/ক, মেইন-২) লিখে সার্চ করুন
+                    </div>
+                </div>
+
+                <!-- Share Panel (shown after selecting a building) -->
+                <div id="deliverySharePanel" class="hidden mt-4 border border-emerald-100 rounded-3xl p-5 bg-emerald-50/40">
+                    <div class="text-xs uppercase tracking-[1px] text-emerald-700 font-semibold mb-2">শেয়ার করার জন্য প্রস্তুত</div>
+                    
+                    <div id="shareBuildingInfo" class="mb-4 text-sm"></div>
+
+                    <div class="bg-white border border-emerald-200 rounded-2xl p-4 mb-4 font-mono text-xs leading-relaxed text-slate-700" id="shareLocationText">
+                        <!-- JS injected formatted text -->
+                    </div>
+
+                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                        <button onclick="copyFullDeliveryInfo()" 
+                                class="flex items-center justify-center gap-2 py-3 bg-emerald-800 hover:bg-emerald-900 text-white font-semibold rounded-2xl text-sm">
+                            <i class="fas fa-copy"></i> 
+                            <span>পুরো তথ্য কপি করুন</span>
+                        </button>
+
+                        <button onclick="copyMapsLinkOnly()" 
+                                class="flex items-center justify-center gap-2 py-3 border border-emerald-700 text-emerald-800 hover:bg-emerald-100 font-semibold rounded-2xl text-sm">
+                            <i class="fas fa-link"></i> 
+                            <span>শুধু ম্যাপ লিংক কপি</span>
+                        </button>
+
+                        <button onclick="shareViaWhatsApp()" 
+                                class="flex items-center justify-center gap-2 py-3 bg-[#25D366] hover:bg-[#1da851] text-white font-semibold rounded-2xl text-sm col-span-1 sm:col-span-2">
+                            <i class="fab fa-whatsapp"></i> 
+                            <span>WhatsApp-এ পাঠান (ডেলিভারি ম্যানকে)</span>
+                        </button>
+
+                        <a id="deliveryOpenMapsBtn" target="_blank" 
+                           class="flex items-center justify-center gap-2 py-3 border border-slate-300 hover:bg-white rounded-2xl text-sm font-medium text-center">
+                            <i class="fas fa-external-link-alt"></i> 
+                            <span>Google Maps-এ খুলুন</span>
+                        </a>
+
+                        <button onclick="closeDeliveryModalAndShowBuilding()" 
+                                class="flex items-center justify-center gap-2 py-3 border border-slate-300 hover:bg-white rounded-2xl text-sm font-medium">
+                            <i class="fas fa-info-circle"></i> 
+                            <span>বিস্তারিত দেখুন</span>
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <div class="p-4 border-t bg-slate-50 text-center text-[11px] text-slate-500">
+                এই লোকেশন সরাসরি ডেলিভারি ম্যানকে পাঠালে তিনি সহজে আপনার বাড়ি খুঁজে পাবেন
+            </div>
+        </div>
+    </div>
+
+    <!-- ==================== LIGHTBOX MODAL ==================== -->
+    <div id="lightbox" onclick="closeLightbox()" class="hidden fixed inset-0 z-[220] bg-black/95 flex items-center justify-center p-4">
+        <div onclick="event.stopImmediatePropagation()" class="relative max-w-[1100px] w-full">
+            <img id="lightboxImage" class="max-h-[88dvh] w-full object-contain rounded-2xl shadow-2xl" alt="">
+            <div class="absolute top-4 right-4 flex gap-2">
+                <button onclick="closeLightbox()" class="bg-white/90 hover:bg-white text-black px-5 py-2 text-sm rounded-2xl font-medium">বন্ধ করুন</button>
+            </div>
+            <div id="lightboxCaption" class="text-center text-white/70 text-sm mt-4"></div>
+        </div>
+    </div>
+
+    <!-- ==================== POST AD MODAL ==================== -->
+    <div id="postAdModal" onclick="if (event.target.id === 'postAdModal') closePostAdModal()" class="hidden fixed inset-0 bg-black/70 z-[200] flex items-end lg:items-center justify-center">
+        <div onclick="event.stopImmediatePropagation()" class="modal bg-white w-full lg:w-[480px] lg:rounded-3xl lg:m-6 rounded-t-3xl p-7">
+            <div class="flex justify-between items-center mb-5">
+                <div class="font-bold text-2xl">নতুন বিজ্ঞাপন দিন</div>
+                <button onclick="closePostAdModal()" class="text-3xl text-slate-400">×</button>
+            </div>
+
+            <form id="postAdForm" onsubmit="submitNewAd(event)">
+                <div class="space-y-4">
+                    <div>
+                        <label class="text-xs font-semibold text-slate-500">ধরন</label>
+                        <select id="adType" class="mt-1 w-full border border-slate-200 rounded-2xl px-4 py-3 text-sm">
+                            <option value="বাসা ভাড়া">বাসা ভাড়া</option>
+                            <option value="দোকান ভাড়া">দোকান ভাড়া</option>
+                            <option value="গাড়ি ভাড়া">গাড়ি / পার্কিং</option>
+                            <option value="সেবা">সেবা (টিউটর / ড্রাইভার ইত্যাদি)</option>
+                        </select>
+                    </div>
+                    <div class="grid grid-cols-2 gap-4">
+                        <div>
+                            <label class="text-xs font-semibold text-slate-500">রাস্তা / এলাকা</label>
+                            <input id="adLocation" required class="mt-1 w-full border border-slate-200 rounded-2xl px-4 py-3 text-sm" placeholder="রাস্তা-৩">
+                        </div>
+                        <div>
+                            <label class="text-xs font-semibold text-slate-500">ভাড়া (টাকা)</label>
+                            <input id="adRent" required type="text" class="mt-1 w-full border border-slate-200 rounded-2xl px-4 py-3 text-sm" placeholder="১৮,০০০">
+                        </div>
+                    </div>
+                    <div>
+                        <label class="text-xs font-semibold text-slate-500">বিবরণ</label>
+                        <textarea id="adDesc" rows="3" required class="mt-1 w-full border border-slate-200 rounded-3xl px-4 py-3 text-sm" placeholder="৩ বেড, ২ বাথ, রান্নাঘর সহ..."></textarea>
+                    </div>
+                    <div>
+                        <label class="text-xs font-semibold text-slate-500">যোগাযোগের নম্বর</label>
+                        <input id="adContact" required type="tel" class="mt-1 w-full border border-slate-200 rounded-2xl px-4 py-3 text-sm" placeholder="017XX-XXXXXX">
+                    </div>
+                </div>
+
+                <div class="mt-7 flex gap-3">
+                    <button type="button" onclick="closePostAdModal()" class="flex-1 py-3 border border-slate-200 font-medium rounded-2xl text-sm">বাতিল</button>
+                    <button type="submit" class="flex-1 py-3 bg-emerald-800 text-white font-semibold rounded-2xl text-sm">পোস্ট করুন</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- ==================== JOIN MODAL ==================== -->
+    <div id="joinModal" onclick="if (event.target.id === 'joinModal') closeJoinModal()" class="hidden fixed inset-0 z-[200] bg-black/70 flex items-center justify-center p-4">
+        <div onclick="event.stopImmediatePropagation()" class="modal bg-white w-full max-w-lg rounded-3xl p-8">
+            <div class="text-center">
+                <div class="mx-auto w-16 h-16 bg-emerald-100 text-emerald-700 rounded-2xl flex items-center justify-center mb-5 text-4xl">🤝</div>
+                <h3 class="text-3xl font-bold heading-serif">সদস্য হোন</h3>
+                <p class="text-slate-600 mt-2">মাসিক ৩০০ টাকা • পরিবার প্রতি একটি সদস্যপদ</p>
+            </div>
+
+            <form id="joinForm" onsubmit="submitMembership(event)" class="mt-7 space-y-4">
+                <div class="grid grid-cols-2 gap-4">
+                    <div>
+                        <label class="text-xs font-semibold text-slate-500">পরিবার প্রধানের নাম</label>
+                        <input required class="w-full border border-slate-200 rounded-2xl px-4 py-3 mt-1 text-sm">
+                    </div>
+                    <div>
+                        <label class="text-xs font-semibold text-slate-500">মোবাইল</label>
+                        <input required type="tel" class="w-full border border-slate-200 rounded-2xl px-4 py-3 mt-1 text-sm">
+                    </div>
+                </div>
+                <div>
+                    <label class="text-xs font-semibold text-slate-500">বর্তমান ঠিকানা (রাস্তা + বাড়ি নং)</label>
+                    <input required class="w-full border border-slate-200 rounded-2xl px-4 py-3 mt-1 text-sm" placeholder="রাস্তা-৪, বাড়ি-১২">
+                </div>
+                <div class="pt-2">
+                    <button type="submit" class="w-full py-4 rounded-2xl bg-emerald-800 hover:bg-emerald-900 text-white font-semibold">সদস্যপদের জন্য আবেদন করুন</button>
+                </div>
+                <div class="text-center text-xs text-emerald-700">আমরা আপনার সাথে যোগাযোগ করব ৪৮ ঘণ্টার মধ্যে</div>
+            </form>
+        </div>
+    </div>
+
+    <!-- ==================== REPORT ISSUE MODAL ==================== -->
+    <div id="reportModal" onclick="if (event.target.id === 'reportModal') closeReportModal()" class="hidden fixed inset-0 z-[200] bg-black/70 flex items-end lg:items-center justify-center">
+        <div onclick="event.stopImmediatePropagation()" class="modal bg-white w-full lg:max-w-md lg:rounded-3xl lg:m-6 rounded-t-3xl p-7">
+            <div class="font-bold text-xl mb-1">সমস্যা রিপোর্ট করুন</div>
+            <div class="text-sm text-slate-500 mb-5">নিরাপত্তা, পরিচ্ছন্নতা বা অবকাঠামো সংক্রান্ত যেকোনো সমস্যা</div>
+
+            <form id="reportForm" onsubmit="submitReport(event)">
+                <div class="space-y-4">
+                    <div>
+                        <label class="text-xs font-semibold text-slate-500">সমস্যার ধরন</label>
+                        <select id="reportType" class="mt-1 w-full border rounded-2xl px-4 py-3 text-sm">
+                            <option>নিরাপত্তা সমস্যা</option>
+                            <option>পরিচ্ছন্নতা / বর্জ্য</option>
+                            <option>রাস্তা / ড্রেনেজ</option>
+                            <option>আলো নষ্ট</option>
+                            <option>অন্যান্য</option>
+                        </select>
+                    </div>
+                    <div>
+                        <label class="text-xs font-semibold text-slate-500">বিস্তারিত বিবরণ</label>
+                        <textarea id="reportDetails" rows="3" required class="w-full border rounded-3xl px-4 py-3 text-sm" placeholder="কোন রাস্তা? কী সমস্যা?"></textarea>
+                    </div>
+                    <div>
+                        <label class="text-xs font-semibold text-slate-500">আপনার নম্বর (ঐচ্ছিক)</label>
+                        <input id="reportContact" type="tel" class="w-full border rounded-2xl px-4 py-3 text-sm" placeholder="017XX-XXXXXX">
+                    </div>
+                </div>
+                <div class="mt-6 flex gap-3">
+                    <button type="button" onclick="closeReportModal()" class="flex-1 py-3 border font-medium rounded-2xl">বাতিল</button>
+                    <button type="submit" class="flex-1 py-3 bg-emerald-800 text-white font-semibold rounded-2xl">রিপোর্ট পাঠান</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- ==================== MEMBER LOGIN MODAL ==================== -->
+    <div id="memberLoginModal" onclick="if (event.target.id === 'memberLoginModal') closeMemberLoginModal()" class="hidden fixed inset-0 z-[220] bg-black/70 flex items-center justify-center p-4">
+        <div onclick="event.stopImmediatePropagation()" class="modal bg-white w-full max-w-md rounded-3xl overflow-hidden">
+            <!-- Header -->
+            <div class="bg-gradient-to-r from-emerald-800 to-emerald-900 px-7 py-6 text-white">
+                <div class="flex items-center gap-3">
+                    <div class="w-11 h-11 bg-white/20 rounded-2xl flex items-center justify-center">
+                        <i class="fas fa-user-shield text-2xl"></i>
+                    </div>
+                    <div>
+                        <div class="font-bold text-2xl tracking-tight">সদস্য পোর্টাল</div>
+                        <div class="text-emerald-200 text-sm">চৌধুরীপাড়াস্থ সমাজ উন্নায়ন সংস্থা</div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="p-7">
+                <div class="mb-6">
+                    <div class="text-sm font-semibold text-slate-600 mb-1.5">আপনার নিবন্ধিত মোবাইল নম্বর দিন</div>
+                    <div class="relative">
+                        <i class="fas fa-phone absolute left-5 top-4 text-emerald-600"></i>
+                        <input id="memberPhone" type="tel" value="01787492561" 
+                               class="w-full border border-slate-200 focus:border-emerald-700 pl-12 py-3.5 rounded-2xl text-lg font-medium outline-none">
+                    </div>
+                    <div class="text-[11px] text-emerald-700 mt-1.5">শুধুমাত্র নিবন্ধিত সদস্যদের জন্য</div>
+                </div>
+
+                <button onclick="sendOTP()" 
+                        class="w-full py-4 bg-emerald-800 hover:bg-emerald-900 active:bg-black transition text-white font-semibold rounded-2xl flex items-center justify-center gap-2">
+                    <i class="fas fa-paper-plane"></i>
+                    <span>OTP পাঠান</span>
+                </button>
+
+                <div class="text-center mt-6">
+                    <button onclick="closeMemberLoginModal()" class="text-sm text-slate-500 hover:text-slate-700">বাতিল করুন</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- ==================== OTP VERIFICATION MODAL ==================== -->
+    <div id="otpModal" onclick="if (event.target.id === 'otpModal') closeOtpModal()" class="hidden fixed inset-0 z-[230] bg-black/70 flex items-center justify-center p-4">
+        <div onclick="event.stopImmediatePropagation()" class="modal bg-white w-full max-w-md rounded-3xl p-7">
+            <div class="text-center">
+                <div class="mx-auto w-14 h-14 bg-emerald-100 text-emerald-700 rounded-2xl flex items-center justify-center mb-4">
+                    <i class="fas fa-sms text-3xl"></i>
+                </div>
+                <div class="font-bold text-2xl">OTP যাচাই করুন</div>
+                <div class="text-sm text-slate-600 mt-1">আপনার নম্বরে <span id="otpPhoneDisplay" class="font-semibold"></span> এ একটি OTP পাঠানো হয়েছে</div>
+            </div>
+
+            <div class="mt-7">
+                <div class="text-xs font-semibold text-slate-500 mb-2 text-center">৪ সংখ্যার OTP লিখুন</div>
+                <input id="otpInput" type="text" maxlength="4" inputmode="numeric" 
+                       class="otp-input w-full text-center border border-slate-200 focus:border-emerald-700 rounded-2xl py-4 tracking-[12px] outline-none font-mono"
+                       placeholder="0000">
+                <div class="text-[11px] text-center text-amber-600 mt-2">ডেমো: OTP হলো <span class="font-semibold">0000</span></div>
+            </div>
+
+            <div class="mt-6 grid grid-cols-2 gap-3">
+                <button onclick="closeOtpModal(); document.getElementById('memberLoginModal').classList.remove('hidden'); document.getElementById('memberLoginModal').classList.add('flex');" 
+                        class="py-3.5 border border-slate-200 rounded-2xl font-medium text-sm">আবার নম্বর দিন</button>
+                <button onclick="verifyOTP()" 
+                        class="py-3.5 bg-emerald-800 hover:bg-emerald-900 text-white font-semibold rounded-2xl text-sm">যাচাই করুন</button>
+            </div>
+
+            <div class="text-center mt-5">
+                <button onclick="resendOTP()" class="text-xs text-emerald-700 hover:underline">OTP আবার পাঠান</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- ==================== MEMBER DASHBOARD (PORTAL) ==================== -->
+    <div id="memberDashboard" class="hidden fixed inset-0 z-[240] bg-slate-950/95 backdrop-blur-xl overflow-auto">
+        <div class="member-portal max-w-5xl mx-auto min-h-screen bg-white shadow-2xl">
+            
+            <!-- Dashboard Header -->
+            <div class="sticky top-0 z-50 bg-white border-b px-6 py-4 flex items-center justify-between">
+                <div class="flex items-center gap-4">
+                    <div class="w-10 h-10 bg-emerald-800 rounded-2xl flex items-center justify-center text-white">
+                        <i class="fas fa-user-check"></i>
+                    </div>
+                    <div>
+                        <div id="memberNameHeader" class="font-bold text-xl tracking-tight"></div>
+                        <div id="memberHouseHeader" class="text-xs text-emerald-700"></div>
+                    </div>
+                </div>
+
+                <div class="flex items-center gap-2">
+                    <div class="hidden sm:flex items-center bg-emerald-50 text-emerald-800 text-xs font-semibold px-3 py-1 rounded-2xl">
+                        <i class="fas fa-check-circle mr-1.5"></i> যাচাইকৃত সদস্য
+                    </div>
+                    <button onclick="logoutMember()" 
+                            class="flex items-center gap-2 px-4 py-2 text-sm font-medium text-slate-600 hover:text-red-600 hover:bg-red-50 rounded-2xl transition">
+                        <i class="fas fa-sign-out-alt"></i>
+                        <span class="hidden sm:inline">লগআউট</span>
+                    </button>
+                    <button onclick="closeMemberDashboard()" 
+                            class="w-10 h-10 flex items-center justify-center text-2xl text-slate-400 hover:text-slate-600 hover:bg-slate-100 rounded-2xl">×</button>
+                </div>
+            </div>
+
+            <div class="p-6 lg:p-8">
+                
+                <!-- Welcome + Quick Stats -->
+                <div class="mb-8">
+                    <div class="text-sm text-emerald-700 font-semibold">স্বাগতম, আপনার সামাজিক অবদান গুরুত্বপূর্ণ</div>
+                    <div class="text-3xl font-bold tracking-tight heading-serif mt-1">আপনার পরিচ্ছন্নতার স্কোর</div>
+                    
+                    <div class="mt-5 grid grid-cols-2 md:grid-cols-4 gap-4">
+                        <div class="stat-pill border border-emerald-100 rounded-3xl p-5">
+                            <div class="text-xs text-emerald-600 font-medium">এই মাসের স্কোর</div>
+                            <div id="currentScore" class="text-5xl font-semibold text-emerald-800 mt-1 score-badge">--</div>
+                            <div class="text-xs text-emerald-600">/ ১০০</div>
+                        </div>
+                        <div class="stat-pill border border-emerald-100 rounded-3xl p-5">
+                            <div class="text-xs text-emerald-600 font-medium">বর্তমান র‍্যাঙ্ক</div>
+                            <div id="currentRank" class="text-5xl font-semibold text-emerald-800 mt-1 score-badge">--</div>
+                            <div class="text-xs">৫২০ জনের মধ্যে</div>
+                        </div>
+                        <div class="stat-pill border border-emerald-100 rounded-3xl p-5">
+                            <div class="text-xs text-emerald-600 font-medium">আপলোড করা ছবি</div>
+                            <div id="uploadedCount" class="text-5xl font-semibold text-emerald-800 mt-1">--</div>
+                            <div class="text-xs">এই মাসে</div>
+                        </div>
+                        <div class="stat-pill border border-emerald-100 rounded-3xl p-5">
+                            <div class="text-xs text-emerald-600 font-medium">সর্বোচ্চ স্কোর</div>
+                            <div id="highestScore" class="text-5xl font-semibold text-emerald-800 mt-1 score-badge">--<span class="text-2xl align-super">/১০</span></div>
+                            <div class="text-xs">একটি ছবিতে</div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Tabs -->
+                <div class="flex border-b mb-6 overflow-x-auto">
+                    <button onclick="switchDashboardTab(0)" class="dashboard-tab active px-5 py-3 text-sm font-medium whitespace-nowrap" id="tab-0">ড্যাশবোর্ড</button>
+                    <button onclick="switchDashboardTab(1)" class="dashboard-tab px-5 py-3 text-sm font-medium text-slate-600 whitespace-nowrap" id="tab-1">ডিউ ও পেমেন্ট</button>
+                    <button onclick="switchDashboardTab(2)" class="dashboard-tab px-5 py-3 text-sm font-medium text-slate-600 whitespace-nowrap" id="tab-2">আমার গ্যালারি</button>
+                    <button onclick="switchDashboardTab(3)" class="dashboard-tab px-5 py-3 text-sm font-medium text-slate-600 whitespace-nowrap" id="tab-3">র‍্যাঙ্কিং ও স্কোর</button>
+                </div>
+
+                <!-- TAB 0: Overview / Dues Summary -->
+                <div id="dash-tab-0">
+                    <div class="grid lg:grid-cols-5 gap-5">
+                        <!-- Due Card -->
+                        <div class="lg:col-span-3 bg-white border border-amber-200 rounded-3xl p-7">
+                            <div class="flex justify-between">
+                                <div>
+                                    <div class="text-amber-600 text-sm font-semibold">বর্তমান বকেয়া</div>
+                                    <div id="dueAmount" class="text-5xl font-semibold text-amber-700 tabular-nums mt-1">৳ ৯০০</div>
+                                </div>
+                                <div class="text-right">
+                                    <div class="inline-flex items-center gap-1 bg-amber-100 text-amber-700 px-3 py-1 rounded-2xl text-xs font-semibold">মেয়াদোত্তীর্ণ</div>
+                                    <div class="text-xs text-amber-600 mt-1">১৫ জানুয়ারি ২০২৬</div>
+                                </div>
+                            </div>
+                            <button onclick="fakePayNow()" 
+                                    class="mt-6 w-full py-3.5 bg-gradient-to-r from-amber-600 to-amber-700 hover:from-amber-700 text-white font-semibold rounded-2xl flex items-center justify-center gap-2 text-sm">
+                                <i class="fas fa-wallet"></i> এখনই পেমেন্ট করুন
+                            </button>
+                            <div class="text-[10px] text-amber-600 mt-3 text-center">bKash / Nagad / ব্যাংক ট্রান্সফার সাপোর্টেড</div>
+                        </div>
+
+                        <div class="lg:col-span-2 bg-slate-50 border rounded-3xl p-6 text-sm">
+                            <div class="font-semibold mb-3">সেবা চার্জের বিবরণ</div>
+                            <div class="space-y-2 text-slate-600 text-[13px]">
+                                <div class="flex justify-between"><span>মাসিক সদস্য ফি</span> <span class="font-medium">৳ ৩০০</span></div>
+                                <div class="flex justify-between"><span>নিরাপত্তা চার্জ</span> <span class="font-medium">৳ ১৫০</span></div>
+                                <div class="flex justify-between"><span>পরিচ্ছন্নতা চার্জ</span> <span class="font-medium">৳ ১৫০</span></div>
+                                <div class="h-px bg-slate-200 my-1"></div>
+                                <div class="flex justify-between font-semibold"><span>মোট মাসিক</span> <span>৳ ৬০০</span></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- TAB 1: Payment History -->
+                <div id="dash-tab-1" class="hidden">
+                    <div class="bg-white border rounded-3xl overflow-hidden">
+                        <table class="w-full text-sm">
+                            <thead class="bg-slate-50">
+                                <tr class="text-left text-xs text-slate-500">
+                                    <th class="px-6 py-3 font-medium">তারিখ</th>
+                                    <th class="px-6 py-3 font-medium">বিবরণ</th>
+                                    <th class="px-6 py-3 font-medium text-right">পরিমাণ</th>
+                                    <th class="px-6 py-3 font-medium">স্ট্যাটাস</th>
+                                </tr>
+                            </thead>
+                            <tbody id="paymentHistoryTable" class="divide-y">
+                                <!-- JS populated -->
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <!-- TAB 2: My Gallery + Upload -->
+                <div id="dash-tab-2" class="hidden">
+                    <div class="mb-6">
+                        <button onclick="showUploadModal()" 
+                                class="flex items-center gap-2 px-6 py-3 bg-emerald-800 hover:bg-emerald-900 text-white text-sm font-semibold rounded-2xl">
+                            <i class="fas fa-camera"></i>
+                            <span>নতুন উঠানের ছবি আপলোড করুন</span>
+                        </button>
+                        <div class="text-xs text-slate-500 mt-2">আপনার সামনের উঠানের ছবি আপলোড করুন। অ্যাডমিন পরিচ্ছন্নতার ভিত্তিতে স্কোর দেবেন (১০ এর মধ্যে)।</div>
+                    </div>
+
+                    <div class="text-sm font-semibold mb-3 flex items-center justify-between">
+                        <span>আমার আপলোড করা ছবি</span>
+                        <span id="myGalleryCount" class="text-emerald-700 text-xs font-normal"></span>
+                    </div>
+
+                    <div id="myYardGallery" class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-4">
+                        <!-- Populated by JS -->
+                    </div>
+                </div>
+
+                <!-- TAB 3: Ranking & Social Value -->
+                <div id="dash-tab-3" class="hidden">
+                    <div class="max-w-2xl">
+                        <div class="bg-gradient-to-br from-emerald-800 to-emerald-900 text-white rounded-3xl p-8">
+                            <div class="uppercase tracking-widest text-xs text-emerald-300">SOCIAL VALUE SCORE</div>
+                            <div class="text-6xl font-semibold mt-2" id="bigSocialScore">--</div>
+                            <div class="text-emerald-200 mt-1">এই মাসের সামাজিক অবদান স্কোর</div>
+
+                            <div class="mt-8 text-sm">
+                                <div class="flex justify-between text-xs text-emerald-200 mb-1">
+                                    <div>আপনার স্কোর</div>
+                                    <div id="scoreProgressText"></div>
+                                </div>
+                                <div class="h-2 bg-white/20 rounded-full overflow-hidden">
+                                    <div id="scoreProgressBar" class="h-2 bg-white transition-all" style="width: 0%"></div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="mt-8 text-sm leading-relaxed text-slate-600">
+                            <div class="font-semibold text-emerald-800 mb-2">কীভাবে স্কোর হয়?</div>
+                            <ul class="space-y-1.5">
+                                <li class="flex gap-2"><span class="text-emerald-600">•</span> প্রতিটি আপলোড করা ছবি অ্যাডমিন ১-১০ স্কোর দেন (পরিচ্ছন্নতা, গোছানো, সবুজের উপস্থিতি)</li>
+                                <li class="flex gap-2"><span class="text-emerald-600">•</span> মাস শেষে সব ছবির গড় স্কোর থেকে আপনার সামাজিক মান নির্ধারিত হয়</li>
+                                <li class="flex gap-2"><span class="text-emerald-600">•</span> সর্বোচ্চ স্কোর পাওয়া সদস্যরা "মাসের সেরা পরিচ্ছন্ন পরিবার" হিসেবে স্বীকৃতি পান</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </div>
+
+    <!-- ==================== IMAGE UPLOAD MODAL (Inside Member Portal) ==================== -->
+    <div id="uploadModal" onclick="if (event.target.id === 'uploadModal') closeUploadModal()" class="hidden fixed inset-0 z-[250] bg-black/70 flex items-center justify-center p-4">
+        <div onclick="event.stopImmediatePropagation()" class="modal bg-white w-full max-w-lg rounded-3xl p-7">
+            <div class="font-bold text-xl mb-1">উঠানের ছবি আপলোড করুন</div>
+            <div class="text-sm text-slate-500 mb-5">সামনের উঠানের পরিচ্ছন্ন অবস্থার একটি স্পষ্ট ছবি দিন</div>
+
+            <div id="uploadZone" 
+                 class="upload-zone border-2 border-dashed border-emerald-200 rounded-3xl p-8 text-center cursor-pointer hover:border-emerald-300"
+                 ondrop="handleDrop(event)" ondragover="handleDragOver(event)" ondragleave="handleDragLeave(event)">
+                <i class="fas fa-cloud-upload-alt text-4xl text-emerald-700 mb-3"></i>
+                <div class="font-semibold">ছবি টেনে আনুন অথবা ক্লিক করুন</div>
+                <div class="text-xs text-slate-500 mt-1">JPG / PNG • সর্বোচ্চ ৫MB</div>
+                <input type="file" id="yardImageInput" accept="image/*" class="hidden" onchange="handleImageSelect(event)">
+            </div>
+
+            <div id="imagePreview" class="hidden mt-4">
+                <div class="relative rounded-2xl overflow-hidden border">
+                    <img id="previewImg" class="w-full max-h-72 object-cover">
+                    <button onclick="removePreview()" class="absolute top-2 right-2 bg-white/90 px-3 py-1 text-xs rounded-2xl">সরান</button>
+                </div>
+                <div class="mt-3">
+                    <label class="text-xs font-semibold text-slate-500">ছবির ক্যাপশন (ঐচ্ছিক)</label>
+                    <input id="imageCaption" class="mt-1 w-full border border-slate-200 rounded-2xl px-4 py-3 text-sm" placeholder="যেমন: আজকের সকালের উঠান">
+                </div>
+            </div>
+
+            <div class="mt-6 flex gap-3">
+                <button onclick="closeUploadModal()" class="flex-1 py-3.5 border rounded-2xl font-medium">বাতিল</button>
+                <button onclick="submitYardPhoto()" id="submitPhotoBtn"
+                        class="flex-1 py-3.5 bg-emerald-800 hover:bg-emerald-900 text-white font-semibold rounded-2xl disabled:opacity-50" disabled>
+                    জমা দিন (রিভিউয়ের জন্য)
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // ==================== TAILWIND CONFIG ====================
+        function initTailwind() {
+            document.documentElement.style.setProperty('--accent', '#C9A227');
+        }
+
+        // ==================== MOBILE MENU ====================
+        function initMobileMenu() {
+            const btn = document.getElementById('mobile-menu-btn');
+            const drawer = document.getElementById('mobile-drawer');
+            
+            btn.addEventListener('click', () => {
+                drawer.classList.remove('hidden');
+                drawer.classList.add('flex');
+            });
+        }
+
+        function closeMobileMenu() {
+            const drawer = document.getElementById('mobile-drawer');
+            drawer.classList.remove('flex');
+            drawer.classList.add('hidden');
+        }
+
+        // ==================== STATS COUNTER ====================
+        function animateStats() {
+            document.querySelectorAll('.stat-number').forEach(el => {
+                const target = parseInt(el.dataset.target);
+                if (!target) return;
+                
+                let current = 0;
+                const increment = Math.ceil(target / 38);
+                const timer = setInterval(() => {
+                    current += increment;
+                    if (current >= target) {
+                        el.textContent = target;
+                        clearInterval(timer);
+                    } else {
+                        el.textContent = current;
+                    }
+                }, 60);
+            });
+        }
+
+        // ==================== ROADS + BUILDINGS DATA ====================
+        const roadsData = [
+            { 
+                id: 1, name: "রাস্তা-১", buildings: 12, highlight: "পূর্ণাঙ্গ নিরাপত্তা", 
+                color: "emerald", desc: "প্রধান আবাসিক এলাকা", image: "img/r1.jpg",
+                buildingsList: [
+                    { num: "১/ক", owner: "মোঃ রফিকুল ইসলাম", phone: "01711-445566", type: "পরিবার", floor: "৩ তলা", lat: 23.7612, lng: 90.3638, members: 4 },
+                    { num: "১/খ", owner: "বেগম সালমা খাতুন", phone: "01722-334455", type: "পরিবার", floor: "২ তলা", lat: 23.7615, lng: 90.3641, members: 3 },
+                    { num: "২/ক", owner: "মোঃ জাহাঙ্গীর আলম", phone: "01855-667788", type: "পরিবার", floor: "৪ তলা", lat: 23.7618, lng: 90.3635, members: 6 },
+                    { num: "৩", owner: "আব্দুল্লাহ আল মামুন", phone: "01911-223344", type: "দোকান + বাসা", floor: "২ তলা", lat: 23.7609, lng: 90.3644, members: 2 }
+                ]
+            },
+            { 
+                id: 2, name: "রাস্তা-২", buildings: 9, highlight: "নতুন ড্রেনেজ", 
+                color: "amber", desc: "শান্ত পরিবেশ", image: "img/r2.jpg",
+                buildingsList: [
+                    { num: "৫/ক", owner: "মোঃ কবির হোসেন", phone: "01733-112233", type: "পরিবার", floor: "৩ তলা", lat: 23.7598, lng: 90.3652, members: 5 },
+                    { num: "৬", owner: "মিসেস নাসরিন আক্তার", phone: "01677-889900", type: "পরিবার", floor: "৫ তলা", lat: 23.7601, lng: 90.3656, members: 7 },
+                    { num: "৭/ক", owner: "মোঃ হাবিবুর রহমান", phone: "01788-334455", type: "পরিবার", floor: "২ তলা", lat: 23.7595, lng: 90.3650, members: 3 }
+                ]
+            },
+            { 
+                id: 3, name: "মেইন রোড", buildings: 24, highlight: "বাণিজ্যিক কেন্দ্র", 
+                color: "sky", desc: "সবচেয়ে বড় এলাকা", image: "https://picsum.photos/id/201/600/400",
+                buildingsList: [
+                    { num: "মেইন-১", owner: "চৌধুরী ট্রেডার্স", phone: "01899-112233", type: "বাণিজ্যিক", floor: "৬ তলা", lat: 23.7628, lng: 90.3629, members: 12 },
+                    { num: "মেইন-২", owner: "আল-আমিন ফার্মেসি", phone: "01788-445566", type: "দোকান", floor: "গ্রাউন্ড", lat: 23.7625, lng: 90.3632, members: 2 },
+                    { num: "মেইন-৩/ক", owner: "ড. মোঃ শাহজাহান", phone: "01922-334455", type: "পরিবার", floor: "৪ তলা", lat: 23.7631, lng: 90.3630, members: 5 }
+                ]
+            },
+            { 
+                id: 4, name: "রাস্তা-৩", buildings: 15, highlight: "আধুনিক আবাসিক", 
+                color: "violet", desc: "পরিকল্পিত এলাকা", image: "https://picsum.photos/id/251/600/400",
+                buildingsList: [
+                    { num: "৮/ক", owner: "ইঞ্জিনিয়ার রাহাত খান", phone: "01755-667788", type: "পরিবার", floor: "৭ তলা", lat: 23.7587, lng: 90.3661, members: 8 },
+                    { num: "৯", owner: "মোঃ তানভীর আহমেদ", phone: "01844-556677", type: "পরিবার", floor: "৩ তলা", lat: 23.7584, lng: 90.3665, members: 4 }
+                ]
+            },
+            { 
+                id: 5, name: "রাস্তা-৪", buildings: 11, highlight: "নতুন উন্নয়ন", 
+                color: "rose", desc: "দ্রুত বর্ধমান", image: "https://picsum.photos/id/866/600/400",
+                buildingsList: [
+                    { num: "১২/ক", owner: "মোঃ সাইফুল ইসলাম", phone: "01766-778899", type: "পরিবার", floor: "২ তলা", lat: 23.7642, lng: 90.3618, members: 3 },
+                    { num: "১৩", owner: "বেগম ফাতেমা বেগম", phone: "01933-445566", type: "পরিবার", floor: "৩ তলা", lat: 23.7640, lng: 90.3622, members: 4 },
+                    { num: "১৪/ক", owner: "মোঃ জসিম উদ্দিন", phone: "01811-998877", type: "পরিবার", floor: "১ তলা", lat: 23.7645, lng: 90.3615, members: 2 }
+                ]
+            },
+            { 
+                id: 6, name: "রাস্তা-৫", buildings: 8, highlight: "সবুজ পরিবেশ", 
+                color: "emerald", desc: "কম যানজট", image: "img/s6oJp.jpg",
+                buildingsList: [
+                    { num: "১৫", owner: "মোঃ আনিসুর রহমান", phone: "01822-334455", type: "পরিবার", floor: "৪ তলা", lat: 23.7572, lng: 90.3678, members: 5 }
+                ]
+            }
+        ];
+
+        // ==================== RENDER ROADS ====================
+        function renderRoads() {
+            const container = document.getElementById('roadGrid');
+            container.innerHTML = '';
+
+            roadsData.forEach(road => {
+                const div = document.createElement('div');
+                div.className = `road-card group bg-white border border-slate-100 rounded-3xl overflow-hidden cursor-pointer premium-card`;
+                div.innerHTML = `
+                    <div class="relative h-40">
+                        <img src="${road.image}" class="absolute inset-0 w-full h-full object-cover group-hover:scale-110 transition-transform duration-700" alt="${road.name}">
+                        <div class="absolute inset-x-0 bottom-0 h-2/3 bg-gradient-to-t from-black/75 to-transparent"></div>
+                        <div class="absolute top-4 right-4 bg-white/95 px-4 py-1 text-xs font-semibold rounded-2xl shadow flex items-center gap-1">
+                            <span class="text-emerald-800">${road.buildings} ভবন</span>
+                        </div>
+                        <div class="absolute bottom-4 left-4 text-white">
+                            <div class="font-bold text-2xl tracking-tight">${road.name}</div>
+                            <div class="text-xs text-white/80">${road.desc}</div>
+                        </div>
+                    </div>
+                    <div class="px-5 py-4 flex items-center justify-between text-sm">
+                        <div>
+                            <span class="inline-block px-3 py-0.5 rounded-full bg-${road.color}-100 text-${road.color}-700 text-xs font-semibold">${road.highlight}</span>
+                        </div>
+                        <div onclick="event.stopImmediatePropagation(); showRoadDetails(${road.id})" 
+                             class="text-emerald-700 font-medium flex items-center gap-1 text-sm hover:underline">
+                            বিস্তারিত <i class="fas fa-arrow-right text-xs"></i>
+                        </div>
+                    </div>
+                `;
+                div.onclick = () => showRoadDetails(road.id);
+                container.appendChild(div);
+            });
+        }
+
+        let currentRoad = null;
+
+        function showRoadDetails(roadId) {
+            const road = roadsData.find(r => r.id === roadId);
+            if (!road) return;
+
+            currentRoad = road;
+            document.getElementById('roadModalTitle').textContent = road.name;
+            document.getElementById('roadModalSubtitle').textContent = `${road.buildings}টি ভবন • ${road.highlight}`;
+
+            renderBuildingsList(road.buildingsList);
+            document.getElementById('roadModal').classList.remove('hidden');
+            document.getElementById('roadModal').classList.add('flex');
+            document.getElementById('buildingSearch').value = '';
+        }
+
+        function renderBuildingsList(buildings) {
+            const grid = document.getElementById('buildingsGrid');
+            grid.innerHTML = '';
+
+            if (!buildings || buildings.length === 0) {
+                grid.innerHTML = `<div class="col-span-full py-9 text-center text-slate-400">এই রাস্তায় বর্তমানে কোনো ভবন তথ্য যোগ করা হয়নি।</div>`;
+                return;
+            }
+
+            buildings.forEach(b => {
+                const card = document.createElement('div');
+                card.className = `building-item border border-slate-100 rounded-2xl p-4 hover:border-emerald-200 transition-all cursor-pointer group`;
+                
+                const hasLocation = (typeof b.lat === 'number' && typeof b.lng === 'number');
+                
+                card.innerHTML = `
+                    <div class="flex justify-between">
+                        <div>
+                            <div class="font-semibold text-lg flex items-center gap-2">
+                                বাড়ি ${b.num}
+                                ${hasLocation ? `<span class="inline-flex items-center text-emerald-600"><i class="fas fa-map-marker-alt text-xs ml-1"></i></span>` : ''}
+                            </div>
+                            <div class="text-sm text-slate-500">${b.owner}</div>
+                        </div>
+                        <div class="text-right">
+                            <div class="text-xs px-2.5 py-px bg-slate-100 text-slate-500 rounded-xl w-fit ml-auto">${b.floor}</div>
+                            <div class="text-xs text-emerald-700 mt-1 font-medium">${b.type}</div>
+                        </div>
+                    </div>
+                    <div class="flex items-center gap-2 mt-4 pt-3 border-t text-xs">
+                        <a href="tel:${b.phone}" onclick="event.stopImmediatePropagation()" 
+                           class="flex-1 text-center py-2 bg-emerald-50 hover:bg-emerald-100 rounded-xl text-emerald-700 font-medium">
+                            <i class="fas fa-phone mr-1"></i> কল করুন
+                        </a>
+                        <button onclick="event.stopImmediatePropagation(); copyToClipboard('${b.phone}'); event.target.innerText='কপি হয়েছে'" 
+                                class="flex-1 text-center py-2 border border-emerald-100 hover:bg-emerald-50 rounded-xl text-emerald-700 font-medium">নম্বর কপি</button>
+                        ${hasLocation ? `
+                        <button data-building-map 
+                                class="px-3 py-2 bg-emerald-800 text-white text-xs font-semibold rounded-xl flex items-center gap-1 hover:bg-emerald-900">
+                            <i class="fas fa-map"></i>
+                            <span class="hidden sm:inline">ম্যাপ</span>
+                        </button>` : ''}
+                    </div>
+                `;
+                
+                // Open rich building details + Google Map when clicking the card body
+                card.onclick = (e) => {
+                    if (!e.target.closest('a, button')) {
+                        showBuildingDetails(currentRoad, b);
+                    }
+                };
+
+                // Wire up the explicit "ম্যাপ" button (avoids serializing objects into HTML attributes)
+                const mapBtn = card.querySelector('[data-building-map]');
+                if (mapBtn) {
+                    mapBtn.onclick = (e) => {
+                        e.stopImmediatePropagation();
+                        showBuildingDetails(currentRoad, b);
+                    };
+                }
+
+                grid.appendChild(card);
+            });
+        }
+
+        function filterBuildings() {
+            if (!currentRoad) return;
+            const query = document.getElementById('buildingSearch').value.toLowerCase().trim();
+            
+            const filtered = currentRoad.buildingsList.filter(b => 
+                b.num.toLowerCase().includes(query) || 
+                b.owner.toLowerCase().includes(query) ||
+                b.type.toLowerCase().includes(query)
+            );
+            renderBuildingsList(filtered);
+        }
+
+        function closeRoadModal() {
+            const modal = document.getElementById('roadModal');
+            modal.classList.remove('flex');
+            modal.classList.add('hidden');
+        }
+
+        // ==================== BUILDING DETAIL + GOOGLE MAP ====================
+        let currentBuilding = null;
+
+        function showBuildingDetails(road, building) {
+            if (!road || !building) return;
+            
+            currentRoad = road;
+            currentBuilding = building;
+
+            // Header
+            document.getElementById('buildingModalTitle').textContent = `বাড়ি ${building.num}`;
+            document.getElementById('buildingModalRoad').textContent = `${road.name} • ${road.highlight}`;
+
+            // Info
+            document.getElementById('buildingOwner').textContent = building.owner || '—';
+            document.getElementById('buildingFloor').textContent = building.floor || '—';
+            document.getElementById('buildingType').textContent = building.type || '—';
+
+            // Members (optional)
+            const membersWrap = document.getElementById('buildingMembersWrap');
+            const membersEl = document.getElementById('buildingMembers');
+            if (building.members) {
+                membersEl.textContent = building.members + ' পরিবার';
+                membersWrap.style.display = '';
+            } else {
+                membersWrap.style.display = 'none';
+            }
+
+            // Phone actions
+            const callBtn = document.getElementById('buildingCallBtn');
+            callBtn.href = `tel:${building.phone}`;
+            callBtn.onclick = null; // ensure clean
+
+            const copyBtn = document.getElementById('buildingCopyBtn');
+            copyBtn.onclick = () => copyToClipboard(building.phone);
+
+            // Coordinates
+            const coordsEl = document.getElementById('buildingCoords');
+            const hasCoords = (typeof building.lat === 'number' && typeof building.lng === 'number');
+            coordsEl.textContent = hasCoords ? `${building.lat.toFixed(5)}, ${building.lng.toFixed(5)}` : 'লোকেশন তথ্য নেই';
+
+            // Google Maps link
+            const mapsLink = document.getElementById('buildingGoogleMapsLink');
+            if (hasCoords) {
+                mapsLink.href = `https://www.google.com/maps/search/?api=1&query=${building.lat},${building.lng}`;
+                mapsLink.style.display = '';
+            } else {
+                mapsLink.style.display = 'none';
+            }
+
+            // Render map
+            renderBuildingMap(building);
+
+            // Show modal
+            const modal = document.getElementById('buildingModal');
+            modal.classList.remove('hidden');
+            modal.classList.add('flex');
+        }
+
+        function showBuildingDetailsFromRoad(road, building) {
+            // Used by the small "ম্যাপ" button inside the list
+            showBuildingDetails(road, building);
+        }
+
+        function renderBuildingMap(building) {
+            const container = document.getElementById('buildingMapContainer');
+            container.innerHTML = '';
+
+            if (typeof building.lat !== 'number' || typeof building.lng !== 'number') {
+                container.innerHTML = `
+                    <div class="h-full flex items-center justify-center text-slate-400 text-sm">
+                        এই ভবনের জন্য ম্যাপ লোকেশন যোগ করা হয়নি।
+                    </div>`;
+                return;
+            }
+
+            const iframe = document.createElement('iframe');
+            iframe.width = '100%';
+            iframe.height = '100%';
+            iframe.style.border = '0';
+            iframe.style.borderRadius = '12px';
+            iframe.loading = 'lazy';
+            iframe.referrerPolicy = 'no-referrer-when-downgrade';
+            iframe.src = `https://www.google.com/maps?q=${building.lat},${building.lng}&hl=bn&z=18&output=embed`;
+
+            container.appendChild(iframe);
+        }
+
+        function closeBuildingModal() {
+            const modal = document.getElementById('buildingModal');
+            modal.classList.remove('flex');
+            modal.classList.add('hidden');
+
+            // Optional: clear map to avoid keeping old iframe
+            const container = document.getElementById('buildingMapContainer');
+            if (container) container.innerHTML = '';
+        }
+
+        function showRoadDetailsFromBuilding() {
+            closeBuildingModal();
+            if (currentRoad) {
+                // Re-open the road modal with the same road
+                setTimeout(() => {
+                    document.getElementById('roadModal').classList.remove('hidden');
+                    document.getElementById('roadModal').classList.add('flex');
+                    // buildings are already rendered from before, but we can refresh
+                    renderBuildingsList(currentRoad.buildingsList);
+                }, 180);
+            }
+        }
+
+        function quickReportForBuilding() {
+            closeBuildingModal();
+            setTimeout(() => {
+                showReportModal();
+                // Pre-fill a bit of context if possible (simple alert style for now)
+                const details = document.getElementById('reportDetails');
+                if (details && currentBuilding && currentRoad) {
+                    details.value = `${currentRoad.name} - বাড়ি ${currentBuilding.num} সম্পর্কিত সমস্যা: `;
+                    details.focus();
+                    details.setSelectionRange(details.value.length, details.value.length);
+                }
+            }, 350);
+        }
+
+        // ==================== DELIVERY LOCATION FINDER (for Foodpanda / deliveries) ====================
+        let selectedDeliveryBuilding = null;
+        let selectedDeliveryRoad = null;
+
+        function getAllBuildingsFlat() {
+            const all = [];
+            roadsData.forEach(road => {
+                road.buildingsList.forEach(b => {
+                    all.push({
+                        ...b,
+                        roadName: road.name,
+                        roadId: road.id,
+                        roadHighlight: road.highlight
+                    });
+                });
+            });
+            return all;
+        }
+
+        function openDeliveryFinder() {
+            const modal = document.getElementById('deliveryLocationModal');
+            modal.classList.remove('hidden');
+            modal.classList.add('flex');
+
+            // Reset state
+            document.getElementById('deliverySharePanel').classList.add('hidden');
+            document.getElementById('deliveryResults').innerHTML = `
+                <div class="text-center py-8 text-slate-400 text-sm" id="deliveryResultsPlaceholder">
+                    ফোন নম্বর বা বাড়ির নম্বর (যেমন ১/ক, মেইন-২) লিখে সার্চ করুন
+                </div>
+            `;
+            document.getElementById('deliverySearchInput').value = '';
+            selectedDeliveryBuilding = null;
+            selectedDeliveryRoad = null;
+
+            // Focus search immediately
+            setTimeout(() => {
+                const input = document.getElementById('deliverySearchInput');
+                if (input) input.focus();
+            }, 350);
+        }
+
+        function closeDeliveryModal() {
+            const modal = document.getElementById('deliveryLocationModal');
+            modal.classList.remove('flex');
+            modal.classList.add('hidden');
+            // Reset for next time
+            document.getElementById('deliverySharePanel').classList.add('hidden');
+        }
+
+        function searchDeliveryLocations() {
+            const query = document.getElementById('deliverySearchInput').value.trim().toLowerCase();
+            const resultsContainer = document.getElementById('deliveryResults');
+            const sharePanel = document.getElementById('deliverySharePanel');
+
+            sharePanel.classList.add('hidden');
+
+            if (!query || query.length < 2) {
+                resultsContainer.innerHTML = `
+                    <div class="text-center py-8 text-slate-400 text-sm">
+                        ফোন নম্বর বা বাড়ির নম্বর (যেমন ১/ক, মেইন-২) লিখে সার্চ করুন
+                    </div>
+                `;
+                return;
+            }
+
+            const allBuildings = getAllBuildingsFlat();
+            const matches = allBuildings.filter(b => {
+                const phoneMatch = b.phone && b.phone.toLowerCase().includes(query);
+                const numMatch = b.num && b.num.toLowerCase().includes(query);
+                const ownerMatch = b.owner && b.owner.toLowerCase().includes(query);
+                // Also allow last 4-5 digits of phone
+                const lastDigitsMatch = b.phone && query.length >= 3 && b.phone.replace(/\D/g, '').endsWith(query.replace(/\D/g, ''));
+                return phoneMatch || numMatch || ownerMatch || lastDigitsMatch;
+            });
+
+            if (matches.length === 0) {
+                resultsContainer.innerHTML = `
+                    <div class="text-center py-6 text-slate-500 text-sm border border-dashed rounded-2xl">
+                        কোনো মিল পাওয়া যায়নি।<br>
+                        <span class="text-xs">ফোন নম্বরের শেষের অংশ বা বাড়ির নম্বর সঠিকভাবে লিখুন</span>
+                    </div>
+                `;
+                return;
+            }
+
+            resultsContainer.innerHTML = '';
+
+            matches.forEach(b => {
+                const div = document.createElement('div');
+                div.className = `border border-slate-200 hover:border-emerald-300 bg-white rounded-2xl p-4 cursor-pointer transition-all active:scale-[0.985]`;
+                div.innerHTML = `
+                    <div class="flex justify-between items-start">
+                        <div>
+                            <div class="font-semibold text-base">বাড়ি ${b.num} <span class="text-emerald-700 text-xs font-normal">(${b.roadName})</span></div>
+                            <div class="text-sm text-slate-600">${b.owner}</div>
+                        </div>
+                        <div class="text-right text-xs">
+                            <div class="font-mono text-emerald-700">${b.phone}</div>
+                            <div class="text-[10px] text-slate-400 mt-0.5">${b.floor}</div>
+                        </div>
+                    </div>
+                    <div class="mt-3 flex items-center gap-2 text-xs">
+                        <span class="inline-block px-2.5 py-px bg-emerald-100 text-emerald-700 rounded-full font-medium">লোকেশন আছে</span>
+                        <span class="text-emerald-600 flex items-center gap-1"><i class="fas fa-map-marker-alt"></i> ম্যাপ শেয়ার করুন</span>
+                    </div>
+                `;
+                div.onclick = () => selectDeliveryBuilding(b);
+                resultsContainer.appendChild(div);
+            });
+        }
+
+        function selectDeliveryBuilding(buildingFlat) {
+            selectedDeliveryBuilding = buildingFlat;
+            // Find the original road object
+            selectedDeliveryRoad = roadsData.find(r => r.id === buildingFlat.roadId);
+
+            const resultsContainer = document.getElementById('deliveryResults');
+            const sharePanel = document.getElementById('deliverySharePanel');
+
+            // Hide results, show share panel
+            resultsContainer.innerHTML = '';
+            sharePanel.classList.remove('hidden');
+
+            // Fill info header
+            document.getElementById('shareBuildingInfo').innerHTML = `
+                <div class="font-semibold text-lg">বাড়ি ${buildingFlat.num}</div>
+                <div class="text-sm text-slate-600">${buildingFlat.roadName} • ${buildingFlat.owner}</div>
+                <div class="text-xs text-emerald-700 mt-0.5">${buildingFlat.phone}</div>
+            `;
+
+            const hasCoords = (typeof buildingFlat.lat === 'number' && typeof buildingFlat.lng === 'number');
+            const mapsUrl = hasCoords 
+                ? `https://www.google.com/maps/search/?api=1&query=${buildingFlat.lat},${buildingFlat.lng}` 
+                : '#';
+
+            const fullText = `চৌধুরীপাড়াস্থ সমাজ উন্নায়ন সংস্থা
+${buildingFlat.roadName}, বাড়ি ${buildingFlat.num}
+মালিক/সদস্য: ${buildingFlat.owner}
+ফোন: ${buildingFlat.phone}
+Google Maps লোকেশন:
+${mapsUrl}`;
+
+            document.getElementById('shareLocationText').textContent = fullText;
+
+            // Set the open maps link
+            const openBtn = document.getElementById('deliveryOpenMapsBtn');
+            openBtn.href = mapsUrl;
+            if (!hasCoords) openBtn.style.pointerEvents = 'none';
+        }
+
+        function copyFullDeliveryInfo() {
+            const textEl = document.getElementById('shareLocationText');
+            if (!textEl) return;
+
+            const text = textEl.textContent || textEl.innerText;
+            navigator.clipboard.writeText(text).then(() => {
+                const original = event.currentTarget ? event.currentTarget.innerHTML : '';
+                showToast("পুরো লোকেশন তথ্য কপি হয়েছে! ডেলিভারি ম্যানকে পাঠান");
+            }).catch(() => {
+                // fallback
+                const ta = document.createElement('textarea');
+                ta.value = text;
+                document.body.appendChild(ta);
+                ta.select();
+                document.execCommand('copy');
+                document.body.removeChild(ta);
+                showToast("পুরো লোকেশন তথ্য কপি হয়েছে!");
+            });
+        }
+
+        function copyMapsLinkOnly() {
+            if (!selectedDeliveryBuilding) return;
+            const b = selectedDeliveryBuilding;
+            if (typeof b.lat !== 'number' || typeof b.lng !== 'number') {
+                alert("এই বাড়ির জন্য ম্যাপ লোকেশন যোগ করা হয়নি।");
+                return;
+            }
+            const link = `https://www.google.com/maps/search/?api=1&query=${b.lat},${b.lng}`;
+            navigator.clipboard.writeText(link).then(() => {
+                showToast("শুধু Google Maps লিংক কপি হয়েছে");
+            }).catch(() => {
+                const ta = document.createElement('textarea');
+                ta.value = link;
+                document.body.appendChild(ta);
+                ta.select();
+                document.execCommand('copy');
+                document.body.removeChild(ta);
+                showToast("লিংক কপি হয়েছে");
+            });
+        }
+
+        function shareViaWhatsApp() {
+            if (!selectedDeliveryBuilding) return;
+            const b = selectedDeliveryBuilding;
+            const hasCoords = (typeof b.lat === 'number' && typeof b.lng === 'number');
+            const mapsUrl = hasCoords 
+                ? `https://www.google.com/maps/search/?api=1&query=${b.lat},${b.lng}` 
+                : '';
+
+            const message = encodeURIComponent(
+`চৌধুরীপাড়া — আমার বাড়ির সঠিক লোকেশন:
+${b.roadName}, বাড়ি ${b.num}
+${b.owner}
+ফোন: ${b.phone}
+${mapsUrl ? 'ম্যাপ: ' + mapsUrl : ''}
+
+(চৌধুরীপাড়াস্থ সমাজ উন্নায়ন সংস্থা)`
+            );
+
+            window.open(`https://wa.me/?text=${message}`, '_blank');
+        }
+
+        function closeDeliveryModalAndShowBuilding() {
+            closeDeliveryModal();
+            if (selectedDeliveryBuilding && selectedDeliveryRoad) {
+                setTimeout(() => {
+                    showBuildingDetails(selectedDeliveryRoad, selectedDeliveryBuilding);
+                }, 250);
+            }
+        }
+
+        function showAllRoadsModal() {
+            const modal = document.getElementById('roadModal');
+            document.getElementById('roadModalTitle').textContent = "সম্পূর্ণ এলাকার তালিকা";
+            document.getElementById('roadModalSubtitle').textContent = `${roadsData.length}টি রাস্তা • ${roadsData.reduce((a, r) => a + r.buildings, 0)}টি ভবন`;
+
+            const grid = document.getElementById('buildingsGrid');
+            grid.innerHTML = '';
+
+            roadsData.forEach(road => {
+                const card = document.createElement('div');
+                card.className = `border border-slate-100 rounded-2xl p-5 cursor-pointer hover:border-emerald-200 flex gap-4 items-center`;
+                card.innerHTML = `
+                    <div class="flex-1">
+                        <div class="font-bold">${road.name}</div>
+                        <div class="text-xs text-emerald-700">${road.highlight}</div>
+                    </div>
+                    <div class="text-right">
+                        <div class="font-semibold tabular-nums text-xl">${road.buildings}</div>
+                        <div class="text-[10px] -mt-1 text-slate-400">ভবন</div>
+                    </div>
+                `;
+                card.onclick = () => {
+                    closeRoadModal();
+                    setTimeout(() => showRoadDetails(road.id), 220);
+                };
+                grid.appendChild(card);
+            });
+
+            document.getElementById('buildingSearch').onkeyup = null;
+            modal.classList.remove('hidden');
+            modal.classList.add('flex');
+        }
+
+        // ==================== LEADERSHIP ====================
+        const leadershipData = [
+            { name: "মোঃ আব্দুল করিম", role: "সভাপতি", since: "২০১৮", phone: "01711-998877", img: "img/4NpsF.jpg" },
+            { name: "মোঃ রফিকুল ইসলাম", role: "সাধারণ সম্পাদক", since: "২০২০", phone: "01822-556677", img: "https://picsum.photos/id/1005/400/400" },
+            { name: "বেগম নাসরিন আক্তার", role: "সহ-সভাপতি", since: "২০১৯", phone: "01933-112233", img: "https://picsum.photos/id/1011/400/400" },
+            { name: "মোঃ তানভীর হোসেন", role: "কোষাধ্যক্ষ", since: "২০২১", phone: "01744-667788", img: "https://picsum.photos/id/1008/400/400" }
+        ];
+
+        function renderLeadership() {
+            const container = document.getElementById('leadershipGrid');
+            container.innerHTML = '';
+
+            leadershipData.forEach(person => {
+                const div = document.createElement('div');
+                div.className = `premium-card bg-white border border-slate-100 rounded-3xl overflow-hidden`;
+                div.innerHTML = `
+                    <div class="h-44 overflow-hidden relative">
+                        <img src="${person.img}" class="w-full h-full object-cover grayscale-[0.15]" alt="${person.name}">
+                        <div class="absolute inset-x-0 bottom-0 h-1/3 bg-gradient-to-t from-black/60"></div>
+                    </div>
+                    <div class="p-5">
+                        <div class="font-semibold text-lg tracking-tight">${person.name}</div>
+                        <div class="text-emerald-700 text-sm font-medium">${person.role}</div>
+                        <div class="flex items-center justify-between text-xs text-slate-500 mt-3 pt-3 border-t">
+                            <div>দায়িত্বে: ${person.since}</div>
+                            <a href="tel:${person.phone}" class="text-emerald-700 hover:underline font-medium">যোগাযোগ</a>
+                        </div>
+                    </div>
+                `;
+                container.appendChild(div);
+            });
+        }
+
+        // ==================== NOTICES ====================
+        let noticesData = [
+            { id: 1, type: "আসন্ন", badge: "সভা", date: "১৫ ফেব্রুয়ারি ২০২৬", time: "সন্ধ্যা ৭:০০টা", title: "বার্ষিক সাধারণ সভা", desc: "সকল সদস্যদের উপস্থিত থাকার জন্য অনুরোধ করা হচ্ছে।", urgent: true },
+            { id: 2, type: "গুরুত্বপূর্ণ", badge: "বিজ্ঞপ্তি", date: "২৮ জানুয়ারি ২০২৬", time: "", title: "রাস্তা-৩ এর ড্রেনেজ কাজ শুরু", desc: "আগামী ১০ ফেব্রুয়ারি থেকে রাস্তা-৩ এ ড্রেনেজ সংস্কার কাজ শুরু হবে।", urgent: false },
+            { id: 3, type: "রিপোর্ট", badge: "বার্ষিক", date: "১২ জানুয়ারি ২০২৬", time: "", title: "বার্ষিক আর্থিক প্রতিবেদন ২০২৫", desc: "সকল সদস্যের জন্য প্রতিবেদন প্রকাশিত হয়েছে। অফিস থেকে সংগ্রহ করুন।", urgent: false }
+        ];
+
+        function renderNotices(limit = 3) {
+            const container = document.getElementById('noticesGrid');
+            container.innerHTML = '';
+
+            const toShow = noticesData.slice(0, limit);
+            toShow.forEach(notice => {
+                const div = document.createElement('div');
+                div.className = `notice-card bg-white border border-slate-100 hover:border-emerald-200 rounded-3xl p-6 flex flex-col`;
+                div.innerHTML = `
+                    <div class="flex items-center justify-between">
+                        <span class="inline-block px-3 py-px text-xs font-semibold rounded-xl ${notice.urgent ? 'bg-red-100 text-red-700' : 'bg-emerald-100 text-emerald-700'}">${notice.badge}</span>
+                        <span class="text-xs text-slate-400">${notice.date}</span>
+                    </div>
+                    <div class="mt-4 font-semibold text-xl leading-tight tracking-tight">${notice.title}</div>
+                    <div class="text-sm text-slate-600 mt-2 flex-1">${notice.desc}</div>
+                    ${notice.time ? `<div class="mt-4 text-xs text-emerald-700 font-medium"><i class="fas fa-clock mr-1"></i> ${notice.time}</div>` : ''}
+                `;
+                container.appendChild(div);
+            });
+        }
+
+        function showAllNotices() {
+            const container = document.getElementById('noticesGrid');
+            container.innerHTML = '';
+            noticesData.forEach(notice => {
+                const div = document.createElement('div');
+                div.className = `notice-card bg-white border border-slate-100 hover:border-emerald-200 rounded-3xl p-6 flex flex-col`;
+                div.innerHTML = `
+                    <div class="flex items-center justify-between">
+                        <span class="inline-block px-3 py-px text-xs font-semibold rounded-xl ${notice.urgent ? 'bg-red-100 text-red-700' : 'bg-emerald-100 text-emerald-700'}">${notice.badge}</span>
+                        <span class="text-xs text-slate-400">${notice.date}</span>
+                    </div>
+                    <div class="mt-4 font-semibold text-xl leading-tight tracking-tight">${notice.title}</div>
+                    <div class="text-sm text-slate-600 mt-2 flex-1">${notice.desc}</div>
+                    ${notice.time ? `<div class="mt-4 text-xs text-emerald-700 font-medium"><i class="fas fa-clock mr-1"></i> ${notice.time}</div>` : ''}
+                `;
+                container.appendChild(div);
+            });
+        }
+
+        // ==================== GALLERY + LIGHTBOX ====================
+        const galleryImages = [
+            { src: "img/CwWbD.jpg", caption: "বার্ষিক মিলনমেলা ২০২৫", cat: "ইভেন্ট" },
+            { src: "img/3tSQB.jpg", caption: "সমাজ কার্যালয়", cat: "অবকাঠামো" },
+            { src: "img/4NpsF.jpg", caption: "সদস্য সভা", cat: "সভা" },
+            { src: "https://picsum.photos/id/251/800/600", caption: "রাস্তা-৩ উন্নয়ন কাজ", cat: "উন্নয়ন" },
+            { src: "https://picsum.photos/id/201/800/600", caption: "মেইন রোড পরিচ্ছন্নতা অভিযান", cat: "পরিচ্ছন্নতা" },
+            { src: "https://picsum.photos/id/133/800/600", caption: "রাস্তা-২ নতুন আলোকসজ্জা", cat: "উন্নয়ন" },
+            { src: "img/srnyb.jpg", caption: "চৌধুরীপাড়া দৃশ্য", cat: "এলাকা" },
+            { src: "https://picsum.photos/id/866/800/600", caption: "শিশুদের খেলার আয়োজন", cat: "সামাজিক" }
+        ];
+
+        function renderGallery() {
+            const container = document.getElementById('galleryGrid');
+            container.innerHTML = '';
+
+            galleryImages.forEach((img, index) => {
+                const item = document.createElement('div');
+                item.className = `masonry-item group relative rounded-3xl overflow-hidden cursor-pointer border border-white/10`;
+                item.innerHTML = `
+                    <img src="${img.src}" class="gallery-img w-full object-cover" alt="${img.caption}">
+                    <div class="absolute inset-x-0 bottom-0 bg-gradient-to-t from-black/80 via-black/60 p-4">
+                        <div class="text-white text-sm font-medium">${img.caption}</div>
+                        <div class="text-[10px] text-white/70">${img.cat}</div>
+                    </div>
+                    <div class="absolute top-3 right-3 opacity-0 group-hover:opacity-100 transition bg-white/90 text-black text-[10px] px-2 py-px rounded font-medium">বড় করে দেখুন</div>
+                `;
+                item.onclick = () => openLightbox(index);
+                container.appendChild(item);
+            });
+        }
+
+        let currentLightboxIndex = 0;
+
+        function openLightbox(index) {
+            currentLightboxIndex = index;
+            const lb = document.getElementById('lightbox');
+            const imgEl = document.getElementById('lightboxImage');
+            const caption = document.getElementById('lightboxCaption');
+
+            imgEl.src = galleryImages[index].src;
+            caption.innerHTML = `<span class="font-medium text-white">${galleryImages[index].caption}</span> — ${galleryImages[index].cat}`;
+            lb.classList.remove('hidden');
+            lb.classList.add('flex');
+        }
+
+        function closeLightbox() {
+            const lb = document.getElementById('lightbox');
+            lb.classList.remove('flex');
+            lb.classList.add('hidden');
+        }
+
+        function openGalleryModal() {
+            // Opens all gallery in a nice grid inside lightbox area
+            const lb = document.getElementById('lightbox');
+            const content = document.getElementById('lightboxImage').parentElement;
+
+            content.innerHTML = `
+                <div class="max-w-[1100px] mx-auto">
+                    <div class="flex justify-between items-center mb-4 px-1">
+                        <div class="text-white text-xl font-semibold">সম্পূর্ণ গ্যালারি</div>
+                        <button onclick="closeLightbox(); renderGallery();" class="bg-white/90 px-5 py-1.5 text-sm rounded-2xl font-medium">বন্ধ করুন</button>
+                    </div>
+                    <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3" id="fullGalleryGrid"></div>
+                </div>
+            `;
+
+            const grid = document.getElementById('fullGalleryGrid');
+            galleryImages.forEach((img, i) => {
+                const el = document.createElement('div');
+                el.className = `overflow-hidden rounded-2xl relative group cursor-pointer`;
+                el.innerHTML = `
+                    <img src="${img.src}" class="w-full aspect-[4/3] object-cover group-hover:scale-105 transition" alt="">
+                    <div class="absolute inset-x-0 bottom-0 p-3 bg-gradient-to-t from-black/80">
+                        <div class="text-white text-sm">${img.caption}</div>
+                    </div>
+                `;
+                el.onclick = () => {
+                    closeLightbox();
+                    setTimeout(() => openLightbox(i), 120);
+                };
+                grid.appendChild(el);
+            });
+
+            lb.classList.remove('hidden');
+            lb.classList.add('flex');
+        }
+
+        // ==================== CLASSIFIEDS / RENT ADS ====================
+        let classifiedsData = [
+            { id: 101, type: "বাসা ভাড়া", location: "রাস্তা-৩", rent: "১৮,০০০", desc: "৩ বেডরুম, ২ বাথ, লিফট ও জেনারেটর সুবিধা। পরিবারের জন্য আদর্শ।", contact: "01755-667788", date: "২ দিন আগে" },
+            { id: 102, type: "দোকান ভাড়া", location: "মেইন রোড", rent: "২২,০০০", desc: "১৫০ বর্গফুট দোকান। ব্যবসার জন্য চমৎকার অবস্থান।", contact: "01899-112233", date: "৪ দিন আগে" },
+            { id: 103, type: "বাসা ভাড়া", location: "রাস্তা-১", rent: "১২,৫০০", desc: "২ বেড, ছোট পরিবারের জন্য উপযোগী। নিরাপদ এলাকা।", contact: "01711-445566", date: "১ সপ্তাহ আগে" }
+        ];
+
+        function renderClassifieds() {
+            const container = document.getElementById('classifiedsGrid');
+            container.innerHTML = '';
+
+            classifiedsData.forEach(ad => {
+                const div = document.createElement('div');
+                div.className = `premium-card bg-white border border-slate-100 rounded-3xl p-6 flex flex-col`;
+                div.innerHTML = `
+                    <div class="flex justify-between items-start">
+                        <span class="text-xs px-3 py-1 rounded-2xl bg-emerald-100 text-emerald-700 font-semibold">${ad.type}</span>
+                        <span class="text-xs text-slate-400">${ad.date}</span>
+                    </div>
+                    <div class="mt-4">
+                        <div class="text-xl font-semibold tracking-tight">${ad.location}</div>
+                        <div class="text-3xl font-semibold text-emerald-800 mt-0.5 tabular-nums">${ad.rent} <span class="text-sm font-medium text-emerald-700">টাকা/মাস</span></div>
+                    </div>
+                    <div class="mt-3 flex-1 text-sm text-slate-600">${ad.desc}</div>
+                    <div class="mt-6 pt-4 border-t flex items-center gap-3">
+                        <a href="tel:${ad.contact}" class="flex-1 text-center py-2.5 rounded-2xl bg-emerald-800 hover:bg-emerald-900 text-white text-sm font-semibold">যোগাযোগ করুন</a>
+                        <button onclick="copyToClipboard('${ad.contact}')" class="px-5 border border-emerald-100 hover:bg-emerald-50 rounded-2xl text-sm text-emerald-700">নম্বর</button>
+                    </div>
+                `;
+                container.appendChild(div);
+            });
+        }
+
+        function showPostAdModal() {
+            document.getElementById('postAdModal').classList.remove('hidden');
+            document.getElementById('postAdModal').classList.add('flex');
+        }
+
+        function closePostAdModal() {
+            const m = document.getElementById('postAdModal');
+            m.classList.remove('flex');
+            m.classList.add('hidden');
+            document.getElementById('postAdForm').reset();
+        }
+
+        function submitNewAd(e) {
+            e.preventDefault();
+
+            const newAd = {
+                id: Date.now(),
+                type: document.getElementById('adType').value,
+                location: document.getElementById('adLocation').value,
+                rent: document.getElementById('adRent').value,
+                desc: document.getElementById('adDesc').value,
+                contact: document.getElementById('adContact').value,
+                date: "এইমাত্র"
+            };
+
+            classifiedsData.unshift(newAd);
+            renderClassifieds();
+            closePostAdModal();
+
+            // Success toast
+            showToast("বিজ্ঞাপন সফলভাবে পোস্ট করা হয়েছে!");
+        }
+
+        // ==================== EVENTS ====================
+        const eventsData = [
+            { date: "১৫", month: "FEB", title: "বার্ষিক সাধারণ সভা", time: "সন্ধ্যা ৭:০০", location: "সমাজ কার্যালয়", type: "সভা" },
+            { date: "০২", month: "MAR", title: "পরিচ্ছন্নতা অভিযান", time: "সকাল ৮:০০", location: "মেইন রোড", type: "কমিউনিটি" },
+            { date: "২২", month: "MAR", title: "শিশু দিবস উদযাপন", time: "বিকেল ৪:০০", location: "রাস্তা-৩ খেলার মাঠ", type: "উৎসব" }
+        ];
+
+        function renderEvents() {
+            const container = document.getElementById('eventsGrid');
+            container.innerHTML = '';
+
+            eventsData.forEach(ev => {
+                const div = document.createElement('div');
+                div.className = `flex gap-5 bg-white border border-slate-100 rounded-3xl p-5 premium-card`;
+                div.innerHTML = `
+                    <div class="flex-shrink-0 w-14 h-14 rounded-2xl bg-emerald-800 text-white flex flex-col items-center justify-center leading-none">
+                        <div class="font-bold text-xl tracking-tighter">${ev.date}</div>
+                        <div class="text-[10px] font-medium tracking-widest text-emerald-200 -mt-0.5">${ev.month}</div>
+                    </div>
+                    <div class="flex-1 pt-0.5">
+                        <div class="text-xs text-emerald-700 font-semibold">${ev.type}</div>
+                        <div class="font-semibold text-lg leading-tight mt-0.5 tracking-tight">${ev.title}</div>
+                        <div class="text-xs text-slate-500 mt-1">${ev.time} • ${ev.location}</div>
+                    </div>
+                `;
+                container.appendChild(div);
+            });
+        }
+
+        // ==================== TESTIMONIALS ====================
+        const testimonialsData = [
+            { name: "মোঃ রফিকুল ইসলাম", role: "রাস্তা-২, সদস্য", quote: "আমাদের এলাকার নিরাপত্তা অনেক বেড়েছে। রাতে নিশ্চিন্তে ঘুমাতে পারি।" },
+            { name: "বেগম সালমা খাতুন", role: "মেইন রোড", quote: "পরিচ্ছন্নতার কাজ নিয়মিত হয়। আগের চেয়ে অনেক ভালো লাগে এখানে বাস করতে।" },
+            { name: "ইঞ্জিনিয়ার রাহাত খান", role: "রাস্তা-৩", quote: "কমিটি খুবই সক্রিয়। যেকোনো সমস্যায় তাৎক্ষণিক সাড়া পাওয়া যায়।" }
+        ];
+
+        function renderTestimonials() {
+            const container = document.getElementById('testimonialsGrid');
+            container.innerHTML = '';
+
+            testimonialsData.forEach(t => {
+                const div = document.createElement('div');
+                div.className = `bg-white border border-slate-100 p-6 rounded-3xl premium-card`;
+                div.innerHTML = `
+                    <div class="flex text-amber-500 text-xl mb-4">★★★★★</div>
+                    <div class="text-[15px] leading-relaxed text-slate-700">"${t.quote}"</div>
+                    <div class="mt-6 pt-4 border-t text-sm">
+                        <div class="font-semibold">${t.name}</div>
+                        <div class="text-emerald-700 text-xs">${t.role}</div>
+                    </div>
+                `;
+                container.appendChild(div);
+            });
+        }
+
+        // ==================== MODALS: JOIN + REPORT ====================
+        function showJoinModal() {
+            document.getElementById('joinModal').classList.remove('hidden');
+            document.getElementById('joinModal').classList.add('flex');
+        }
+        function closeJoinModal() {
+            const m = document.getElementById('joinModal');
+            m.classList.remove('flex');
+            m.classList.add('hidden');
+        }
+        function submitMembership(e) {
+            e.preventDefault();
+            closeJoinModal();
+            showToast("আবেদন গ্রহণ করা হয়েছে। শীঘ্রই আমরা আপনার সাথে যোগাযোগ করব। ধন্যবাদ!");
+        }
+
+        function showReportModal() {
+            document.getElementById('reportModal').classList.remove('hidden');
+            document.getElementById('reportModal').classList.add('flex');
+        }
+        function closeReportModal() {
+            const m = document.getElementById('reportModal');
+            m.classList.remove('flex');
+            m.classList.add('hidden');
+            document.getElementById('reportForm').reset();
+        }
+        function submitReport(e) {
+            e.preventDefault();
+            closeReportModal();
+            showToast("সমস্যা রিপোর্ট করা হয়েছে। কমিটি ২৪ ঘণ্টার মধ্যে যোগাযোগ করবে।");
+        }
+
+        // ==================== CONTACT FORM ====================
+        function handleContactSubmit(e) {
+            e.preventDefault();
+            const form = e.target;
+            form.reset();
+            showToast("আপনার বার্তা পাঠানো হয়েছে। ধন্যবাদ!");
+        }
+
+        // ==================== UTILITIES ====================
+        function copyToClipboard(text) {
+            navigator.clipboard.writeText(text).then(() => {
+                const original = event.target ? event.target.innerText : '';
+                showToast("নম্বর কপি করা হয়েছে");
+            }).catch(() => {
+                // Fallback
+                const inp = document.createElement('input');
+                inp.value = text;
+                document.body.appendChild(inp);
+                inp.select();
+                document.execCommand('copy');
+                document.body.removeChild(inp);
+                showToast("নম্বর কপি করা হয়েছে");
+            });
+        }
+
+        function showToast(message) {
+            const toast = document.createElement('div');
+            toast.className = `fixed bottom-20 left-1/2 -translate-x-1/2 bg-slate-900 text-white px-6 py-3 rounded-2xl shadow-2xl text-sm z-[300] flex items-center gap-2`;
+            toast.innerHTML = `<i class="fas fa-check-circle text-emerald-400"></i> ${message}`;
+            document.body.appendChild(toast);
+
+            setTimeout(() => {
+                toast.style.transition = 'all 0.2s ease';
+                toast.style.opacity = '0';
+                setTimeout(() => toast.remove(), 160);
+            }, 2400);
+        }
+
+        // ==================== NAVBAR ACTIVE LINKS ====================
+        function initActiveNav() {
+            const sections = ['about', 'services', 'coverage', 'leadership', 'notices', 'gallery', 'classifieds', 'events', 'contact'];
+            const navLinks = document.querySelectorAll('nav a[href^="#"]');
+
+            function updateActive() {
+                let current = '';
+                const scrollY = window.scrollY + 140;
+
+                sections.forEach(id => {
+                    const sec = document.getElementById(id);
+                    if (sec && sec.offsetTop <= scrollY) {
+                        current = id;
+                    }
+                });
+
+                navLinks.forEach(link => {
+                    link.classList.remove('nav-active', 'text-emerald-700');
+                    if (link.getAttribute('href') === `#${current}`) {
+                        link.classList.add('nav-active', 'text-emerald-700');
+                    }
+                });
+            }
+
+            window.addEventListener('scroll', updateActive, { passive: true });
+            updateActive();
+        }
+
+        // ==================== INIT EVERYTHING ====================
+        function initializeWebsite() {
+            initTailwind();
+            initMobileMenu();
+            
+            // Render all sections
+            renderRoads();
+            renderLeadership();
+            renderNotices();
+            renderGallery();
+            renderClassifieds();
+            renderEvents();
+            renderTestimonials();
+            renderTopCleanYards();
+
+            // Stats
+            setTimeout(animateStats, 600);
+
+            // Active nav
+            initActiveNav();
+
+            // Close modals with escape key + lightbox arrows
+            document.addEventListener('keydown', function(e) {
+                const lb = document.getElementById('lightbox');
+                const isLightboxOpen = !lb.classList.contains('hidden') && lb.classList.contains('flex');
+
+                if (e.key === "Escape") {
+                    document.querySelectorAll('.fixed.flex').forEach(m => {
+                        m.classList.remove('flex');
+                        m.classList.add('hidden');
+                    });
+                    if (isLightboxOpen) {
+                        lb.classList.remove('flex');
+                        lb.classList.add('hidden');
+                        renderGallery();
+                    }
+                }
+
+                if (isLightboxOpen) {
+                    if (e.key === "ArrowRight") {
+                        currentLightboxIndex = (currentLightboxIndex + 1) % galleryImages.length;
+                        openLightbox(currentLightboxIndex);
+                    }
+                    if (e.key === "ArrowLeft") {
+                        currentLightboxIndex = (currentLightboxIndex - 1 + galleryImages.length) % galleryImages.length;
+                        openLightbox(currentLightboxIndex);
+                    }
+                }
+            });
+
+            // Make sure initial mobile drawer is hidden
+            const drawer = document.getElementById('mobile-drawer');
+            drawer.classList.add('hidden');
+
+            // Optional: subtle parallax on hero (desktop)
+            if (window.innerWidth > 900) {
+                const hero = document.getElementById('home');
+                window.addEventListener('scroll', () => {
+                    const scrolled = window.scrollY;
+                    hero.style.backgroundPosition = `center ${scrolled * 0.3}px`;
+                }, { passive: true });
+            }
+
+            // Welcome toast (only once per session)
+            setTimeout(() => {
+                if (!sessionStorage.getItem('greeted')) {
+                    // we can skip or keep silent — premium sites usually don't auto-toast
+                    sessionStorage.setItem('greeted', '1');
+                }
+            }, 5000);
+
+            console.log('%c[FS] Premium modern UI initialized successfully.', 'color:#166534');
+
+            // Initialize member portal helpers
+            initMemberFeatures();
+        }
+
+        // ==================== MEMBER PORTAL - UI ONLY ====================
+        const ALLOWED_PHONE = "01787492561";
+        const DEMO_OTP = "0000";
+
+        // Mock current logged in member data
+        let currentMember = null;
+
+        // Member's uploaded yard photos (persisted in localStorage)
+        let myYardPhotos = [];
+
+        // Mock payment history
+        const mockPaymentHistory = [
+            { date: "১২ ডিসেম্বর ২০২৫", desc: "ডিসেম্বর ২০২৫ সেবা চার্জ", amount: "৳ ৬০০", status: "Paid" },
+            { date: "১৫ নভেম্বর ২০২৫", desc: "নভেম্বর ২০২৫ সেবা চার্জ", amount: "৳ ৬০০", status: "Paid" },
+            { date: "১০ অক্টোবর ২০২৫", desc: "অক্টোবর ২০২৫ সেবা চার্জ", amount: "৳ ৬০০", status: "Paid" },
+        ];
+
+        // Load saved photos from localStorage
+        function loadMemberData() {
+            const saved = localStorage.getItem('myYardPhotos');
+            if (saved) {
+                myYardPhotos = JSON.parse(saved);
+            } else {
+                // Seed with 2 demo images for this member
+                myYardPhotos = [
+                    {
+                        id: 1,
+                        url: "img/3tSQB.jpg",
+                        caption: "গত সপ্তাহের উঠান",
+                        score: 8.5,
+                        date: "৫ জানুয়ারি ২০২৬",
+                        status: "Rated"
+                    },
+                    {
+                        id: 2,
+                        url: "https://picsum.photos/id/251/600/400",
+                        caption: "সকালের পরিচ্ছন্ন উঠান",
+                        score: 9.2,
+                        date: "২৮ ডিসেম্বর ২০২৫",
+                        status: "Rated"
+                    }
+                ];
+                localStorage.setItem('myYardPhotos', JSON.stringify(myYardPhotos));
+            }
+        }
+
+        function saveYardPhotos() {
+            localStorage.setItem('myYardPhotos', JSON.stringify(myYardPhotos));
+        }
+
+        function openMemberLoginModal() {
+            const modal = document.getElementById('memberLoginModal');
+            modal.classList.remove('hidden');
+            modal.classList.add('flex');
+            // Pre-fill the allowed number for easy demo
+            document.getElementById('memberPhone').value = ALLOWED_PHONE;
+        }
+
+        function closeMemberLoginModal() {
+            const modal = document.getElementById('memberLoginModal');
+            modal.classList.remove('flex');
+            modal.classList.add('hidden');
+        }
+
+        function sendOTP() {
+            const phoneInput = document.getElementById('memberPhone').value.trim();
+
+            if (phoneInput !== ALLOWED_PHONE) {
+                alert("দুঃখিত, এই নম্বরটি আমাদের সদস্য তালিকায় নেই। ডেমোর জন্য 01787492561 ব্যবহার করুন।");
+                return;
+            }
+
+            closeMemberLoginModal();
+
+            const otpModal = document.getElementById('otpModal');
+            document.getElementById('otpPhoneDisplay').textContent = phoneInput;
+            otpModal.classList.remove('hidden');
+            otpModal.classList.add('flex');
+
+            // Focus OTP input
+            setTimeout(() => {
+                document.getElementById('otpInput').focus();
+                document.getElementById('otpInput').value = "";
+            }, 300);
+        }
+
+        function closeOtpModal() {
+            const modal = document.getElementById('otpModal');
+            modal.classList.remove('flex');
+            modal.classList.add('hidden');
+        }
+
+        function verifyOTP() {
+            const enteredOTP = document.getElementById('otpInput').value.trim();
+
+            if (enteredOTP === DEMO_OTP) {
+                closeOtpModal();
+
+                // Login successful - set up member
+                currentMember = {
+                    phone: ALLOWED_PHONE,
+                    name: "মোঃ সাইফুল ইসলাম",
+                    house: "রাস্তা-৪, বাড়ি-১২/ক",
+                    joined: "২০২২"
+                };
+
+                loadMemberData();
+                openMemberDashboard();
+
+                setTimeout(() => {
+                    showToast("স্বাগতম! আপনি সদস্য পোর্টালে প্রবেশ করেছেন।");
+                }, 900);
+            } else {
+                alert("ভুল OTP! ডেমোর জন্য 0000 লিখুন।");
+            }
+        }
+
+        function resendOTP() {
+            const phone = document.getElementById('otpPhoneDisplay').textContent;
+            alert(`নতুন OTP পাঠানো হয়েছে ${phone} এ (ডেমো: 0000)`);
+            document.getElementById('otpInput').value = "";
+            document.getElementById('otpInput').focus();
+        }
+
+        function openMemberDashboard() {
+            const dashboard = document.getElementById('memberDashboard');
+            dashboard.classList.remove('hidden');
+            dashboard.classList.add('flex'); // using flex for full height
+
+            // Fill header
+            document.getElementById('memberNameHeader').textContent = currentMember.name;
+            document.getElementById('memberHouseHeader').textContent = currentMember.house + " • সদস্য " + currentMember.joined;
+
+            // Initial stats
+            updateDashboardStats();
+
+            // Show first tab
+            switchDashboardTab(0);
+
+            // Render payment history once
+            renderPaymentHistory();
+
+            // Render my gallery
+            renderMyYardGallery();
+
+            // Make sure upload zone is clickable
+            initUploadZoneClick();
+        }
+
+        function closeMemberDashboard() {
+            const dashboard = document.getElementById('memberDashboard');
+            dashboard.classList.remove('flex');
+            dashboard.classList.add('hidden');
+        }
+
+        function logoutMember() {
+            if (confirm("আপনি কি লগআউট করতে চান?")) {
+                closeMemberDashboard();
+                currentMember = null;
+            }
+        }
+
+        function updateDashboardStats() {
+            const photos = myYardPhotos;
+
+            // Calculate average score
+            let avg = 0;
+            let highest = 0;
+            let ratedCount = 0;
+
+            photos.forEach(p => {
+                if (p.score) {
+                    avg += p.score;
+                    ratedCount++;
+                    if (p.score > highest) highest = p.score;
+                }
+            });
+
+            const averageScore = ratedCount > 0 ? (avg / ratedCount) : 7.8;
+            const socialScore = Math.round(averageScore * 10); // convert to 100 scale
+
+            document.getElementById('currentScore').textContent = socialScore;
+            document.getElementById('currentRank').textContent = "#" + (Math.floor(Math.random() * 18) + 7); // fake rank
+            document.getElementById('uploadedCount').textContent = photos.length;
+            document.getElementById('highestScore').innerHTML = highest ? highest.toFixed(1) : "8.5" + '<span class="text-2xl align-super">/১০</span>';
+
+            // Big score in ranking tab
+            document.getElementById('bigSocialScore').textContent = socialScore;
+            document.getElementById('scoreProgressText').textContent = socialScore + " / ১০০";
+            document.getElementById('scoreProgressBar').style.width = socialScore + "%";
+        }
+
+        function switchDashboardTab(tabIndex) {
+            // Hide all
+            for (let i = 0; i < 4; i++) {
+                const tabContent = document.getElementById('dash-tab-' + i);
+                const tabBtn = document.getElementById('tab-' + i);
+                if (tabContent) tabContent.classList.add('hidden');
+                if (tabBtn) tabBtn.classList.remove('active');
+            }
+
+            // Show selected
+            document.getElementById('dash-tab-' + tabIndex).classList.remove('hidden');
+            document.getElementById('tab-' + tabIndex).classList.add('active');
+
+            if (tabIndex === 2) {
+                renderMyYardGallery();
+            }
+        }
+
+        function renderPaymentHistory() {
+            const tbody = document.getElementById('paymentHistoryTable');
+            tbody.innerHTML = '';
+
+            mockPaymentHistory.forEach(p => {
+                const row = document.createElement('tr');
+                row.className = 'payment-row';
+                row.innerHTML = `
+                    <td class="px-6 py-4 text-slate-600">${p.date}</td>
+                    <td class="px-6 py-4">${p.desc}</td>
+                    <td class="px-6 py-4 text-right font-semibold tabular-nums">${p.amount}</td>
+                    <td class="px-6 py-4">
+                        <span class="inline-block px-3 py-px text-xs rounded-2xl bg-emerald-100 text-emerald-700 font-medium">${p.status}</span>
+                    </td>
+                `;
+                tbody.appendChild(row);
+            });
+
+            // Add current due row
+            const dueRow = document.createElement('tr');
+            dueRow.className = 'payment-row bg-amber-50/70';
+            dueRow.innerHTML = `
+                <td class="px-6 py-4 text-amber-700">১৫ জানুয়ারি ২০২৬</td>
+                <td class="px-6 py-4">জানুয়ারি ২০২৬ সেবা চার্জ (বকেয়া)</td>
+                <td class="px-6 py-4 text-right font-semibold text-amber-700 tabular-nums">৳ ৯০০</td>
+                <td class="px-6 py-4">
+                    <span class="inline-block px-3 py-px text-xs rounded-2xl bg-amber-200 text-amber-700 font-medium">অপেক্ষমাণ</span>
+                </td>
+            `;
+            tbody.appendChild(dueRow);
+        }
+
+        function fakePayNow() {
+            const dueEl = document.getElementById('dueAmount');
+            dueEl.style.transition = 'all 0.3s';
+            dueEl.style.opacity = '0.3';
+
+            setTimeout(() => {
+                alert("পেমেন্ট সফল হয়েছে! (ডেমো)\n\nবাস্তবে এখানে bKash/Nagad গেটওয়ে চালু হবে।");
+                dueEl.textContent = "৳ ০";
+                dueEl.style.opacity = '1';
+
+                // Add to payment history
+                const tbody = document.getElementById('paymentHistoryTable');
+                const newRow = document.createElement('tr');
+                newRow.className = 'payment-row';
+                newRow.innerHTML = `
+                    <td class="px-6 py-4 text-emerald-700">আজ</td>
+                    <td class="px-6 py-4">জানুয়ারি ২০২৬ সেবা চার্জ</td>
+                    <td class="px-6 py-4 text-right font-semibold tabular-nums">৳ ৯০০</td>
+                    <td class="px-6 py-4">
+                        <span class="inline-block px-3 py-px text-xs rounded-2xl bg-emerald-100 text-emerald-700 font-medium">Paid</span>
+                    </td>
+                `;
+                tbody.insertBefore(newRow, tbody.firstChild);
+            }, 600);
+        }
+
+        // ===== UPLOAD FUNCTIONALITY =====
+        let selectedFile = null;
+
+        function showUploadModal() {
+            const modal = document.getElementById('uploadModal');
+            modal.classList.remove('hidden');
+            modal.classList.add('flex');
+            resetUploadUI();
+        }
+
+        function closeUploadModal() {
+            const modal = document.getElementById('uploadModal');
+            modal.classList.remove('flex');
+            modal.classList.add('hidden');
+            resetUploadUI();
+        }
+
+        function resetUploadUI() {
+            selectedFile = null;
+            document.getElementById('imagePreview').classList.add('hidden');
+            document.getElementById('uploadZone').classList.remove('hidden');
+            document.getElementById('submitPhotoBtn').disabled = true;
+            document.getElementById('yardImageInput').value = '';
+            document.getElementById('imageCaption').value = '';
+        }
+
+        function handleImageSelect(e) {
+            const file = e.target.files[0];
+            if (file) processSelectedFile(file);
+        }
+
+        function handleDrop(e) {
+            e.preventDefault();
+            const zone = document.getElementById('uploadZone');
+            zone.classList.remove('dragover');
+            const file = e.dataTransfer.files[0];
+            if (file && file.type.startsWith('image/')) {
+                processSelectedFile(file);
+            }
+        }
+
+        function handleDragOver(e) {
+            e.preventDefault();
+            document.getElementById('uploadZone').classList.add('dragover');
+        }
+
+        function handleDragLeave(e) {
+            document.getElementById('uploadZone').classList.remove('dragover');
+        }
+
+        function processSelectedFile(file) {
+            if (!file.type.startsWith('image/')) {
+                alert("শুধুমাত্র ছবি ফাইল আপলোড করুন।");
+                return;
+            }
+            if (file.size > 5 * 1024 * 1024) {
+                alert("ফাইল ৫MB এর বেশি হতে পারবে না।");
+                return;
+            }
+
+            selectedFile = file;
+            const reader = new FileReader();
+            reader.onload = function(ev) {
+                document.getElementById('previewImg').src = ev.target.result;
+                document.getElementById('uploadZone').classList.add('hidden');
+                document.getElementById('imagePreview').classList.remove('hidden');
+                document.getElementById('submitPhotoBtn').disabled = false;
+            };
+            reader.readAsDataURL(file);
+        }
+
+        function removePreview() {
+            resetUploadUI();
+        }
+
+        function submitYardPhoto() {
+            if (!selectedFile) return;
+
+            const caption = document.getElementById('imageCaption').value.trim() || "আমার উঠান";
+
+            // Create a local object URL for display
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                const newPhoto = {
+                    id: Date.now(),
+                    url: e.target.result,           // base64 for persistence
+                    caption: caption,
+                    score: null,                    // pending admin rating
+                    date: new Date().toLocaleDateString('bn-BD', { day: 'numeric', month: 'long', year: 'numeric' }),
+                    status: "Pending Review"
+                };
+
+                myYardPhotos.unshift(newPhoto);
+                saveYardPhotos();
+
+                closeUploadModal();
+                renderMyYardGallery();
+                updateDashboardStats();
+
+                // Nice success message
+                setTimeout(() => {
+                    showToast("ছবি সফলভাবে আপলোড হয়েছে! অ্যাডমিন রিভিউ করার পর স্কোর দেখা যাবে।");
+                }, 400);
+
+                // Also refresh top yards (in case this becomes top later - for demo we won't auto promote)
+            };
+            reader.readAsDataURL(selectedFile);
+        }
+
+        function renderMyYardGallery() {
+            const container = document.getElementById('myYardGallery');
+            const countEl = document.getElementById('myGalleryCount');
+            container.innerHTML = '';
+
+            if (!myYardPhotos.length) {
+                container.innerHTML = `
+                    <div class="col-span-full py-8 text-center text-slate-400 border border-dashed rounded-3xl">
+                        এখনো কোনো ছবি আপলোড করেননি।<br>
+                        <button onclick="showUploadModal()" class="mt-3 text-emerald-700 font-medium text-sm underline">প্রথম ছবি আপলোড করুন</button>
+                    </div>
+                `;
+                countEl.textContent = "";
+                return;
+            }
+
+            countEl.textContent = myYardPhotos.length + "টি ছবি";
+
+            myYardPhotos.forEach(photo => {
+                const div = document.createElement('div');
+                div.className = `yard-photo bg-white border border-slate-100 rounded-2xl overflow-hidden group`;
+
+                let scoreHTML = '';
+                if (photo.score !== null) {
+                    scoreHTML = `<div class="absolute top-2 right-2 bg-white/95 text-emerald-800 px-3 py-px text-xs font-bold rounded-2xl shadow">⭐ ${photo.score}/১০</div>`;
+                } else {
+                    scoreHTML = `<div class="absolute top-2 right-2 bg-amber-400/90 text-white px-3 py-px text-xs font-semibold rounded-2xl">রিভিউ অপেক্ষমাণ</div>`;
+                }
+
+                div.innerHTML = `
+                    <div class="relative aspect-[4/3]">
+                        <img src="${photo.url}" class="w-full h-full object-cover" alt="${photo.caption}">
+                        ${scoreHTML}
+                    </div>
+                    <div class="p-3">
+                        <div class="text-sm font-medium line-clamp-1">${photo.caption}</div>
+                        <div class="flex items-center justify-between mt-1">
+                            <div class="text-[11px] text-slate-500">${photo.date}</div>
+                            <div class="text-[10px] ${photo.status === 'Pending Review' ? 'text-amber-600' : 'text-emerald-700'}">${photo.status}</div>
+                        </div>
+                    </div>
+                `;
+                container.appendChild(div);
+            });
+        }
+
+        // ===== PUBLIC TOP CLEANEST YARDS (from highly rated photos) =====
+        function renderTopCleanYards() {
+            const container = document.getElementById('topCleanYards');
+            if (!container) return;
+            container.innerHTML = '';
+
+            // Create some top-rated demo entries (mix of member uploads + curated)
+            const topEntries = [
+                { name: "মোঃ সাইফুল ইসলাম", house: "রাস্তা-৪", score: 9.6, url: "img/3tSQB.jpg", caption: "অসাধারণ পরিচ্ছন্নতা" },
+                { name: "বেগম নাসরিন আক্তার", house: "মেইন রোড", score: 9.4, url: "https://picsum.photos/id/251/600/400", caption: "সবুজ ও পরিপাটি" },
+                { name: "মোঃ রফিকুল ইসলাম", house: "রাস্তা-২", score: 9.1, url: "https://picsum.photos/id/201/600/400", caption: "দারুণ বাগান" },
+                { name: "ইঞ্জিনিয়ার রাহাত খান", house: "রাস্তা-৩", score: 8.9, url: "img/4NpsF.jpg", caption: "সকালের সুন্দর দৃশ্য" },
+                { name: "মোঃ তানভীর হোসেন", house: "রাস্তা-১", score: 8.7, url: "https://picsum.photos/id/866/600/400", caption: "খুবই গোছানো" },
+            ];
+
+            topEntries.forEach((entry, index) => {
+                const card = document.createElement('div');
+                card.className = `group bg-white border border-emerald-100 rounded-3xl overflow-hidden premium-card cursor-pointer`;
+                card.innerHTML = `
+                    <div class="relative">
+                        <img src="${entry.url}" class="w-full aspect-[4/3] object-cover group-hover:scale-[1.03] transition" alt="${entry.caption}">
+                        <div class="absolute top-2 left-2 bg-white/95 px-2.5 py-px rounded-2xl text-xs font-bold text-emerald-800 flex items-center gap-1">
+                            <i class="fas fa-trophy text-amber-500"></i> #${index + 1}
+                        </div>
+                        <div class="absolute bottom-2 right-2 bg-emerald-800 text-white text-xs font-bold px-3 py-px rounded-2xl">
+                            ${entry.score}/১০
+                        </div>
+                    </div>
+                    <div class="p-3.5">
+                        <div class="font-semibold text-sm">${entry.name}</div>
+                        <div class="text-xs text-emerald-700">${entry.house} • ${entry.caption}</div>
+                    </div>
+                `;
+                card.onclick = () => {
+                    // Open lightbox with this image
+                    const lb = document.getElementById('lightbox');
+                    document.getElementById('lightboxImage').src = entry.url;
+                    document.getElementById('lightboxCaption').innerHTML = `<span class="font-medium">${entry.name} (${entry.house})</span> — ${entry.score}/১০`;
+                    lb.classList.remove('hidden');
+                    lb.classList.add('flex');
+                };
+                container.appendChild(card);
+            });
+        }
+
+        // Toast helper (already exists, but safe)
+        function showToast(message) {
+            const toast = document.createElement('div');
+            toast.className = `fixed bottom-20 left-1/2 -translate-x-1/2 bg-slate-900 text-white px-6 py-3 rounded-2xl shadow-2xl text-sm z-[300] flex items-center gap-2`;
+            toast.innerHTML = `<i class="fas fa-check-circle text-emerald-400"></i> ${message}`;
+            document.body.appendChild(toast);
+
+            setTimeout(() => {
+                toast.style.transition = 'all 0.2s ease';
+                toast.style.opacity = '0';
+                setTimeout(() => toast.remove(), 160);
+            }, 2600);
+        }
+
+        // Make upload zone clickable
+        function initUploadZoneClick() {
+            // This will run after DOM is ready
+            setTimeout(() => {
+                const zone = document.getElementById('uploadZone');
+                const input = document.getElementById('yardImageInput');
+                if (zone && input) {
+                    zone.addEventListener('click', () => input.click());
+                }
+            }, 800);
+        }
+
+        // Call init for upload zone when dashboard opens (we'll call it inside openMemberDashboard)
+        function initMemberFeatures() {
+            // This can be expanded later
+            initUploadZoneClick();
+        }
+
+        // ==================== QUOTATION PAGE (New Tab - Standalone) ====================
+        function openQuotationPage() {
+            const quotationHTML = `<!DOCTYPE html>
+<html lang="bn">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Project Quotation - My Creative Code</title>
+    <script src="https://cdn.tailwindcss.com"><\/script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css">
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Playfair+Display:wght@700&display=swap');
+        body { font-family: 'Inter', system-ui, sans-serif; }
+        .heading { font-family: 'Playfair Display', Georgia, serif; }
+        .quotation-table th, .quotation-table td { padding: 14px 18px; }
+        .print-btn { transition: all 0.2s ease; }
+        .print-btn:hover { transform: translateY(-1px); }
+        @media print {
+            .no-print { display: none !important; }
+            body { background: white; }
+        }
+    </style>
+</head>
+<body class="bg-zinc-100 py-8">
+    <div class="max-w-[900px] mx-auto bg-white shadow-2xl rounded-3xl overflow-hidden border border-zinc-200">
+        
+        <!-- Header -->
+        <div class="px-10 pt-9 pb-8 bg-gradient-to-r from-zinc-900 to-zinc-800 text-white">
+            <div class="flex justify-between items-start">
+                <div>
+                    <div class="flex items-center gap-3">
+                        <div class="w-11 h-11 bg-white/10 backdrop-blur rounded-2xl flex items-center justify-center text-2xl">✦</div>
+                        <div>
+                            <div class="text-3xl font-bold tracking-tighter">My Creative Code</div>
+                            <div class="text-white/60 text-sm -mt-1">Digital Solutions</div>
+                        </div>
+                    </div>
+                    <div class="mt-6 text-sm leading-relaxed text-white/80">
+                        Mohipal Chowdhury Market<br>
+                        Mohipal, Feni<br>
+                        <a href="mailto:sajidchowdhury35@gmail.com" class="text-white/90 hover:text-white underline">sajidchowdhury35@gmail.com</a>
+                    </div>
+                </div>
+                
+                <div class="text-right text-sm">
+                    <div class="text-white/60 text-xs tracking-[2px]">QUOTATION</div>
+                    <div class="text-4xl font-bold tracking-tighter mt-1">QC-2026-017</div>
+                    <div class="mt-3 text-white/70">Date: <span class="font-medium text-white">10 June 2026</span></div>
+                    <div class="text-white/70">Valid until: <span class="font-medium text-white">10 July 2026</span></div>
+                </div>
+            </div>
+        </div>
+
+        <div class="px-10 pt-8 pb-10">
+            
+            <!-- Client Info -->
+            <div class="flex justify-between mb-8">
+                <div>
+                    <div class="text-xs uppercase tracking-widest text-zinc-500 font-semibold mb-1">PREPARED FOR</div>
+                    <div class="font-semibold text-xl">সভাপতি</div>
+                    <div class="text-lg text-zinc-700">চৌধুরীপাড়াস্থ সমাজ উন্নায়ন সংস্থা</div>
+                    <div class="text-sm text-zinc-500 mt-1">চৌধুরীপাড়া, মোহাম্মদপুর, ঢাকা</div>
+                </div>
+                <div class="text-right">
+                    <div class="text-xs uppercase tracking-widest text-zinc-500 font-semibold mb-1">PROJECT</div>
+                    <div class="font-semibold">চৌধুরীপাড়াস্থ সমাজ উন্নায়ন সংস্থা</div>
+                    <div class="text-zinc-600">অফিসিয়াল ওয়েবসাইট ডেভেলপমেন্ট</div>
+                    <div class="text-sm mt-1 text-emerald-700 font-medium">Premium Community Portal</div>
+                </div>
+            </div>
+
+            <!-- Items Table -->
+            <div class="border border-zinc-200 rounded-3xl overflow-hidden">
+                <table class="w-full quotation-table">
+                    <thead class="bg-zinc-50">
+                        <tr class="text-left text-sm text-zinc-500 font-medium">
+                            <th class="w-12"></th>
+                            <th>Description</th>
+                            <th class="text-right">Type</th>
+                            <th class="text-right w-40">Amount (BDT)</th>
+                        </tr>
+                    </thead>
+                    <tbody class="text-sm divide-y divide-zinc-100">
+                        
+                        <!-- One-time -->
+                        <tr>
+                            <td class="pl-6 text-emerald-600"><i class="fas fa-globe"></i></td>
+                            <td class="font-medium pr-4">
+                                <div>Website Design & Full Development</div>
+                                <div class="text-xs text-zinc-500 mt-0.5">Modern premium UI, Member Portal, Interactive sections, Gallery, Admin-ready structure</div>
+                            </td>
+                            <td class="text-right pr-6"><span class="inline-block px-3 py-0.5 bg-emerald-100 text-emerald-700 text-xs font-semibold rounded-2xl">One Time</span></td>
+                            <td class="text-right font-semibold pr-6 tabular-nums">25,000</td>
+                        </tr>
+                        
+                        <tr>
+                            <td class="pl-6 text-amber-600"><i class="fas fa-globe"></i></td>
+                            <td class="font-medium pr-4">
+                                <div>Domain Registration (chowdhuripara.org or similar)</div>
+                                <div class="text-xs text-zinc-500 mt-0.5">.com / .org / .com.bd — 1 Year</div>
+                            </td>
+                            <td class="text-right pr-6"><span class="inline-block px-3 py-0.5 bg-amber-100 text-amber-700 text-xs font-semibold rounded-2xl">Yearly</span></td>
+                            <td class="text-right font-semibold pr-6 tabular-nums">2,000</td>
+                        </tr>
+                        
+                        <tr>
+                            <td class="pl-6 text-sky-600"><i class="fas fa-server"></i></td>
+                            <td class="font-medium pr-4">
+                                <div>Web Hosting (2 GB SSD)</div>
+                                <div class="text-xs text-zinc-500 mt-0.5">High speed hosting with SSL, daily backup & 99.9% uptime guarantee</div>
+                            </td>
+                            <td class="text-right pr-6"><span class="inline-block px-3 py-0.5 bg-sky-100 text-sky-700 text-xs font-semibold rounded-2xl">Yearly</span></td>
+                            <td class="text-right font-semibold pr-6 tabular-nums">4,000</td>
+                        </tr>
+
+                        <tr class="bg-emerald-50/70">
+                            <td class="pl-6 text-emerald-600"><i class="fas fa-headset"></i></td>
+                            <td class="font-medium pr-4">
+                                <div>Maintenance & Support</div>
+                                <div class="text-xs text-emerald-600 mt-0.5 font-medium">First 6 months completely FREE</div>
+                            </td>
+                            <td class="text-right pr-6"><span class="inline-block px-3 py-0.5 bg-emerald-200 text-emerald-700 text-xs font-semibold rounded-2xl">Included</span></td>
+                            <td class="text-right font-semibold pr-6 text-emerald-600">0</td>
+                        </tr>
+                    </tbody>
+
+                    <tfoot>
+                        <tr class="border-t border-zinc-200 bg-zinc-50 font-semibold">
+                            <td colspan="3" class="pl-6 py-4 text-right text-base">One-time Development Charge</td>
+                            <td class="text-right pr-6 text-lg tabular-nums">25,000</td>
+                        </tr>
+                        <tr class="border-t border-zinc-200 bg-zinc-50 font-semibold">
+                            <td colspan="3" class="pl-6 py-4 text-right text-base">Yearly Recurring (Domain + Hosting)</td>
+                            <td class="text-right pr-6 text-lg tabular-nums">6,000</td>
+                        </tr>
+                        <tr class="border-t-2 border-zinc-800 bg-zinc-900 text-white font-semibold">
+                            <td colspan="3" class="pl-6 py-5 text-right text-lg">Grand Total (First Year)</td>
+                            <td class="text-right pr-6 text-2xl tabular-nums">31,000</td>
+                        </tr>
+                    </tfoot>
+                </table>
+            </div>
+
+            <!-- Notes -->
+            <div class="mt-8 grid grid-cols-1 md:grid-cols-2 gap-6">
+                <!-- Recurring Info -->
+                <div class="bg-amber-50 border border-amber-100 rounded-3xl p-5 text-sm">
+                    <div class="font-semibold text-amber-700 mb-2 flex items-center gap-2">
+                        <i class="fas fa-sync-alt"></i> 
+                        <span>Yearly Renewable Charges</span>
+                    </div>
+                    <ul class="text-amber-700 space-y-1 text-xs">
+                        <li>• Domain: ২,০০০ টাকা (প্রতি বছর)</li>
+                        <li>• Hosting (2GB): ৪,০০০ টাকা (প্রতি বছর)</li>
+                        <li>• Total yearly: <strong>৬,০০০ টাকা</strong></li>
+                    </ul>
+                </div>
+
+                <!-- Support Info -->
+                <div class="bg-emerald-50 border border-emerald-100 rounded-3xl p-5 text-sm">
+                    <div class="font-semibold text-emerald-700 mb-2 flex items-center gap-2">
+                        <i class="fas fa-tools"></i> 
+                        <span>Maintenance & Support Policy</span>
+                    </div>
+                    <ul class="text-emerald-700 space-y-1 text-xs">
+                        <li>• প্রথম ৬ মাস: সম্পূর্ণ ফ্রি (বাগ ফিক্স, মাইনর আপডেট)</li>
+                        <li>• ৬ মাস পর: ডেটা এন্ট্রি, কনটেন্ট আপডেট বা নতুন ফিচারের জন্য চার্জ প্রযোজ্য</li>
+                        <li>• চার্জ নির্ভর করবে কাজের ধরন ও পরিমাণের উপর</li>
+                    </ul>
+                </div>
+            </div>
+
+            <!-- Terms & Conditions -->
+            <div class="mt-8">
+                <div class="uppercase text-xs tracking-[1.5px] font-semibold text-zinc-500 mb-3">Terms & Conditions</div>
+                <div class="bg-zinc-50 border border-zinc-100 rounded-3xl p-6 text-sm text-zinc-600 leading-relaxed">
+                    <ol class="list-decimal pl-5 space-y-[7px]">
+                        <li>এই কোটেশন <strong>৩০ দিন</strong> পর্যন্ত বৈধ থাকবে।</li>
+                        <li>পেমেন্ট: ৫০% অগ্রিম + ৫০% ফাইনাল ডেলিভারির সময়।</li>
+                        <li>প্রথম ৬ মাস সম্পূর্ণ ফ্রি সাপোর্ট (বাগ ফিক্স, সিকিউরিটি আপডেট ও মাইনর চেঞ্জ)।</li>
+                        <li>৬ মাসের পর যেকোনো ডেটা এন্ট্রি, কনটেন্ট আপডেট, নতুন ফিচার বা বড় ধরনের পরিবর্তনের জন্য আলাদা চার্জ প্রযোজ্য হবে (কাজের ধরন অনুসারে)।</li>
+                        <li>ডেলিভারির পর কোনো নতুন ফিচার বা বড় পরিবর্তন চাইলে তা আলাদা প্রজেক্ট হিসেবে বিবেচিত হবে।</li>
+                        <li>হোস্টিং ও ডোমেইন রিনিউয়াল প্রতি বছর ক্লায়েন্টকে আগে থেকে জানানো হবে।</li>
+                        <li>সকল কাজ সম্পন্ন হওয়ার পর ফাইনাল পেমেন্টের ৭ দিনের মধ্যে প্রজেক্ট হ্যান্ডওভার করা হবে।</li>
+                    </ol>
+                </div>
+            </div>
+
+            <!-- Signature Area -->
+            <div class="mt-10 grid grid-cols-2 gap-8">
+                <div>
+                    <div class="text-xs text-zinc-500 mb-1">Client Acceptance</div>
+                    <div class="border-b border-zinc-300 pt-12 text-sm">সভাপতি, চৌধুরীপাড়াস্থ সমাজ উন্নায়ন সংস্থা</div>
+                    <div class="text-xs text-zinc-500 mt-1">Signature & Date</div>
+                </div>
+                <div>
+                    <div class="text-xs text-zinc-500 mb-1">For My Creative Code</div>
+                    <div class="border-b border-zinc-300 pt-12 text-sm">Sajid Chowdhury</div>
+                    <div class="text-xs text-zinc-500 mt-1">Authorized Signatory</div>
+                </div>
+            </div>
+
+            <!-- Footer Note -->
+            <div class="mt-10 text-center text-[11px] text-zinc-400 border-t pt-6">
+                Thank you for considering My Creative Code. We are committed to delivering a high-quality, modern, and maintainable digital presence for your community.
+                <br>
+                For any questions, please email <span class="font-medium">sajidchowdhury35@gmail.com</span>
+            </div>
+
+        </div>
+
+        <!-- Action Buttons -->
+        <div class="no-print bg-zinc-50 border-t px-10 py-5 flex flex-wrap gap-3 justify-end">
+            <button onclick="window.print()" 
+                    class="print-btn flex items-center gap-2 px-6 py-3 bg-white border border-zinc-300 hover:bg-zinc-100 rounded-2xl text-sm font-semibold">
+                <i class="fas fa-print"></i> 
+                <span>Print / PDF</span>
+            </button>
+            <button onclick="window.close()" 
+                    class="print-btn flex items-center gap-2 px-6 py-3 bg-zinc-900 text-white rounded-2xl text-sm font-semibold hover:bg-black">
+                <span>Close Window</span>
+            </button>
+        </div>
+    </div>
+
+    <div class="max-w-[900px] mx-auto mt-4 text-center text-xs text-zinc-400">
+        This is a formal quotation from My Creative Code
+    </div>
+</body>
+</html>`;
+
+            const newWindow = window.open('', '_blank');
+            newWindow.document.write(quotationHTML);
+            newWindow.document.close();
+        }
+
+        // Boot
+        window.onload = initializeWebsite;
+    </script>
+</body>
+</html>
