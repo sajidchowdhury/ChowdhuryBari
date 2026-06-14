@@ -215,7 +215,7 @@
                     </button>
 
                     <!-- Back to Website -->
-                    <a href="{{ route('welcome') }}" target="_blank" class="text-gray-600 hover:text-green-700 transition">
+                    <a href="" target="_blank" class="text-gray-600 hover:text-green-700 transition">
                         <i class="fas fa-external-link-alt"></i>
                     </a>
                 </div>

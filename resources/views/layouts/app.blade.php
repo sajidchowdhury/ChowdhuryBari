@@ -15,8 +15,36 @@
         @vite(['resources/css/app.css', 'resources/js/app.js'])
     </head>
     <body class="font-sans antialiased">
+        
+        <!-- ====================== ADMIN MODE TOOLBAR ====================== -->
+        @if(request()->is('admin*') && session('admin_mode') && auth()->check())
+            <div class="bg-amber-600 text-white py-3 text-center text-sm fixed top-0 left-0 right-0 z-50 flex items-center justify-center gap-6 shadow-md">
+                <span class="flex items-center gap-2">
+                    👷 আপনি ওয়েবসাইট দেখছেন <strong>ADMIN MODE</strong>-এ
+                </span>
+                
+                <a href="{{ route('admin.dashboard') }}" 
+                   class="underline hover:no-underline font-medium">
+                    ← অ্যাডমিন প্যানেলে ফিরুন
+                </a>
+                
+                <form method="POST" action="{{ route('logout') }}" class="inline">
+                    @csrf
+                    <button type="submit" 
+                            class="underline hover:no-underline font-medium text-white">
+                        লগআউট
+                    </button>
+                </form>
+            </div>
+
+            <style>
+                body { padding-top: 60px !important; } /* Push content down when admin bar is shown */
+            </style>
+        @endif
+        <!-- ====================== END ADMIN MODE TOOLBAR ====================== -->
+
         <div class="min-h-screen bg-gray-100">
-            @include('layouts.navigation')
+            @include('layouts.navbar')
 
             <!-- Page Heading -->
             @isset($header)
@@ -29,8 +57,11 @@
 
             <!-- Page Content -->
             <main>
-                {{ $slot }}
+                @yield('content')
             </main>
         </div>
+
+        @include('layouts.FloatingButton')
+        @include('layouts.footer')
     </body>
 </html>
