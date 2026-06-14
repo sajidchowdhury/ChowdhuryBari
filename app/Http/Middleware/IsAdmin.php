@@ -10,10 +10,15 @@ class IsAdmin
 {
     public function handle(Request $request, Closure $next): Response
     {
-        if (auth()->check() && auth()->user()->role === 'admin') {
-            return $next($request);
+        if (!auth()->check()) {
+            return redirect()->route('login');
         }
 
-        abort(403, 'আপনার এই প্যানেলে প্রবেশের অনুমতি নেই।');
+        $user = auth()->user();
+        if ($user->role !== 'admin') {
+            abort(403, 'আপনার এই প্যানেলে প্রবেশের অনুমতি নেই।');
+        }
+
+        return $next($request);
     }
 }

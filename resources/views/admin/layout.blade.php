@@ -177,6 +177,7 @@
                 </div>
             </nav>
 
+            
             <!-- Admin Profile -->
             <div class="p-4 border-t border-white/10">
                 <a href="{{ route('admin.profile') }}" class="flex items-center gap-3 p-3 rounded-lg hover:bg-white/10 transition">
