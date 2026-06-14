@@ -27,6 +27,7 @@ Route::prefix('admin')->name('admin.')->group(function () {
         Route::get('/dashboard', [AdminController::class, 'dashboard'])->name('dashboard');
         Route::get('/website', [AdminController::class, 'viewWebsite'])->name('website');
         Route::get('/profile', [ProfileController::class, 'edit'])->name('profile');
+        
         // User management
         Route::resource('users', UserController::class);
     });

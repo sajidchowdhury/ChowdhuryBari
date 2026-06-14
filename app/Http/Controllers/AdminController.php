@@ -22,7 +22,15 @@ class AdminController extends Controller
             'password' => ['required'],
         ]);
 
+        // Attempt authentication
         if (Auth::attempt($credentials)) {
+            // Check if user is active
+            $user = Auth::user();
+            if (!$user->is_active) {
+                Auth::logout();
+                return back()->withErrors(['email' => 'Your account has been deactivated. Please contact the administrator.']);
+            }
+
             $request->session()->regenerate();
             session(['admin_mode' => true]); // Important flag
             return redirect()->route('admin.dashboard');
