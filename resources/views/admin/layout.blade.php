@@ -87,6 +87,11 @@
                 <span>ড্যাশবোর্ড</span>
             </a>
 
+            <a href="{{ route('admin.our-area') }}" class="sidebar-link flex items-center gap-3 px-5 py-3.5 rounded-2xl text-white font-medium @if(request()->routeIs('admin.our-area*')) active @endif">
+                <i class="fas fa-map-marker-alt w-5"></i>
+                <span>Our Area</span>
+            </a>
+
             <div class="px-5 text-teal-200 text-xs font-semibold mt-6 mb-2">ম্যানেজমেন্ট</div>
 
             <a href="" class="sidebar-link flex items-center gap-3 px-5 py-3.5 rounded-2xl text-white font-medium">
@@ -174,6 +179,7 @@
         document.getElementById('sidebar').classList.toggle('-translate-x-full');
     }
 </script>
+<script defer src="https://unpkg.com/alpinejs@3.14.2/dist/cdn.min.js"></script>
 
 @yield('extra-scripts')
 </body>

@@ -25,6 +25,8 @@ Route::prefix('admin')->name('admin.')->group(function () {
     // Protected Admin Routes
     Route::middleware('auth')->group(function () {
         Route::get('/dashboard', [AdminController::class, 'dashboard'])->name('dashboard');
+        Route::get('/our-area', [AdminController::class, 'ourArea'])->name('our-area');
+        Route::post('/our-area', [AdminController::class, 'storeOurArea'])->name('our-area.store');
         Route::get('/website', [AdminController::class, 'viewWebsite'])->name('website');
         Route::get('/profile', [ProfileController::class, 'edit'])->name('profile');
         
@@ -32,6 +34,8 @@ Route::prefix('admin')->name('admin.')->group(function () {
         Route::resource('users', UserController::class);
     });
 });
+
+
 
 // Logout
 Route::post('/logout', function () {
