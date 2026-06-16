@@ -22,9 +22,11 @@
                 <button type="submit" class="rounded-3xl bg-teal-600 px-5 py-3 text-white font-medium hover:bg-teal-700 transition">Search</button>
             </form>
 
-            <button type="button" @click="window.dispatchEvent(new CustomEvent('open-modal', { detail: 'create-road' }))" class="rounded-3xl bg-slate-900 px-5 py-3 text-white font-medium hover:bg-slate-700 transition">
-                Create Road
-            </button>
+            <button type="button" 
+    x-on:click="window.dispatchEvent(new CustomEvent('open-modal', { detail: 'create-road' }))"
+    class="rounded-3xl bg-slate-900 px-5 py-3 text-white font-medium hover:bg-slate-700 transition">
+    Create Road
+</button>
         </div>
     </div>
 
@@ -106,9 +108,11 @@
                 <h2 class="text-2xl font-semibold">Create Road</h2>
                 <p class="text-slate-500 mt-1">Add a road and its first building details.</p>
             </div>
-            <button type="button" @click="window.dispatchEvent(new CustomEvent('close-modal', { detail: 'create-road' }))" class="text-slate-500 hover:text-slate-900">
-                <i class="fas fa-times"></i>
-            </button>
+   <button type="button" 
+    x-on:click="window.dispatchEvent(new CustomEvent('close-modal', { detail: 'create-road' }))"
+    class="text-slate-500 hover:text-slate-900">
+    <i class="fas fa-times"></i>
+</button>
         </div>
 
         <form action="{{ route('admin.our-area.store') }}" method="POST" enctype="multipart/form-data" class="space-y-6 mt-6">
@@ -200,8 +204,11 @@
             </div>
 
             <div class="flex justify-end gap-3 pt-4 border-t border-slate-200">
-                <button type="button" @click="window.dispatchEvent(new CustomEvent('close-modal', { detail: 'create-road' }))" class="rounded-3xl border border-slate-300 px-6 py-3 text-sm font-medium text-slate-700 hover:bg-slate-50 transition">Cancel</button>
-                <button type="submit" class="rounded-3xl bg-teal-600 px-6 py-3 text-sm font-medium text-white hover:bg-teal-700 transition">Save Road</button>
+<button type="button" 
+    x-on:click="window.dispatchEvent(new CustomEvent('close-modal', { detail: 'create-road' }))"
+    class="rounded-3xl border border-slate-300 px-6 py-3 text-sm font-medium text-slate-700 hover:bg-slate-50 transition">
+    Cancel
+</button>                <button type="submit" class="rounded-3xl bg-teal-600 px-6 py-3 text-sm font-medium text-white hover:bg-teal-700 transition">Save Road</button>
             </div>
         </form>
     </div>
