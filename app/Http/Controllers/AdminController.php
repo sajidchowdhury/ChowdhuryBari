@@ -36,6 +36,14 @@ class AdminController extends Controller
                 return back()->withErrors(['email' => 'Your account has been deactivated. Please contact the administrator.']);
             }
 
+            // Reject non-admin users at login time so they get a clear error
+            // instead of being authenticated and then 403'd by the is_admin
+            // middleware on every protected admin route.
+            if ($user->role !== 'admin') {
+                Auth::logout();
+                return back()->withErrors(['email' => 'You do not have admin privileges. Please contact the administrator.']);
+            }
+
             $request->session()->regenerate();
             session(['admin_mode' => true]); // Important flag
             return redirect()->route('admin.dashboard');
