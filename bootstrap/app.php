@@ -11,10 +11,13 @@ return Application::configure(basePath: dirname(__DIR__))
         health: '/up',
     )
     ->withMiddleware(function (Middleware $middleware) {
-        
-        // এখানে তোমার middleware যোগ করো
+
+        // App-specific middleware aliases.
+        // 'is_admin'     — used by tenant admin routes (panel #2)
+        // 'super_admin'  — used by super admin routes on central domain (panel #4)
         $middleware->alias([
             'is_admin' => \App\Http\Middleware\IsAdmin::class,
+            'super_admin' => \App\Http\Middleware\IsSuperAdmin::class,
         ]);
 
     })

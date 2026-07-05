@@ -1,5 +1,6 @@
 <?php
 
+use App\Models\Central\SuperAdmin;
 use App\Models\User;
 
 return [
@@ -42,6 +43,14 @@ return [
             'driver' => 'session',
             'provider' => 'users',
         ],
+
+        // Super admin guard — used by the SuperAdmin Filament panel
+        // on the central domain. Separate from tenant user auth so
+        // platform owner credentials live in the central DB only.
+        'super_admin' => [
+            'driver' => 'session',
+            'provider' => 'super_admins',
+        ],
     ],
 
     /*
@@ -65,6 +74,12 @@ return [
         'users' => [
             'driver' => 'eloquent',
             'model' => env('AUTH_MODEL', User::class),
+        ],
+
+        // Super admin provider — uses the central DB's super_admins table.
+        'super_admins' => [
+            'driver' => 'eloquent',
+            'model' => SuperAdmin::class,
         ],
 
         // 'users' => [
@@ -96,6 +111,14 @@ return [
         'users' => [
             'provider' => 'users',
             'table' => env('AUTH_PASSWORD_RESET_TOKEN_TABLE', 'password_reset_tokens'),
+            'expire' => 60,
+            'throttle' => 60,
+        ],
+
+        // Super admin password resets — separate token table on central DB.
+        'super_admins' => [
+            'provider' => 'super_admins',
+            'table' => 'super_admin_password_reset_tokens',
             'expire' => 60,
             'throttle' => 60,
         ],

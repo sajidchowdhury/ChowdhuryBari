@@ -2,16 +2,27 @@
     "$schema": "https://getcomposer.org/schema.json",
     "name": "laravel/laravel",
     "type": "project",
-    "description": "The skeleton application for the Laravel framework.",
+    "description": "Multi-tenant SaaS platform for Bangladeshi residential community organizations (সমাজ উন্নয়ন সংস্থা). Public website + 3 admin panels (society admin / member / super admin) with bKash, Nagad & SSL Commerz payments.",
     "keywords": [
         "laravel",
-        "framework"
+        "multi-tenant",
+        "filament",
+        "bangladesh",
+        "bkash",
+        "nagad",
+        "sslcommerz",
+        "community"
     ],
     "license": "MIT",
     "require": {
         "php": "^8.2",
         "laravel/framework": "^12.0",
-        "laravel/tinker": "^2.10.1"
+        "laravel/tinker": "^2.10.1",
+        "filament/filament": "^3.3",
+        "filament/spatie-laravel-translatable-plugin": "^3.3",
+        "stancl/tenancy": "^3.8",
+        "bezhansalleh/filament-shield": "^3.3",
+        "spatie/laravel-permission": "^6.9"
     },
     "require-dev": {
         "fakerphp/faker": "^1.23",
@@ -43,8 +54,16 @@
             "@php -r \"file_exists('.env') || copy('.env.example', '.env');\"",
             "@php artisan key:generate",
             "@php artisan migrate --force",
+            "@php artisan tenancy:install --no-interaction || true",
+            "@php artisan vendor:publish --tag=\"filament-config\" --no-interaction || true",
+            "@php artisan filament:install --panels --no-interaction || true",
+            "@php artisan migrate --force",
             "npm install",
             "npm run build"
+        ],
+        "post-tenancy-install": [
+            "@php artisan migrate --path=database/migrations --force",
+            "@php artisan migrate --path=database/migrations/tenant --force"
         ],
         "dev": [
             "Composer\\Config::disableProcessTimeout",
