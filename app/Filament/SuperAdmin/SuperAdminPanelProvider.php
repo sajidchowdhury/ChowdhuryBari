@@ -41,7 +41,6 @@ class SuperAdminPanelProvider extends PanelProvider
             ->path('super-admin')
             ->login()
             ->authGuard('super_admin')
-            ->authModel(SuperAdmin::class)
             ->colors([
                 'primary' => Color::Emerald,
                 'danger'  => Color::Rose,
