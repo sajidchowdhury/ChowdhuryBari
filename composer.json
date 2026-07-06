@@ -51,19 +51,9 @@
     "scripts": {
         "setup": [
             "composer install",
-            "@php -r \"file_exists('.env') || copy('.env.example', '.env');\"",
-            "@php artisan key:generate",
-            "@php artisan migrate --force",
-            "@php artisan tenancy:install --no-interaction || true",
-            "@php artisan vendor:publish --tag=\"filament-config\" --no-interaction || true",
-            "@php artisan filament:install --panels --no-interaction || true",
-            "@php artisan migrate --force",
+            "@php artisan setup:chowdhurybari",
             "npm install",
             "npm run build"
-        ],
-        "post-tenancy-install": [
-            "@php artisan migrate --path=database/migrations --force",
-            "@php artisan migrate --path=database/migrations/tenant --force"
         ],
         "dev": [
             "Composer\\Config::disableProcessTimeout",

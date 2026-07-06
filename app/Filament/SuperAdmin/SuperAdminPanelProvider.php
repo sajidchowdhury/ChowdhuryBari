@@ -15,22 +15,14 @@ use Illuminate\Routing\Middleware\SubstituteBindings;
 use Illuminate\Session\Middleware\AuthenticateSession;
 use Illuminate\Session\Middleware\StartSession;
 use Illuminate\View\Middleware\ShareErrorsFromSession;
-use App\Models\Central\SuperAdmin;
 
 /**
  * Panel #4 — Super Admin (the platform owner's control room).
  *
- * This panel lives on the CENTRAL domain (e.g. app.com/super-admin),
- * NOT on tenant subdomains. It uses the SuperAdmin model from the
- * central DB and gives the platform owner visibility into all tenants,
- * products, orders, and payments.
- *
- * Login URL: /super-admin/login
- * Dashboard: /super-admin
- *
- * NOTE: This file may be replaced/renamed by `php artisan filament:install --panels`
- * if that command runs. After running it, copy the auth model + path settings from
- * this file into the generated panel provider.
+ * IMPORTANT: Do NOT run `php artisan filament:install --panels` for the
+ * super-admin panel — it would overwrite this file with defaults. If you
+ * already ran it and got a duplicate at app/Providers/Filament/, delete
+ * that duplicate and keep only this one.
  */
 class SuperAdminPanelProvider extends PanelProvider
 {
