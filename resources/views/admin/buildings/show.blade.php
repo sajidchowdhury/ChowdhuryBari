@@ -112,7 +112,7 @@
                                 @else
                                     <i class="fas fa-layer-group text-emerald-600 mr-1"></i> Floor {{ $floorNumber }}
                                 @endif
-                                <span class="ml-2 text-xs text-slate-500">({{ $floorFlats->count() }} flat(s))</span>
+                                <span class="ml-2 text-xs text-slate-500">({{ count($floorFlats) }} flat(s))</span>
                             </h4>
                             <button type="button" onclick="window.dispatchEvent(new CustomEvent('open-modal', { detail: 'add-meters-floor-{{ $floorNumber }}' }))"
                                     class="text-xs text-blue-600 hover:text-blue-800 font-medium">
