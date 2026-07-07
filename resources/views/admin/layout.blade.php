@@ -90,6 +90,11 @@
                 <span>ড্যাশবোর্ড</span>
             </a>
 
+            <a href="{{ route('admin.about.edit') }}" class="sidebar-link flex items-center gap-3 px-5 py-3.5 rounded-2xl text-white font-medium @if(request()->routeIs('admin.about*')) active @endif">
+                <i class="fas fa-info-circle w-5"></i>
+                <span>আমাদের সম্পর্কে</span>
+            </a>
+
             <a href="{{ route('admin.our-area') }}" class="sidebar-link flex items-center gap-3 px-5 py-3.5 rounded-2xl text-white font-medium @if(request()->routeIs('admin.our-area*')) active @endif">
                 <i class="fas fa-map-marker-alt w-5"></i>
                 <span>আওতাধীন এলাকা</span>

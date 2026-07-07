@@ -2,6 +2,7 @@
 
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\AboutController;
 use App\Http\Controllers\AdminController;
 use App\Http\Controllers\Admin\UserController;
 use App\Http\Controllers\BuildingController;
@@ -9,6 +10,7 @@ use App\Http\Controllers\GalleryController;
 use App\Http\Controllers\MemberController;
 use App\Http\Controllers\NoticeController;
 use App\Http\Controllers\ProfileController;
+use App\Models\AboutInfo;
 use App\Models\Building;
 use App\Models\Flat;
 use App\Models\GalleryItem;
@@ -23,6 +25,7 @@ Route::get('/', function () {
     $members = Member::where('is_active', true)->orderBy('sort_order')->orderBy('name')->get();
     $notices = Notice::currentlyActive()->latestFirst()->take(10)->get();
     $galleryItems = GalleryItem::active()->latestFirst()->take(10)->get();
+    $about = AboutInfo::current();
 
     return view('welcome', [
         'roads'          => $roads,
@@ -32,6 +35,7 @@ Route::get('/', function () {
         'members'        => $members,
         'notices'        => $notices,
         'galleryItems'   => $galleryItems,
+        'about'          => $about,
     ]);
 })->name('home');
 
@@ -90,6 +94,11 @@ Route::prefix('admin')->name('admin.')->group(function () {
         Route::get('/gallery', [GalleryController::class, 'index'])->name('gallery.index');
         Route::post('/gallery', [GalleryController::class, 'store'])->name('gallery.store');
         Route::delete('/gallery/{gallery}', [GalleryController::class, 'destroy'])->name('gallery.destroy');
+
+        // About Us — singleton content (headline + image + short description)
+        Route::get('/about', [AboutController::class, 'edit'])->name('about.edit');
+        Route::put('/about', [AboutController::class, 'update'])->name('about.update');
+        Route::post('/about', [AboutController::class, 'update'])->name('about.update.post');
     });
 });
 
