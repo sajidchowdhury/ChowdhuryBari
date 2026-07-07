@@ -97,26 +97,37 @@ class AdminController extends Controller
     public function storeOurArea(Request $request)
     {
         $validated = $request->validate([
-            'road_name' => ['required', 'string', 'max:255'],
-            'road_image' => ['nullable', 'file', 'image', 'max:5120'],
-            'buildings' => ['required', 'array', 'min:1'],
-            'buildings.*.building_name' => ['required', 'string', 'max:255'],
-            'buildings.*.owner_name' => ['required', 'string', 'max:255'],
-            'buildings.*.total_floor' => ['required', 'integer', 'min:1'],
-            'buildings.*.total_family' => ['required', 'integer', 'min:0'],
-            'buildings.*.building_type' => ['required', 'string', 'max:255'],
-            'buildings.*.owner_number' => ['required', 'string', 'max:255'],
-            'buildings.*.google_ln' => ['nullable', 'string', 'max:255'],
-            'buildings.*.google_lt' => ['nullable', 'string', 'max:255'],
+            'road_name'        => ['required', 'string', 'max:255'],
+            'road_description' => ['nullable', 'string', 'max:500'],
+            'road_image'       => ['nullable', 'file', 'image', 'max:5120'],
+            'road_tags'        => ['nullable', 'string', 'max:500'],
+            // Buildings are now OPTIONAL — admin can create a road by itself
+            'buildings'                   => ['nullable', 'array'],
+            'buildings.*.building_name'   => ['required_with:buildings', 'string', 'max:255'],
+            'buildings.*.owner_name'      => ['required_with:buildings', 'string', 'max:255'],
+            'buildings.*.total_floor'     => ['required_with:buildings', 'integer', 'min:1'],
+            'buildings.*.total_family'    => ['required_with:buildings', 'integer', 'min:0'],
+            'buildings.*.building_type'   => ['required_with:buildings', 'string', 'max:255'],
+            'buildings.*.owner_number'    => ['required_with:buildings', 'string', 'max:255'],
+            'buildings.*.google_ln'       => ['nullable', 'string', 'max:255'],
+            'buildings.*.google_lt'       => ['nullable', 'string', 'max:255'],
             'buildings.*.extra_information' => ['nullable', 'string'],
-            'buildings.*.service_taking' => ['nullable', 'array'],
-            'buildings.*.service_taking.*' => ['string', 'in:cleaning,security'],
-            'buildings.*.building_image' => ['nullable', 'file', 'image', 'max:5120'],
+            'buildings.*.service_taking'    => ['nullable', 'array'],
+            'buildings.*.service_taking.*'  => ['string', 'in:cleaning,security'],
+            'buildings.*.building_image'    => ['nullable', 'file', 'image', 'max:5120'],
         ]);
 
+        // Parse tags: comma-separated string → array of trimmed non-empty tags
+        $tags = collect(explode(',', $validated['road_tags'] ?? ''))
+            ->map(fn ($tag) => trim($tag))
+            ->filter()
+            ->values()
+            ->all();
+
         $roadData = [
-            'name' => $validated['road_name'],
-            'description' => null,
+            'name'        => $validated['road_name'],
+            'description' => $validated['road_description'] ?? null,
+            'tags'        => $tags ?: null,
         ];
 
         if ($request->hasFile('road_image')) {
@@ -125,19 +136,24 @@ class AdminController extends Controller
 
         $road = Road::create($roadData);
 
-        foreach ($validated['buildings'] as $buildingData) {
+        // Only create buildings if any were submitted (and at least the first has a name)
+        foreach ($validated['buildings'] ?? [] as $buildingData) {
+            if (empty($buildingData['building_name'])) {
+                continue;
+            }
+
             $building = [
-                'road_id' => $road->id,
-                'name' => $buildingData['building_name'],
-                'owner' => $buildingData['owner_name'],
-                'total_floor' => $buildingData['total_floor'],
-                'total_family' => $buildingData['total_family'],
-                'building_type' => $buildingData['building_type'],
-                'owner_number' => $buildingData['owner_number'],
-                'google_ln' => $buildingData['google_ln'] ?? null,
-                'google_lt' => $buildingData['google_lt'] ?? null,
+                'road_id'           => $road->id,
+                'name'              => $buildingData['building_name'],
+                'owner'             => $buildingData['owner_name'],
+                'total_floor'       => $buildingData['total_floor'],
+                'total_family'      => $buildingData['total_family'],
+                'building_type'     => $buildingData['building_type'],
+                'owner_number'      => $buildingData['owner_number'],
+                'google_ln'         => $buildingData['google_ln'] ?? null,
+                'google_lt'         => $buildingData['google_lt'] ?? null,
                 'extra_information' => $buildingData['extra_information'] ?? null,
-                'service_taking' => $buildingData['service_taking'] ?? [],
+                'service_taking'    => $buildingData['service_taking'] ?? [],
             ];
 
             if (isset($buildingData['building_image']) && $buildingData['building_image'] instanceof UploadedFile) {

@@ -5,9 +5,12 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\AdminController;
 use App\Http\Controllers\Admin\UserController;
 use App\Http\Controllers\ProfileController;
+use App\Models\Road;
 
 Route::get('/', function () {
-    return view('welcome');
+    return view('welcome', [
+        'roads' => Road::with('buildings')->orderBy('name')->get(),
+    ]);
 })->name('home');
 
 // ====================== ADMIN SECTION ======================
