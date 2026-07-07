@@ -6,11 +6,20 @@ use App\Http\Controllers\AdminController;
 use App\Http\Controllers\Admin\UserController;
 use App\Http\Controllers\BuildingController;
 use App\Http\Controllers\ProfileController;
+use App\Models\Building;
+use App\Models\Flat;
 use App\Models\Road;
 
 Route::get('/', function () {
+    $roads = Road::with(['buildings.flats'])->orderBy('name')->get();
+    $buildings = Building::with('road')->get();
+    $totalFlats = Flat::count();
+
     return view('welcome', [
-        'roads' => Road::with('buildings')->orderBy('name')->get(),
+        'roads'          => $roads,
+        'totalBuildings' => $buildings->count(),
+        'totalRoads'     => $roads->count(),
+        'totalFlats'     => $totalFlats,
     ]);
 })->name('home');
 

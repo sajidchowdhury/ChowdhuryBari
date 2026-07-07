@@ -25,7 +25,11 @@
             
             <p class="max-w-[620px] mx-auto text-xl md:text-2xl text-white/75 font-light tracking-tight">
                 নিরাপত্তা • পরিচ্ছন্নতা • উন্নয়ন<br class="hidden md:block">
-                ৯০+ পরিবারের আস্থার প্রতীক
+                @php
+                    $bn = ['০','১','২','৩','৪','৫','৬','৭','৮','৯'];
+                    $familyCountBn = str_replace(range(0,9), $bn, (string) ($totalFlats ?? 0));
+                @endphp
+                {{ $familyCountBn }}+ পরিবারের আস্থার প্রতীক
             </p>
 
             <div class="mt-9 flex flex-col sm:flex-row items-center justify-center gap-4">
