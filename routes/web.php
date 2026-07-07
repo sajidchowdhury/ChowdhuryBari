@@ -46,7 +46,9 @@ Route::post('/logout', function () {
     return redirect()->route('admin.login');
 })->name('logout');
 
-// Fallback for old /login if needed
-Route::get('/login', function () {
-    return redirect()->route('admin.login');
-})->name('login');
+// NOTE: The old `Route::get('/login', ...)->name('login')` redirect was REMOVED.
+// It was conflicting with Filament's auth flow — when Filament's Authenticate
+// middleware calls route('login'), it was hitting this redirect to /admin/login
+// instead of Filament's own /super-admin/login, causing redirect loops.
+// Filament registers its own 'login' route for each panel, so we don't need
+// a global one here.
