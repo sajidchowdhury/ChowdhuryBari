@@ -41,7 +41,7 @@ class SetupChowdhuryBari extends Command
         $this->newLine();
 
         // 1. .env file
-        $this->step('Step 1/7 — Ensuring .env file exists');
+        $this->step('Step 1/6 — Ensuring .env file exists');
         if (!File::exists(base_path('.env'))) {
             File::copy(base_path('.env.example'), base_path('.env'));
             $this->line('   ✓ Created .env from .env.example');
@@ -50,7 +50,7 @@ class SetupChowdhuryBari extends Command
         }
 
         // 2. APP_KEY
-        $this->step('Step 2/7 — Generating APP_KEY');
+        $this->step('Step 2/6 — Generating APP_KEY');
         if (empty(config('app.key')) || $this->option('force')) {
             Artisan::call('key:generate', ['--force' => true]);
             $this->line('   ✓ ' . Artisan::output());
@@ -67,33 +67,24 @@ class SetupChowdhuryBari extends Command
         }
 
         // 3. Create central database (if MySQL)
-        $this->step('Step 3/7 — Ensuring central database exists');
+        $this->step('Step 3/6 — Ensuring central database exists');
         $this->ensureDatabaseExists();
 
         // 4. Migrate (central)
-        $this->step('Step 4/7 — Running central DB migrations');
+        $this->step('Step 4/6 — Running central DB migrations');
         Artisan::call('migrate', ['--force' => true]);
         $this->line(Artisan::output());
 
-        // 5. Seed super admin
-        $this->step('Step 5/7 — Seeding super admin');
-        Artisan::call('db:seed', [
-            '--class' => 'Database\\Seeders\\Central\\SuperAdminSeeder',
-            '--force' => true,
-        ]);
+        // 5. Seed users (old admin panel uses User model, not SuperAdmin)
+        $this->step('Step 5/6 — Seeding users');
+        Artisan::call('db:seed', ['--force' => true]);
         $this->line(Artisan::output());
 
-        // 6. Publish Filament assets
-        $this->step('Step 6/7 — Publishing Filament assets');
-        if (!File::exists(public_path('css/filament/filament/app.css'))) {
-            Artisan::call('filament:assets');
-            $this->line('   ✓ ' . trim(Artisan::output()));
-        } else {
-            $this->line('   ✓ Filament assets already published');
-        }
+        // NOTE: Filament super admin panel is DISABLED for now.
+        // Will re-enable + publish assets after stabilizing the public site.
 
-        // 7. Storage symlink
-        $this->step('Step 7/7 — Linking storage/public → public/storage');
+        // 6. Storage symlink
+        $this->step('Step 6/6 — Linking storage/public → public/storage');
         if (File::exists(public_path('storage'))) {
             $this->line('   ✓ storage symlink already exists');
         } else {
@@ -110,12 +101,15 @@ class SetupChowdhuryBari extends Command
         $this->info('║   1. Start the dev server:                                     ║');
         $this->info('║      php artisan serve --host=127.0.0.1 --port=8000            ║');
         $this->info('║                                                                ║');
-        $this->info('║   2. Open the super admin panel:                               ║');
-        $this->info('║      http://127.0.0.1:8000/super-admin/login                   ║');
+        $this->info('║   2. Open the public website:                                  ║');
+        $this->info('║      http://127.0.0.1:8000/                                    ║');
         $this->info('║                                                                ║');
-        $this->info('║   3. Log in with:                                               ║');
-        $this->info('║      Email:    superadmin@chowdhurybari.test                   ║');
-        $this->info('║      Password: SuperAdmin@123456                               ║');
+        $this->info('║   3. Open the admin panel (old Blade version):                 ║');
+        $this->info('║      http://127.0.0.1:8000/admin/login                         ║');
+        $this->info('║                                                                ║');
+        $this->info('║   4. Admin login (from UserSeeder):                            ║');
+        $this->info('║      Email:    sajid@gmail.com                                 ║');
+        $this->info('║      Password: password123                                     ║');
         $this->info('║                                                                ║');
         $this->info('║   Optional: build frontend assets (for the public site)        ║');
         $this->info('║      npm install && npm run build                              ║');
