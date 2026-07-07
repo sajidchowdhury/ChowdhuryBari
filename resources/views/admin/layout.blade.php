@@ -95,6 +95,11 @@
                 <span>Our Area</span>
             </a>
 
+            <a href="{{ route('admin.members.index') }}" class="sidebar-link flex items-center gap-3 px-5 py-3.5 rounded-2xl text-white font-medium @if(request()->routeIs('admin.members*')) active @endif">
+                <i class="fas fa-users w-5"></i>
+                <span>আমাদের নেতৃত্ব</span>
+            </a>
+
             <div class="px-5 text-teal-200 text-xs font-semibold mt-6 mb-2">ম্যানেজমেন্ট</div>
 
             <a href="" class="sidebar-link flex items-center gap-3 px-5 py-3.5 rounded-2xl text-white font-medium">

@@ -5,21 +5,25 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\AdminController;
 use App\Http\Controllers\Admin\UserController;
 use App\Http\Controllers\BuildingController;
+use App\Http\Controllers\MemberController;
 use App\Http\Controllers\ProfileController;
 use App\Models\Building;
 use App\Models\Flat;
+use App\Models\Member;
 use App\Models\Road;
 
 Route::get('/', function () {
     $roads = Road::with(['buildings.flats'])->orderBy('name')->get();
     $buildings = Building::with('road')->get();
     $totalFlats = Flat::count();
+    $members = Member::where('is_active', true)->orderBy('sort_order')->orderBy('name')->get();
 
     return view('welcome', [
         'roads'          => $roads,
         'totalBuildings' => $buildings->count(),
         'totalRoads'     => $roads->count(),
         'totalFlats'     => $totalFlats,
+        'members'        => $members,
     ]);
 })->name('home');
 
@@ -61,6 +65,12 @@ Route::prefix('admin')->name('admin.')->group(function () {
 
         // Meter readings (single recharge records)
         Route::post('/meters/{meter}/readings', [BuildingController::class, 'storeReading'])->name('readings.store');
+
+        // Team members
+        Route::get('/members', [MemberController::class, 'index'])->name('members.index');
+        Route::post('/members', [MemberController::class, 'store'])->name('members.store');
+        Route::put('/members/{member}', [MemberController::class, 'update'])->name('members.update');
+        Route::delete('/members/{member}', [MemberController::class, 'destroy'])->name('members.destroy');
     });
 });
 
