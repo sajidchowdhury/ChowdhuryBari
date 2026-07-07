@@ -34,6 +34,9 @@
             font-family: 'Inter', 'Noto Sans Bengali', system-ui, sans-serif;
         }
 
+        /* Hide elements with x-cloak until Alpine.js initializes */
+        [x-cloak] { display: none !important; }
+
         .sidebar {
             background: linear-gradient(180deg, #0F766E 0%, #134E4A 100%);
         }

@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Modal Test</title>
     <script defer src="https://unpkg.com/alpinejs@3.14.2/dist/cdn.min.js"></script>
+    <style>[x-cloak] { display: none !important; }</style>
 </head>
 <body class="p-8">
     <h1>Modal Test</h1>
