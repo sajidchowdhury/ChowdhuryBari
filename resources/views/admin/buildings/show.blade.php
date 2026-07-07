@@ -20,6 +20,12 @@
         </div>
     @endif
 
+    @if(session('error'))
+        <div class="rounded-2xl bg-red-50 border border-red-200 p-4 text-red-700">
+            {{ session('error') }}
+        </div>
+    @endif
+
     {{-- Building info card --}}
     <div class="rounded-3xl bg-white border border-slate-200 shadow-sm overflow-hidden">
         <div class="grid lg:grid-cols-3 gap-0">
@@ -110,7 +116,7 @@
                                     @if($flat->meters->isNotEmpty())
                                         <div class="mt-3 space-y-1">
                                             @foreach($flat->meters as $meter)
-                                                <div class="flex items-center gap-3 text-sm">
+                                                <div class="flex items-center gap-3 text-sm flex-wrap">
                                                     <i class="fas fa-bolt text-amber-500"></i>
                                                     <span class="font-mono">{{ $meter->meter_number }}</span>
                                                     <span class="text-slate-400">({{ strtoupper($meter->provider) }})</span>
@@ -121,10 +127,20 @@
                                                     @else
                                                         <span class="text-xs text-red-500">No recharge recorded</span>
                                                     @endif
-                                                    <button type="button" onclick="window.dispatchEvent(new CustomEvent('open-modal', { detail: 'record-recharge-{{ $meter->id }}' }))"
-                                                            class="ml-auto text-xs text-teal-600 hover:text-teal-800 font-medium">
-                                                        <i class="fas fa-plus-circle"></i> Record Recharge
-                                                    </button>
+                                                    <div class="flex items-center gap-2 ml-auto">
+                                                        @if($meter->provider === 'bpdb')
+                                                            <form action="{{ route('admin.meters.sync', $meter) }}" method="POST" class="inline" onsubmit="this.querySelector('button').textContent = 'Syncing...'; this.querySelector('button').disabled = true;">
+                                                                @csrf
+                                                                <button type="submit" class="text-xs text-blue-600 hover:text-blue-800 font-medium" title="Fetch last 3 recharges from BPDB">
+                                                                    <i class="fas fa-sync-alt"></i> Sync BPDB
+                                                                </button>
+                                                            </form>
+                                                        @endif
+                                                        <button type="button" onclick="window.dispatchEvent(new CustomEvent('open-modal', { detail: 'record-recharge-{{ $meter->id }}' }))"
+                                                                class="text-xs text-teal-600 hover:text-teal-800 font-medium">
+                                                            <i class="fas fa-plus-circle"></i> Record Recharge
+                                                        </button>
+                                                    </div>
                                                 </div>
                                             @endforeach
                                         </div>

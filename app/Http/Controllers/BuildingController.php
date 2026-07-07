@@ -6,6 +6,7 @@ use App\Models\Building;
 use App\Models\Flat;
 use App\Models\Meter;
 use App\Models\Road;
+use App\Services\BpdbTokenCheckService;
 use Illuminate\Http\Request;
 use Illuminate\Http\UploadedFile;
 use Illuminate\Support\Facades\Storage;
@@ -238,5 +239,50 @@ class BuildingController extends Controller
 
         return redirect()->route('admin.buildings.show', $meter->flat->building_id)
             ->with('status', "Recharge of ৳{$validated['recharge_amount']} recorded for meter {$meter->meter_number}.");
+    }
+
+    /**
+     * Sync a single meter from BPDB's token-check portal.
+     */
+    public function syncMeter(BpdbTokenCheckService $bpdb, Meter $meter)
+    {
+        $result = $bpdb->getLastTokens($meter->meter_number);
+
+        if ($result === null) {
+            return redirect()->route('admin.buildings.show', $meter->flat->building_id)
+                ->with('error', "Could not sync meter {$meter->meter_number} from BPDB. The BPDB site may be unreachable. You can still record recharges manually.");
+        }
+
+        // Update the meter's denormalized fields
+        $meter->update([
+            'last_recharge_amount' => $result['last_recharge_amount'],
+            'last_recharge_at'     => $result['last_recharge_at'],
+            'last_checked_at'      => now(),
+        ]);
+
+        // Create/update readings for each token returned (last 3)
+        foreach ($result['tokens'] as $token) {
+            if (!$token['recharged_at']) {
+                continue;
+            }
+
+            $readingDate = $token['recharged_at']->copy()->startOfMonth();
+
+            $meter->readings()->updateOrCreate(
+                ['meter_id' => $meter->id, 'reading_date' => $readingDate->toDateString()],
+                [
+                    'recharge_amount' => $token['amount'],
+                    'recharged_at'    => $token['recharged_at'],
+                    'source'          => 'bpdb_api',
+                    'notes'           => "Token: {$token['token_number']}" . ($token['status'] ? " ({$token['status']})" : ''),
+                ]
+            );
+        }
+
+        $lastAmount = $result['last_recharge_amount'] ? '৳' . $result['last_recharge_amount'] : 'no recharge';
+        $lastDate = $result['last_recharge_at'] ? $result['last_recharge_at']->format('M d, Y') : 'unknown';
+
+        return redirect()->route('admin.buildings.show', $meter->flat->building_id)
+            ->with('status', "Synced from BPDB! Last recharge: {$lastAmount} on {$lastDate}. " . count($result['tokens']) . " tokens imported.");
     }
 }
