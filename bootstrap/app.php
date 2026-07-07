@@ -13,11 +13,16 @@ return Application::configure(basePath: dirname(__DIR__))
     ->withMiddleware(function (Middleware $middleware) {
 
         // App-specific middleware aliases.
-        // 'is_admin'     — used by tenant admin routes (panel #2)
-        // 'super_admin'  — used by super admin routes on central domain (panel #4)
         $middleware->alias([
             'is_admin' => \App\Http\Middleware\IsAdmin::class,
             'super_admin' => \App\Http\Middleware\IsSuperAdmin::class,
+        ]);
+
+        // Append PreventDevCache to the web middleware group so it runs
+        // on every web request. In local env it sets no-cache headers
+        // so the browser always fetches fresh content after git pull.
+        $middleware->web(append: [
+            \App\Http\Middleware\PreventDevCache::class,
         ]);
 
     })

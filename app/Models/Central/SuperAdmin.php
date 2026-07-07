@@ -14,9 +14,6 @@ use Filament\Panel;
  * Lives in the CENTRAL database (NOT tenant DBs).
  * Logs in at the central domain (e.g. app.com/super-admin) to manage
  * all tenants, products, orders, and payments.
- *
- * This model implements FilamentUser so it can be the auth model
- * for the SuperAdmin Filament panel.
  */
 class SuperAdmin extends Authenticatable implements FilamentUser
 {
@@ -45,10 +42,11 @@ class SuperAdmin extends Authenticatable implements FilamentUser
     }
 
     /**
-     * Only active super admins can access the SuperAdmin Filament panel.
+     * Simplified: just check is_active. The panel ID check was causing
+     * redirect loops in some Filament v3 setups.
      */
     public function canAccessPanel(Panel $panel): bool
     {
-        return $this->is_active && str_ends_with($panel->getId(), 'super-admin');
+        return $this->is_active;
     }
 }

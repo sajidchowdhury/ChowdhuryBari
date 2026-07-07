@@ -18,11 +18,17 @@ return new class extends Migration
     {
         Schema::create('orders', function (Blueprint $table) {
             $table->id();
-            $table->uuid('tenant_id'); // FK to tenants.id (central)
-            $table->foreign('tenant_id')
-                ->references('id')
-                ->on('tenants')
-                ->cascadeOnDelete();
+            // UUID FK to tenants.id — but only add the FK constraint if the
+            // tenants table exists. In Phase 1 (no super admin panel), the
+            // stancl/tenancy migrations may not have run yet, so the FK
+            // would crash with errno 150.
+            $table->uuid('tenant_id')->nullable();
+            if (Schema::hasTable('tenants')) {
+                $table->foreign('tenant_id')
+                    ->references('id')
+                    ->on('tenants')
+                    ->cascadeOnDelete();
+            }
 
             $table->foreignId('product_id')->constrained()->cascadeOnDelete();
 

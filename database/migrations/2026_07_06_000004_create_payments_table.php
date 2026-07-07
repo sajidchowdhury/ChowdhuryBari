@@ -23,11 +23,15 @@ return new class extends Migration
     {
         Schema::create('payments', function (Blueprint $table) {
             $table->id();
-            $table->uuid('tenant_id')->nullable(); // null for platform-level payments
-            $table->foreign('tenant_id')
-                ->references('id')
-                ->on('tenants')
-                ->nullOnDelete();
+            // UUID FK to tenants.id — nullable (null for platform-level payments).
+            // FK constraint only added if the tenants table exists (see orders migration).
+            $table->uuid('tenant_id')->nullable();
+            if (Schema::hasTable('tenants')) {
+                $table->foreign('tenant_id')
+                    ->references('id')
+                    ->on('tenants')
+                    ->nullOnDelete();
+            }
 
             $table->morphs('payable'); // payable_type + payable_id (Order, Subscription, DuesPayment)
 

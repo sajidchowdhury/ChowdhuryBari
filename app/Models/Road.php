@@ -12,7 +12,15 @@ class Road extends Model
         'name',
         'image_path',
         'description',
+        'tags',
     ];
+
+    protected function casts(): array
+    {
+        return [
+            'tags' => 'array',
+        ];
+    }
 
     public function buildings(): HasMany
     {
@@ -25,4 +33,14 @@ class Road extends Model
             ? Storage::disk('public')->url($this->image_path)
             : 'https://via.placeholder.com/1200x800?text=Road+Image';
     }
+
+    /**
+     * Convenience accessor: returns the tags array (never null).
+     * Use $road->tag_list in Blade to safely iterate tags.
+     */
+    public function getTagListAttribute(): array
+    {
+        return $this->tags ?? [];
+    }
 }
+
