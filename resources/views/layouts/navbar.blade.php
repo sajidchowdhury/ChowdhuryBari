@@ -1,5 +1,6 @@
+@php $site = \App\Models\SiteSetting::cached(); @endphp
 <!-- ==================== PREMIUM NAVBAR ==================== -->
-<nav class="bg-white/95 backdrop-blur-xl border-b border-slate-200 sticky top-0 z-[100]">
+<nav class="@if(!$site->hasNavColor()) bg-white/95 @endif backdrop-blur-xl border-b border-slate-200 sticky top-0 z-[100]" @if($site->hasNavColor()) style="background-color: {{ e($site->nav_color) }};" @endif>
     <div class="max-w-7xl mx-auto">
         <div class="px-5 lg:px-8 py-4 flex items-center justify-between">
             
@@ -9,7 +10,7 @@
                             bg-white shadow-lg ring-1 ring-emerald-900/10 
                             group-hover:ring-emerald-700/30 group-active:scale-95 
                             transition-all duration-300 flex items-center justify-center p-1.5">
-                    <img src="{{ asset('img/logo.png') }}" 
+                    <img src="{{ $site->logo_url }}" 
                          alt="চৌধুরীপাড়াস্থ সমাজ উন্নায়ন সংস্থা" 
                          class="w-full h-full object-contain">
                 </div>
@@ -31,7 +32,6 @@
                 <a href="#leadership" class="nav-link font-medium text-slate-600 hover:text-emerald-800 transition">নেতৃত্ব</a>
                 <a href="#notices" class="nav-link font-medium text-slate-600 hover:text-emerald-800 transition">নোটিশ</a>
                 <a href="#gallery" class="nav-link font-medium text-slate-600 hover:text-emerald-800 transition">গ্যালারি</a>
-                <a href="#classifieds" class="nav-link font-medium text-slate-600 hover:text-emerald-800 transition">বিজ্ঞাপন</a>
                 
                 <!-- Special Delivery Link with Gold Accent -->
                 <a href="#" onclick="openDeliveryFinder(); return false;" 
@@ -86,7 +86,6 @@
             <a href="#leadership" onclick="closeMobileMenu()" class="flex items-center gap-4 px-5 py-[15px] hover:bg-emerald-50 rounded-2xl text-slate-700 font-medium"><i class="fas fa-user-tie w-5 text-emerald-700"></i> নেতৃত্ব</a>
             <a href="#notices" onclick="closeMobileMenu()" class="flex items-center gap-4 px-5 py-[15px] hover:bg-emerald-50 rounded-2xl text-slate-700 font-medium"><i class="fas fa-bullhorn w-5 text-emerald-700"></i> নোটিশ বোর্ড</a>
             <a href="#gallery" onclick="closeMobileMenu()" class="flex items-center gap-4 px-5 py-[15px] hover:bg-emerald-50 rounded-2xl text-slate-700 font-medium"><i class="fas fa-images w-5 text-emerald-700"></i> গ্যালারি</a>
-            <a href="#classifieds" onclick="closeMobileMenu()" class="flex items-center gap-4 px-5 py-[15px] hover:bg-emerald-50 rounded-2xl text-slate-700 font-medium"><i class="fas fa-home w-5 text-emerald-700"></i> ভাড়া ও বিজ্ঞাপন</a>
             <a href="#" onclick="closeMobileMenu(); openDeliveryFinder(); return false;" class="flex items-center gap-4 px-5 py-[15px] hover:bg-emerald-50 rounded-2xl text-emerald-800 font-semibold">
                 <i class="fas fa-motorcycle w-5 text-emerald-700"></i> ডেলিভারি লোকেশন খুঁজুন
             </a>

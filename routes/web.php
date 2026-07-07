@@ -6,10 +6,12 @@ use App\Http\Controllers\AboutController;
 use App\Http\Controllers\AdminController;
 use App\Http\Controllers\Admin\UserController;
 use App\Http\Controllers\BuildingController;
+use App\Http\Controllers\ContactController;
 use App\Http\Controllers\GalleryController;
 use App\Http\Controllers\MemberController;
 use App\Http\Controllers\NoticeController;
 use App\Http\Controllers\ProfileController;
+use App\Http\Controllers\SiteSettingController;
 use App\Models\AboutInfo;
 use App\Models\Building;
 use App\Models\Flat;
@@ -99,8 +101,21 @@ Route::prefix('admin')->name('admin.')->group(function () {
         Route::get('/about', [AboutController::class, 'edit'])->name('about.edit');
         Route::put('/about', [AboutController::class, 'update'])->name('about.update');
         Route::post('/about', [AboutController::class, 'update'])->name('about.update.post');
+
+        // Get In Touch — contact info + recipient email for form submissions
+        Route::get('/contact', [ContactController::class, 'edit'])->name('contact.edit');
+        Route::put('/contact', [ContactController::class, 'update'])->name('contact.update');
+        Route::post('/contact', [ContactController::class, 'update'])->name('contact.update.post');
+
+        // Navigation & Footer — logo, nav color, social links, address
+        Route::get('/settings', [SiteSettingController::class, 'edit'])->name('settings.edit');
+        Route::put('/settings', [SiteSettingController::class, 'update'])->name('settings.update');
+        Route::post('/settings', [SiteSettingController::class, 'update'])->name('settings.update.post');
     });
 });
+
+// Public contact form submission (sends mail to admin-configured recipient)
+Route::post('/contact/submit', [ContactController::class, 'submit'])->name('contact.submit');
 
 // Logout
 Route::post('/logout', function () {

@@ -13,10 +13,7 @@
     @include('pages.notice')
     @include('pages.gallery')
     @include('pages.TopMember')
-    @include('pages.ToLet')
     @include('pages.Review')
     @include('pages.MemberApplication')
     @include('pages.ContactUs')
-    @include('layouts.FloatingButton')
-    @include('layouts.footer')
 @endsection

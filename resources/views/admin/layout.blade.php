@@ -114,6 +114,18 @@
                 <i class="fas fa-images w-5"></i>
                 <span>গ্যালারি</span>
             </a>
+
+            <div class="px-5 text-teal-200 text-xs font-semibold mt-6 mb-2">সেটিংস</div>
+
+            <a href="{{ route('admin.contact.edit') }}" class="sidebar-link flex items-center gap-3 px-5 py-3.5 rounded-2xl text-white font-medium @if(request()->routeIs('admin.contact*')) active @endif">
+                <i class="fas fa-envelope w-5"></i>
+                <span>Get In Touch</span>
+            </a>
+
+            <a href="{{ route('admin.settings.edit') }}" class="sidebar-link flex items-center gap-3 px-5 py-3.5 rounded-2xl text-white font-medium @if(request()->routeIs('admin.settings*')) active @endif">
+                <i class="fas fa-sliders-h w-5"></i>
+                <span>Navigation &amp; Footer</span>
+            </a>
         </nav>
 
         <!-- Bottom Profile -->
