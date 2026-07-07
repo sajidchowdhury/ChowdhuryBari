@@ -56,33 +56,36 @@
                 </div>
 
                 {{-- Hidden JSON data for this road + its buildings --}}
+                {{-- IMPORTANT: use {!! !!} (raw) not {{ }} for json_encode inside
+                     <script type="application/json"> tags. Blade's {{ }} escapes
+                     quotes to &quot; which breaks JSON.parse() in JavaScript. --}}
                 <script type="application/json" id="road-data-{{ $road->id }}" x-ignore>
                 {
                     "id": {{ $road->id }},
-                    "name": {{ json_encode($road->name) }},
+                    "name": {!! json_encode($road->name) !!},
                     "buildings_count": {{ $road->buildings->count() }},
-                    "tags": {{ json_encode($road->tag_list) }},
+                    "tags": {!! json_encode($road->tag_list) !!},
                     "buildings": [
                         @foreach($road->buildings as $b)
                         {
                             "id": {{ $b->id }},
-                            "name": {{ json_encode($b->name) }},
-                            "owner_name": {{ json_encode($b->owner_name) }},
-                            "owner_phone": {{ json_encode($b->owner_phone) }},
-                            "caretaker_name": {{ json_encode($b->caretaker_name) }},
-                            "caretaker_phone": {{ json_encode($b->caretaker_phone) }},
-                            "structure_type": {{ json_encode($b->structure_type) }},
-                            "usage_type": {{ json_encode($b->usage_type) }},
+                            "name": {!! json_encode($b->name) !!},
+                            "owner_name": {!! json_encode($b->owner_name) !!},
+                            "owner_phone": {!! json_encode($b->owner_phone) !!},
+                            "caretaker_name": {!! json_encode($b->caretaker_name) !!},
+                            "caretaker_phone": {!! json_encode($b->caretaker_phone) !!},
+                            "structure_type": {!! json_encode($b->structure_type) !!},
+                            "usage_type": {!! json_encode($b->usage_type) !!},
                             "floor_count": {{ $b->floor_count }},
                             "families_per_floor": {{ $b->families_per_floor }},
                             "total_flats": {{ $b->total_flats }},
                             "active_flats": {{ $b->active_flats }},
                             "has_security": {{ $b->has_security ? 'true' : 'false' }},
                             "has_cleaning": {{ $b->has_cleaning ? 'true' : 'false' }},
-                            "google_lt": {{ json_encode($b->google_lt) }},
-                            "google_ln": {{ json_encode($b->google_ln) }},
-                            "extra_info": {{ json_encode($b->extra_information) }},
-                            "image": {{ json_encode($b->image_url) }}
+                            "google_lt": {!! json_encode($b->google_lt) !!},
+                            "google_ln": {!! json_encode($b->google_ln) !!},
+                            "extra_info": {!! json_encode($b->extra_information) !!},
+                            "image": {!! json_encode($b->image_url) !!}
                         }@if(!$loop->last),@endif
                         @endforeach
                     ]
