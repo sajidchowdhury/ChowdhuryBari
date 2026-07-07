@@ -179,15 +179,8 @@
         document.getElementById('sidebar').classList.toggle('-translate-x-full');
     }
 </script>
-\
-<script defer src="https://unpkg.com/alpinejs@3.14.2/dist/cdn.min.js"></script>
 
-<script>
-    // Ensure Alpine is ready
-    document.addEventListener('alpine:init', () => {
-        console.log('✅ Alpine.js initialized');
-    });
-</script>
+<script defer src="https://unpkg.com/alpinejs@3.14.2/dist/cdn.min.js"></script>
 
 @yield('extra-scripts')
 </body>
