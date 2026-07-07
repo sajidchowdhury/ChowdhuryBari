@@ -22,8 +22,8 @@
                 <button type="submit" class="rounded-3xl bg-teal-600 px-5 py-3 text-white font-medium hover:bg-teal-700 transition">Search</button>
             </form>
 
-            <button type="button" 
-    x-on:click="window.dispatchEvent(new CustomEvent('open-modal', { detail: 'create-road' }))"
+            <button type="button"
+    onclick="window.dispatchEvent(new CustomEvent('open-modal', { detail: 'create-road' }))"
     class="rounded-3xl bg-slate-900 px-5 py-3 text-white font-medium hover:bg-slate-700 transition">
     Create Road
 </button>
@@ -120,7 +120,7 @@
                 <p class="text-slate-500 mt-1">Add a road with its details. Buildings are optional.</p>
             </div>
             <button type="button"
-                x-on:click="window.dispatchEvent(new CustomEvent('close-modal', { detail: 'create-road' }))"
+                onclick="window.dispatchEvent(new CustomEvent('close-modal', { detail: 'create-road' }))"
                 class="text-slate-500 hover:text-slate-900">
                 <i class="fas fa-times"></i>
             </button>
@@ -237,7 +237,7 @@
 
             <div class="flex justify-end gap-3 pt-4 border-t border-slate-200">
                 <button type="button"
-                    x-on:click="window.dispatchEvent(new CustomEvent('close-modal', { detail: 'create-road' }))"
+                    onclick="window.dispatchEvent(new CustomEvent('close-modal', { detail: 'create-road' }))"
                     class="rounded-2xl border border-slate-300 px-6 py-2.5 text-sm font-medium text-slate-700 hover:bg-slate-50 transition">
                     Cancel
                 </button>
