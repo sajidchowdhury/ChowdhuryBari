@@ -41,13 +41,18 @@
                             {{ $building->floor_count }} floor(s) × {{ $building->families_per_floor }} families/floor
                         </p>
                     </div>
-                    <div class="flex gap-2">
+                    <div class="flex gap-2 items-center">
                         <span class="rounded-full bg-slate-100 px-3 py-1 text-xs font-semibold text-slate-700">
                             {{ $building->total_flats }} flats
                         </span>
                         <span class="rounded-full bg-emerald-100 px-3 py-1 text-xs font-semibold text-emerald-700">
                             {{ $building->active_flats }} active
                         </span>
+                        <button type="button"
+                            onclick="window.dispatchEvent(new CustomEvent('open-modal', { detail: 'edit-building' }))"
+                            class="rounded-2xl border border-slate-300 hover:bg-slate-50 px-4 py-2 text-sm font-medium text-slate-700 transition">
+                            <i class="fas fa-edit mr-1"></i> Edit Building
+                        </button>
                     </div>
                 </div>
 
@@ -340,4 +345,121 @@
         </x-modal>
     @endforeach
 @endforeach
+
+{{-- Edit Building modal --}}
+<x-modal name="edit-building" maxWidth="3xl">
+    <div class="bg-white p-6">
+        <div class="flex items-center justify-between gap-4 border-b border-slate-200 pb-4 mb-6">
+            <div>
+                <h2 class="text-2xl font-semibold">Edit Building</h2>
+                <p class="text-slate-500 mt-1 text-sm">Update building info. Changing floors/families-per-floor will auto-generate new flats (existing flats are kept).</p>
+            </div>
+            <button type="button" onclick="window.dispatchEvent(new CustomEvent('close-modal', { detail: 'edit-building' }))" class="text-slate-500 hover:text-slate-900">
+                <i class="fas fa-times text-xl"></i>
+            </button>
+        </div>
+
+        <form action="{{ route('admin.buildings.update', $building) }}" method="POST" enctype="multipart/form-data" class="space-y-4">
+            @csrf
+            @method('PUT')
+
+            {{-- Current image preview --}}
+            @if($building->image_path)
+                <div class="mb-4">
+                    <label class="block text-sm font-medium text-slate-700 mb-2">Current Image</label>
+                    <img src="{{ $building->image_url }}" alt="{{ $building->name }}" class="h-32 w-48 rounded-2xl object-cover border border-slate-200">
+                </div>
+            @endif
+
+            <div class="grid gap-4 sm:grid-cols-2">
+                <div>
+                    <label class="block text-sm font-medium text-slate-700">Building Name <span class="text-red-500">*</span></label>
+                    <input type="text" name="name" value="{{ old('name', $building->name) }}" class="mt-1.5 w-full rounded-2xl border border-slate-300 px-4 py-2.5 text-sm" required>
+                </div>
+                <div>
+                    <label class="block text-sm font-medium text-slate-700">Building Image</label>
+                    <input type="file" name="image" accept="image/*" class="mt-1.5 w-full text-sm">
+                    <p class="text-xs text-slate-500 mt-1">Leave blank to keep current image.</p>
+                </div>
+                <div>
+                    <label class="block text-sm font-medium text-slate-700">Owner Name <span class="text-red-500">*</span></label>
+                    <input type="text" name="owner_name" value="{{ old('owner_name', $building->owner_name) }}" class="mt-1.5 w-full rounded-2xl border border-slate-300 px-4 py-2.5 text-sm" required>
+                </div>
+                <div>
+                    <label class="block text-sm font-medium text-slate-700">Owner Phone <span class="text-red-500">*</span></label>
+                    <input type="text" name="owner_phone" value="{{ old('owner_phone', $building->owner_phone) }}" class="mt-1.5 w-full rounded-2xl border border-slate-300 px-4 py-2.5 text-sm" required>
+                </div>
+                <div>
+                    <label class="block text-sm font-medium text-slate-700">Caretaker Name</label>
+                    <input type="text" name="caretaker_name" value="{{ old('caretaker_name', $building->caretaker_name) }}" class="mt-1.5 w-full rounded-2xl border border-slate-300 px-4 py-2.5 text-sm">
+                </div>
+                <div>
+                    <label class="block text-sm font-medium text-slate-700">Caretaker Phone</label>
+                    <input type="text" name="caretaker_phone" value="{{ old('caretaker_phone', $building->caretaker_phone) }}" class="mt-1.5 w-full rounded-2xl border border-slate-300 px-4 py-2.5 text-sm">
+                </div>
+                <div>
+                    <label class="block text-sm font-medium text-slate-700">Structure Type <span class="text-red-500">*</span></label>
+                    <select name="structure_type" class="mt-1.5 w-full rounded-2xl border border-slate-300 px-4 py-2.5 text-sm bg-white" required>
+                        <option value="building" @selected($building->structure_type === 'building')>Building</option>
+                        <option value="tin_shed" @selected($building->structure_type === 'tin_shed')>Tin Shed</option>
+                        <option value="other" @selected($building->structure_type === 'other')>Other</option>
+                    </select>
+                </div>
+                <div>
+                    <label class="block text-sm font-medium text-slate-700">Usage Type <span class="text-red-500">*</span></label>
+                    <select name="usage_type" class="mt-1.5 w-full rounded-2xl border border-slate-300 px-4 py-2.5 text-sm bg-white" required>
+                        <option value="residential" @selected($building->usage_type === 'residential')>Residential</option>
+                        <option value="shop" @selected($building->usage_type === 'shop')>Shop</option>
+                        <option value="mixed" @selected($building->usage_type === 'mixed')>Mixed</option>
+                    </select>
+                </div>
+                <div>
+                    <label class="block text-sm font-medium text-slate-700">Number of Floors <span class="text-red-500">*</span></label>
+                    <input type="number" name="floor_count" min="1" max="50" value="{{ old('floor_count', $building->floor_count) }}" class="mt-1.5 w-full rounded-2xl border border-slate-300 px-4 py-2.5 text-sm" required>
+                </div>
+                <div>
+                    <label class="block text-sm font-medium text-slate-700">Families per Floor <span class="text-red-500">*</span></label>
+                    <input type="number" name="families_per_floor" min="1" max="20" value="{{ old('families_per_floor', $building->families_per_floor) }}" class="mt-1.5 w-full rounded-2xl border border-slate-300 px-4 py-2.5 text-sm" required>
+                </div>
+                <div class="sm:col-span-2">
+                    <label class="block text-sm font-medium text-slate-700">Services</label>
+                    <div class="mt-2 flex gap-3">
+                        <label class="inline-flex items-center gap-2 text-sm">
+                            <input type="checkbox" name="has_security" value="1" @checked(old('has_security', $building->has_security)) class="rounded"> Security Guard
+                        </label>
+                        <label class="inline-flex items-center gap-2 text-sm">
+                            <input type="checkbox" name="has_cleaning" value="1" @checked(old('has_cleaning', $building->has_cleaning)) class="rounded"> Cleaning
+                        </label>
+                    </div>
+                </div>
+                <div>
+                    <label class="block text-sm font-medium text-slate-700">Google Latitude</label>
+                    <input type="text" name="google_lt" value="{{ old('google_lt', $building->google_lt) }}" class="mt-1.5 w-full rounded-2xl border border-slate-300 px-4 py-2.5 text-sm">
+                </div>
+                <div>
+                    <label class="block text-sm font-medium text-slate-700">Google Longitude</label>
+                    <input type="text" name="google_ln" value="{{ old('google_ln', $building->google_ln) }}" class="mt-1.5 w-full rounded-2xl border border-slate-300 px-4 py-2.5 text-sm">
+                </div>
+                <div class="sm:col-span-2">
+                    <label class="block text-sm font-medium text-slate-700">Extra Information</label>
+                    <textarea name="extra_information" rows="2" class="mt-1.5 w-full rounded-2xl border border-slate-300 px-4 py-2.5 text-sm">{{ old('extra_information', $building->extra_information) }}</textarea>
+                </div>
+            </div>
+
+            <div class="flex justify-between items-center pt-4 border-t border-slate-200">
+                <form action="{{ route('admin.buildings.destroy', $building) }}" method="POST" onsubmit="return confirm('Delete building {{ $building->name }}? This will also delete all its flats and meters.');">
+                    @csrf
+                    @method('DELETE')
+                    <button type="submit" class="rounded-2xl border border-red-300 text-red-600 hover:bg-red-50 px-4 py-2.5 text-sm font-medium transition">
+                        <i class="fas fa-trash mr-1"></i> Delete Building
+                    </button>
+                </form>
+                <div class="flex gap-3">
+                    <button type="button" onclick="window.dispatchEvent(new CustomEvent('close-modal', { detail: 'edit-building' }))" class="rounded-2xl border border-slate-300 px-6 py-2.5 text-sm font-medium text-slate-700 hover:bg-slate-50">Cancel</button>
+                    <button type="submit" class="rounded-2xl bg-teal-600 hover:bg-teal-700 px-6 py-2.5 text-sm font-medium text-white">Save Changes</button>
+                </div>
+            </div>
+        </form>
+    </div>
+</x-modal>
 @endsection
