@@ -447,14 +447,11 @@
             </div>
 
             <div class="flex justify-between items-center pt-4 border-t border-slate-200">
-                {{-- Delete button as a SEPARATE form (NOT nested inside the edit form).
-                     Nested forms are invalid HTML — the browser closes the outer form
-                     when it encounters the inner one, causing fields to be lost. --}}
-                <a href="{{ route('admin.buildings.destroy', $building) }}"
-                   onclick="event.preventDefault(); if (confirm('Delete building {{ $building->name }}? This will also delete all its flats and meters.')) { var f = document.createElement('form'); f.method = 'POST'; f.action = this.href; f.innerHTML = '@csrf<input type=hidden name=_method value=DELETE>'; document.body.appendChild(f); f.submit(); }"
-                   class="rounded-2xl border border-red-300 text-red-600 hover:bg-red-50 px-4 py-2.5 text-sm font-medium transition cursor-pointer">
+                <button type="button"
+                    onclick="deleteBuilding({{ $building->id }}, '{{ $building->name }}')"
+                    class="rounded-2xl border border-red-300 text-red-600 hover:bg-red-50 px-4 py-2.5 text-sm font-medium transition">
                     <i class="fas fa-trash mr-1"></i> Delete Building
-                </a>
+                </button>
                 <div class="flex gap-3">
                     <button type="button" onclick="window.dispatchEvent(new CustomEvent('close-modal', { detail: 'edit-building' }))" class="rounded-2xl border border-slate-300 px-6 py-2.5 text-sm font-medium text-slate-700 hover:bg-slate-50">Cancel</button>
                     <button type="submit" class="rounded-2xl bg-teal-600 hover:bg-teal-700 px-6 py-2.5 text-sm font-medium text-white">Save Changes</button>
@@ -463,4 +460,21 @@
         </form>
     </div>
 </x-modal>
+
+<script>
+    function deleteBuilding(id, name) {
+        if (!confirm('Delete building ' + name + '? This will also delete all its flats and meters.')) return;
+
+        var form = document.createElement('form');
+        form.method = 'POST';
+        form.action = '/admin/buildings/' + id;
+
+        var csrfToken = document.querySelector('meta[name="csrf-token"]').getAttribute('content');
+        form.innerHTML = '<input type="hidden" name="_token" value="' + csrfToken + '">' +
+                         '<input type="hidden" name="_method" value="DELETE">';
+
+        document.body.appendChild(form);
+        form.submit();
+    }
+</script>
 @endsection
