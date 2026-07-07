@@ -32,7 +32,15 @@ class SuperAdminPanelProvider extends PanelProvider
             ->id('super-admin')
             ->path('super-admin')
             ->login()
-            ->authGuard('super_admin')
+            // Use the default 'web' guard. Filament v3 has known issues with
+            // custom guards — the auth state written by Auth::guard('custom')->attempt()
+            // isn't read by Auth::guard('custom')->check() in subsequent requests
+            // due to session cookie name mismatches. Using 'web' avoids this.
+            //
+            // The 'web' guard's provider is configured (in config/auth.php) to use
+            // App\Models\Central\SuperAdmin by default, so Filament authenticates
+            // against the super_admins table on the central DB.
+            ->authGuard('web')
             ->colors([
                 'primary' => Color::Emerald,
                 'danger'  => Color::Rose,

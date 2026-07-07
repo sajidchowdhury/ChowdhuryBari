@@ -1,7 +1,6 @@
 <?php
 
 use App\Models\Central\SuperAdmin;
-use App\Models\User;
 
 return [
 
@@ -39,17 +38,23 @@ return [
     */
 
     'guards' => [
+        // The 'web' guard is now used by BOTH:
+        //   - The super admin Filament panel (panel #4)
+        //   - Future tenant admin/member panels (panels #2, #3)
+        //
+        // We override the provider via AUTH_MODEL env var so the 'web' guard
+        // uses SuperAdmin (central DB) on the super-admin panel, and will use
+        // User (tenant DB) on tenant panels after Phase 2.
+        //
+        // WHY: Filament v3's default Login Livewire component + Authenticate
+        // middleware have known issues with custom guards (the auth state
+        // written by Auth::guard('custom')->attempt() isn't read by
+        // Auth::guard('custom')->check() in subsequent requests due to
+        // session cookie name mismatches). Using the default 'web' guard
+        // avoids this entirely.
         'web' => [
             'driver' => 'session',
             'provider' => 'users',
-        ],
-
-        // Super admin guard — used by the SuperAdmin Filament panel
-        // on the central domain. Separate from tenant user auth so
-        // platform owner credentials live in the central DB only.
-        'super_admin' => [
-            'driver' => 'session',
-            'provider' => 'super_admins',
         ],
     ],
 
@@ -71,15 +76,13 @@ return [
     */
 
     'providers' => [
+        // The 'users' provider is now the ONLY provider. We point it at
+        // SuperAdmin by default (for the super-admin panel). In Phase 2
+        // we'll set AUTH_MODEL=App\Models\Tenant\User on tenant subdomains
+        // so the same provider resolves to the tenant User model.
         'users' => [
             'driver' => 'eloquent',
-            'model' => env('AUTH_MODEL', User::class),
-        ],
-
-        // Super admin provider — uses the central DB's super_admins table.
-        'super_admins' => [
-            'driver' => 'eloquent',
-            'model' => SuperAdmin::class,
+            'model' => env('AUTH_MODEL', SuperAdmin::class),
         ],
 
         // 'users' => [
@@ -111,14 +114,6 @@ return [
         'users' => [
             'provider' => 'users',
             'table' => env('AUTH_PASSWORD_RESET_TOKEN_TABLE', 'password_reset_tokens'),
-            'expire' => 60,
-            'throttle' => 60,
-        ],
-
-        // Super admin password resets — separate token table on central DB.
-        'super_admins' => [
-            'provider' => 'super_admins',
-            'table' => 'super_admin_password_reset_tokens',
             'expire' => 60,
             'throttle' => 60,
         ],

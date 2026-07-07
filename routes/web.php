@@ -53,36 +53,3 @@ Route::post('/logout', function () {
 // Filament registers its own 'login' route for each panel, so we don't need
 // a global one here.
 
-// ====================== TEMPORARY DEBUG ROUTE ======================
-// Visit /debug-auth to see what Filament's auth middleware sees.
-// DELETE THIS ROUTE after debugging is complete.
-Route::get('/debug-auth', function () {
-    $output = [];
-    $output[] = '=== AUTH DEBUG ===';
-    $output[] = 'Time: ' . now()->toDateTimeString();
-    $output[] = '';
-    $output[] = 'Default guard: ' . config('auth.defaults.guard');
-    $output[] = 'super_admin guard check: ' . (config('auth.guards.super_admin') ? 'EXISTS' : 'MISSING');
-    $output[] = '';
-    $output[] = 'Auth::guard(super_admin)->check(): ' . (Auth::guard('super_admin')->check() ? 'YES' : 'NO');
-    $output[] = 'Auth::guard(super_admin)->user(): ' . (Auth::guard('super_admin')->user() ? Auth::guard('super_admin')->user()->email : 'NULL');
-    $output[] = '';
-    $output[] = 'Auth::guard(web)->check(): ' . (Auth::guard('web')->check() ? 'YES' : 'NO');
-    $output[] = 'Auth::check() [default]: ' . (Auth::check() ? 'YES' : 'NO');
-    $output[] = '';
-    $output[] = 'Session ID: ' . session()->getId();
-    $output[] = 'Session driver: ' . config('session.driver');
-    $output[] = 'Session cookie name: ' . config('session.cookie');
-    $output[] = '';
-    $output[] = 'Panel exists: ' . (filament()->getPanel('super-admin') ? 'YES' : 'NO');
-    if (filament()->getPanel('super-admin')) {
-        $output[] = 'Panel auth guard: ' . filament()->getPanel('super-admin')->getAuthGuard();
-        $output[] = 'Panel path: ' . filament()->getPanel('super-admin')->getPath();
-    }
-    $output[] = '';
-    $output[] = '=== ALL SESSION DATA ===';
-    $output[] = json_encode(session()->all(), JSON_PRETTY_PRINT);
-
-    return response('<pre>' . implode("\n", $output) . '</pre>');
-})->name('debug.auth');
-
