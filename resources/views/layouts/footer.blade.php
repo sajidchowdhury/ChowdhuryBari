@@ -21,7 +21,6 @@
                     <a href="#coverage" class="block hover:text-white">আওতাধীন এলাকা</a>
                     <a href="#notices" class="block hover:text-white">নোটিশ বোর্ড</a>
                     <a href="#classifieds" class="block hover:text-white">ভাড়া বিজ্ঞাপন</a>
-                    <a href="#events" class="block hover:text-white">আসন্ন অনুষ্ঠান</a>
                 </div>
             </div>
 

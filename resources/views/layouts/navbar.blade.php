@@ -90,8 +90,6 @@
             <a href="#" onclick="closeMobileMenu(); openDeliveryFinder(); return false;" class="flex items-center gap-4 px-5 py-[15px] hover:bg-emerald-50 rounded-2xl text-emerald-800 font-semibold">
                 <i class="fas fa-motorcycle w-5 text-emerald-700"></i> ডেলিভারি লোকেশন খুঁজুন
             </a>
-            <div class="h-px bg-slate-200 my-3 mx-5"></div>
-            <a href="#events" onclick="closeMobileMenu()" class="flex items-center gap-4 px-5 py-[15px] hover:bg-emerald-50 rounded-2xl text-slate-700 font-medium"><i class="fas fa-calendar-alt w-5 text-emerald-700"></i> আসন্ন অনুষ্ঠান</a>
         </div>
 
         <div class="p-6 border-t bg-slate-50 space-y-3">

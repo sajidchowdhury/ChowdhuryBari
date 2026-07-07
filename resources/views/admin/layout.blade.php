@@ -92,7 +92,7 @@
 
             <a href="{{ route('admin.our-area') }}" class="sidebar-link flex items-center gap-3 px-5 py-3.5 rounded-2xl text-white font-medium @if(request()->routeIs('admin.our-area*')) active @endif">
                 <i class="fas fa-map-marker-alt w-5"></i>
-                <span>Our Area</span>
+                <span>আওতাধীন এলাকা</span>
             </a>
 
             <a href="{{ route('admin.members.index') }}" class="sidebar-link flex items-center gap-3 px-5 py-3.5 rounded-2xl text-white font-medium @if(request()->routeIs('admin.members*')) active @endif">
@@ -108,28 +108,6 @@
             <a href="{{ route('admin.gallery.index') }}" class="sidebar-link flex items-center gap-3 px-5 py-3.5 rounded-2xl text-white font-medium @if(request()->routeIs('admin.gallery*')) active @endif">
                 <i class="fas fa-images w-5"></i>
                 <span>গ্যালারি</span>
-            </a>
-
-            <div class="px-5 text-teal-200 text-xs font-semibold mt-6 mb-2">ম্যানেজমেন্ট</div>
-
-            <a href="" class="sidebar-link flex items-center gap-3 px-5 py-3.5 rounded-2xl text-white font-medium">
-                <i class="fas fa-users w-5"></i>
-                <span>ইউজার ম্যানেজমেন্ট</span>
-            </a>
-
-            <a href="#" class="sidebar-link flex items-center gap-3 px-5 py-3.5 rounded-2xl text-white font-medium">
-                <i class="fas fa-file-alt w-5"></i>
-                <span>কনটেন্ট ম্যানেজমেন্ট</span>
-            </a>
-
-            <a href="#" class="sidebar-link flex items-center gap-3 px-5 py-3.5 rounded-2xl text-white font-medium">
-                <i class="fas fa-chart-bar w-5"></i>
-                <span>রিপোর্টস</span>
-            </a>
-
-            <a href="#" class="sidebar-link flex items-center gap-3 px-5 py-3.5 rounded-2xl text-white font-medium">
-                <i class="fas fa-cog w-5"></i>
-                <span>সেটিংস</span>
             </a>
         </nav>
 

@@ -14,7 +14,6 @@
     @include('pages.gallery')
     @include('pages.TopMember')
     @include('pages.ToLet')
-    @include('pages.Event')
     @include('pages.Review')
     @include('pages.MemberApplication')
     @include('pages.ContactUs')
