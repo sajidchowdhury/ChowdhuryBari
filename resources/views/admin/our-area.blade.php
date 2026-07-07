@@ -8,244 +8,247 @@
     <div class="flex flex-col lg:flex-row justify-between gap-4 items-start">
         <div>
             <h1 class="text-3xl font-semibold">Our Area</h1>
-            <p class="text-slate-600 mt-2">Filter roads and buildings with quick search and category controls.</p>
+            <p class="text-slate-600 mt-2">Manage roads, buildings, flats, and electricity meters.</p>
         </div>
 
-        <div class="flex flex-col sm:flex-row items-start sm:items-center gap-3">
-            <form action="{{ route('admin.our-area') }}" method="GET" class="flex items-center gap-2">
-                <label for="filter" class="sr-only">Filter</label>
-                <select id="filter" name="filter" class="rounded-3xl border border-slate-300 bg-white px-4 py-3 text-sm text-slate-700 shadow-sm">
-                    <option value="road" @if($filter === 'road') selected @endif>By Road</option>
-                    <option value="building" @if($filter === 'building') selected @endif>By Building</option>
-                </select>
-                <input type="text" name="search" value="{{ $search }}" placeholder="Search road, building or owner" class="rounded-3xl border border-slate-300 bg-white px-4 py-3 text-sm text-slate-700 shadow-sm w-64">
-                <button type="submit" class="rounded-3xl bg-teal-600 px-5 py-3 text-white font-medium hover:bg-teal-700 transition">Search</button>
-            </form>
-
+        <div class="flex items-center gap-3">
             <button type="button"
-    onclick="window.dispatchEvent(new CustomEvent('open-modal', { detail: 'create-road' }))"
-    class="rounded-3xl bg-slate-900 px-5 py-3 text-white font-medium hover:bg-slate-700 transition">
-    Create Road
-</button>
+                onclick="window.dispatchEvent(new CustomEvent('open-modal', { detail: 'create-road' }))"
+                class="rounded-2xl bg-slate-900 px-5 py-3 text-white font-medium hover:bg-slate-700 transition">
+                <i class="fas fa-plus mr-2"></i> Create Road
+            </button>
         </div>
     </div>
 
     @if(session('status'))
-        <div class="rounded-3xl bg-emerald-50 border border-emerald-200 p-4 text-emerald-700">
+        <div class="rounded-2xl bg-emerald-50 border border-emerald-200 p-4 text-emerald-700">
             {{ session('status') }}
         </div>
     @endif
 
-    <div class="grid gap-6 lg:grid-cols-2">
-        @if($filter === 'road')
-            @forelse($roads as $road)
-                <div class="rounded-3xl bg-white border border-slate-200 shadow-sm overflow-hidden">
-                    <img src="{{ $road->image_url }}" alt="{{ $road->name }}" class="h-56 w-full object-cover">
-                    <div class="p-6">
-                        <div class="flex items-center justify-between gap-4">
-                            <div class="flex-1 min-w-0">
-                                <h2 class="text-xl font-semibold">{{ $road->name }}</h2>
+    {{-- Road list --}}
+    @forelse($roads as $road)
+        <div class="rounded-3xl bg-white border border-slate-200 shadow-sm overflow-hidden">
+            <div class="p-6 bg-gradient-to-r from-emerald-50 to-teal-50 border-b border-emerald-100">
+                <div class="flex items-start justify-between gap-4">
+                    <div class="flex-1 min-w-0">
+                        <div class="flex items-center gap-3">
+                            @if($road->image_path)
+                                <img src="{{ $road->image_url }}" alt="{{ $road->name }}" class="h-14 w-14 rounded-2xl object-cover">
+                            @else
+                                <div class="h-14 w-14 rounded-2xl bg-emerald-600 text-white flex items-center justify-center">
+                                    <i class="fas fa-road text-xl"></i>
+                                </div>
+                            @endif
+                            <div>
+                                <h2 class="text-xl font-semibold text-slate-900">{{ $road->name }}</h2>
                                 @if($road->description)
-                                    <p class="text-slate-500 mt-1 text-sm leading-relaxed">{{ $road->description }}</p>
+                                    <p class="text-slate-600 text-sm mt-0.5">{{ $road->description }}</p>
                                 @endif
                                 @if($road->tag_list)
-                                    <div class="mt-3 flex flex-wrap gap-1.5">
+                                    <div class="mt-2 flex flex-wrap gap-1">
                                         @foreach($road->tag_list as $tag)
-                                            <span class="inline-flex items-center rounded-full bg-emerald-50 border border-emerald-200 px-2.5 py-0.5 text-xs font-medium text-emerald-700">
+                                            <span class="inline-flex items-center rounded-full bg-white border border-emerald-200 px-2 py-0.5 text-xs font-medium text-emerald-700">
                                                 {{ $tag }}
                                             </span>
                                         @endforeach
                                     </div>
                                 @endif
                             </div>
-                            <span class="rounded-full bg-slate-100 text-slate-700 px-3 py-1 text-xs font-semibold whitespace-nowrap">{{ $road->buildings->count() }} buildings</span>
                         </div>
-                        <div class="mt-5 grid gap-4 sm:grid-cols-2">
-                            @foreach($road->buildings as $building)
-                                <div class="rounded-3xl bg-slate-50 p-4">
-                                    <div class="flex items-center gap-3">
-                                        <img src="{{ $building->image_url }}" alt="{{ $building->name }}" class="h-14 w-14 rounded-3xl object-cover">
-                                        <div>
-                                            <h3 class="font-semibold">{{ $building->name }}</h3>
-                                            <p class="text-slate-500 text-sm">{{ $building->building_type }}</p>
+                    </div>
+                    <div class="flex items-center gap-2">
+                        <span class="rounded-full bg-white border border-slate-200 px-3 py-1 text-xs font-semibold text-slate-700">
+                            {{ $road->buildings->count() }} buildings
+                        </span>
+                        <button type="button"
+                            onclick="window.dispatchEvent(new CustomEvent('open-modal', { detail: 'add-building-{{ $road->id }}' }))"
+                            class="rounded-2xl bg-teal-600 hover:bg-teal-700 px-4 py-2 text-white text-sm font-medium transition">
+                            <i class="fas fa-plus mr-1"></i> Add Building
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            {{-- Buildings under this road --}}
+            <div class="p-6">
+                @if($road->buildings->isNotEmpty())
+                    <div class="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+                        @foreach($road->buildings as $building)
+                            <a href="{{ route('admin.buildings.show', $building) }}"
+                               class="block rounded-2xl border border-slate-200 hover:border-emerald-300 hover:shadow-md transition p-4 group">
+                                <div class="flex items-start gap-3">
+                                    <img src="{{ $building->image_url }}" alt="{{ $building->name }}" class="h-16 w-16 rounded-2xl object-cover">
+                                    <div class="flex-1 min-w-0">
+                                        <h3 class="font-semibold text-slate-900 group-hover:text-emerald-700">{{ $building->name }}</h3>
+                                        <p class="text-xs text-slate-500 mt-0.5">{{ ucfirst($building->structure_type) }} • {{ ucfirst($building->usage_type) }}</p>
+                                        <p class="text-xs text-slate-500 mt-0.5">Owner: {{ $building->owner_name }}</p>
+                                        <div class="mt-2 flex flex-wrap gap-1">
+                                            <span class="text-[10px] bg-slate-100 px-1.5 py-0.5 rounded">{{ $building->total_flats }} flats</span>
+                                            @if($building->has_security)
+                                                <span class="text-[10px] bg-blue-100 text-blue-700 px-1.5 py-0.5 rounded">Security</span>
+                                            @endif
+                                            @if($building->has_cleaning)
+                                                <span class="text-[10px] bg-emerald-100 text-emerald-700 px-1.5 py-0.5 rounded">Cleaning</span>
+                                            @endif
                                         </div>
                                     </div>
-                                    <div class="mt-4 text-sm text-slate-600 space-y-2">
-                                        <p><strong>Owner:</strong> {{ $building->owner }}</p>
-                                        <p><strong>Families:</strong> {{ $building->total_family }}</p>
-                                        <p><strong>Services:</strong> {{ implode(', ', $building->service_taking ?? []) }}</p>
-                                    </div>
+                                    <i class="fas fa-chevron-right text-slate-300 group-hover:text-emerald-600 mt-2"></i>
                                 </div>
-                            @endforeach
-                        </div>
+                            </a>
+                        @endforeach
                     </div>
-                </div>
-            @empty
-                <div class="rounded-3xl bg-white border border-slate-200 shadow-sm p-8 text-slate-600">No roads found. Click "Create Road" to add your first road.</div>
-            @endforelse
-        @else
-            @forelse($buildings as $building)
-                <div class="rounded-3xl bg-white border border-slate-200 shadow-sm overflow-hidden">
-                    <div class="p-6 flex flex-col lg:flex-row gap-6">
-                        <img src="{{ $building->image_url }}" alt="{{ $building->name }}" class="h-48 w-full rounded-3xl object-cover lg:w-72">
-                        <div class="flex-1">
-                            <h2 class="text-xl font-semibold">{{ $building->name }}</h2>
-                            <p class="text-slate-500 mt-1">{{ $building->road->name ?? '' }}</p>
-                            <div class="mt-5 grid gap-3 sm:grid-cols-2 text-sm text-slate-600">
-                                <div><strong>Owner:</strong> {{ $building->owner }}</div>
-                                <div><strong>Owner Number:</strong> {{ $building->owner_number }}</div>
-                                <div><strong>Floors:</strong> {{ $building->total_floor }}</div>
-                                <div><strong>Families:</strong> {{ $building->total_family }}</div>
-                                <div><strong>Google LN:</strong> {{ $building->google_ln }}</div>
-                                <div><strong>Google LT:</strong> {{ $building->google_lt }}</div>
-                                <div class="sm:col-span-2"><strong>Type:</strong> {{ $building->building_type }}</div>
-                                <div class="sm:col-span-2"><strong>Extra:</strong> {{ $building->extra_information }}</div>
-                            </div>
-                            <div class="mt-4 text-sm text-slate-500"><strong>Services:</strong> {{ implode(', ', $building->service_taking ?? []) }}</div>
-                        </div>
-                    </div>
-                </div>
-            @empty
-                <div class="rounded-3xl bg-white border border-slate-200 shadow-sm p-8 text-slate-600">No buildings found.</div>
-            @endforelse
-        @endif
-    </div>
-</div>
-
-<x-modal name="create-road" maxWidth="2xl">
-    <div class="bg-white p-6">
-        <div class="flex items-center justify-between gap-4 border-b border-slate-200 pb-4">
-            <div>
-                <h2 class="text-2xl font-semibold">Create Road</h2>
-                <p class="text-slate-500 mt-1">Add a road with its details. Buildings are optional.</p>
+                @else
+                    <p class="text-slate-500 text-sm text-center py-8">
+                        No buildings yet. Click <strong>"Add Building"</strong> to create the first one.
+                    </p>
+                @endif
             </div>
-            <button type="button"
-                onclick="window.dispatchEvent(new CustomEvent('close-modal', { detail: 'create-road' }))"
-                class="text-slate-500 hover:text-slate-900">
-                <i class="fas fa-times"></i>
-            </button>
         </div>
 
-        <form action="{{ route('admin.our-area.store') }}" method="POST" enctype="multipart/form-data" class="space-y-6 mt-6">
-            @csrf
+        {{-- Add Building modal for this road --}}
+        <x-modal name="add-building-{{ $road->id }}" maxWidth="3xl">
+            <div class="bg-white p-6">
+                <div class="flex items-center justify-between gap-4 border-b border-slate-200 pb-4 mb-6">
+                    <div>
+                        <h2 class="text-2xl font-semibold">Add Building to {{ $road->name }}</h2>
+                        <p class="text-slate-500 mt-1 text-sm">Fill in the building details. You can add flats + meters after creating it.</p>
+                    </div>
+                    <button type="button" onclick="window.dispatchEvent(new CustomEvent('close-modal', { detail: 'add-building-{{ $road->id }}' }))" class="text-slate-500 hover:text-slate-900">
+                        <i class="fas fa-times text-xl"></i>
+                    </button>
+                </div>
 
-            {{-- ============ ROAD DETAILS ============ --}}
-            <div class="rounded-3xl bg-emerald-50/40 border border-emerald-100 p-6 space-y-4">
-                <h3 class="text-sm font-semibold text-emerald-800 uppercase tracking-wide flex items-center gap-2">
-                    <i class="fas fa-road"></i> Road Information
-                </h3>
+                <form action="{{ route('admin.buildings.store', $road) }}" method="POST" enctype="multipart/form-data" class="space-y-4">
+                    @csrf
+                    <div class="grid gap-4 sm:grid-cols-2">
+                        <div>
+                            <label class="block text-sm font-medium text-slate-700">Building Name <span class="text-red-500">*</span></label>
+                            <input type="text" name="name" value="{{ old('name') }}" placeholder="e.g. Block A-1, House 12" class="mt-1.5 w-full rounded-2xl border border-slate-300 px-4 py-2.5 text-sm" required>
+                        </div>
+                        <div>
+                            <label class="block text-sm font-medium text-slate-700">Building Image</label>
+                            <input type="file" name="image" accept="image/*" class="mt-1.5 w-full text-sm">
+                        </div>
+                        <div>
+                            <label class="block text-sm font-medium text-slate-700">Owner Name <span class="text-red-500">*</span></label>
+                            <input type="text" name="owner_name" value="{{ old('owner_name') }}" class="mt-1.5 w-full rounded-2xl border border-slate-300 px-4 py-2.5 text-sm" required>
+                        </div>
+                        <div>
+                            <label class="block text-sm font-medium text-slate-700">Owner Phone <span class="text-red-500">*</span></label>
+                            <input type="text" name="owner_phone" value="{{ old('owner_phone') }}" placeholder="01XXXXXXXXX" class="mt-1.5 w-full rounded-2xl border border-slate-300 px-4 py-2.5 text-sm" required>
+                        </div>
+                        <div>
+                            <label class="block text-sm font-medium text-slate-700">Caretaker Name</label>
+                            <input type="text" name="caretaker_name" value="{{ old('caretaker_name') }}" class="mt-1.5 w-full rounded-2xl border border-slate-300 px-4 py-2.5 text-sm">
+                        </div>
+                        <div>
+                            <label class="block text-sm font-medium text-slate-700">Caretaker Phone</label>
+                            <input type="text" name="caretaker_phone" value="{{ old('caretaker_phone') }}" class="mt-1.5 w-full rounded-2xl border border-slate-300 px-4 py-2.5 text-sm">
+                        </div>
+                        <div>
+                            <label class="block text-sm font-medium text-slate-700">Structure Type <span class="text-red-500">*</span></label>
+                            <select name="structure_type" class="mt-1.5 w-full rounded-2xl border border-slate-300 px-4 py-2.5 text-sm bg-white" required>
+                                <option value="building" @selected(old('structure_type') === 'building')>Building</option>
+                                <option value="tin_shed" @selected(old('structure_type') === 'tin_shed')>Tin Shed</option>
+                                <option value="other" @selected(old('structure_type') === 'other')>Other</option>
+                            </select>
+                        </div>
+                        <div>
+                            <label class="block text-sm font-medium text-slate-700">Usage Type <span class="text-red-500">*</span></label>
+                            <select name="usage_type" class="mt-1.5 w-full rounded-2xl border border-slate-300 px-4 py-2.5 text-sm bg-white" required>
+                                <option value="residential" @selected(old('usage_type') === 'residential')>Residential</option>
+                                <option value="shop" @selected(old('usage_type') === 'shop')>Shop</option>
+                                <option value="mixed" @selected(old('usage_type') === 'mixed')>Mixed</option>
+                            </select>
+                        </div>
+                        <div>
+                            <label class="block text-sm font-medium text-slate-700">Total Floors <span class="text-red-500">*</span></label>
+                            <input type="number" name="total_floor" min="0" value="{{ old('total_floor', 1) }}" class="mt-1.5 w-full rounded-2xl border border-slate-300 px-4 py-2.5 text-sm" required>
+                        </div>
+                        <div>
+                            <label class="block text-sm font-medium text-slate-700">Services</label>
+                            <div class="mt-2 flex gap-3">
+                                <label class="inline-flex items-center gap-2 text-sm">
+                                    <input type="checkbox" name="has_security" value="1" @checked(old('has_security')) class="rounded">
+                                    Security Guard
+                                </label>
+                                <label class="inline-flex items-center gap-2 text-sm">
+                                    <input type="checkbox" name="has_cleaning" value="1" @checked(old('has_cleaning')) class="rounded">
+                                    Cleaning
+                                </label>
+                            </div>
+                        </div>
+                        <div>
+                            <label class="block text-sm font-medium text-slate-700">Google Latitude</label>
+                            <input type="text" name="google_lt" value="{{ old('google_lt') }}" placeholder="23.8103" class="mt-1.5 w-full rounded-2xl border border-slate-300 px-4 py-2.5 text-sm">
+                        </div>
+                        <div>
+                            <label class="block text-sm font-medium text-slate-700">Google Longitude</label>
+                            <input type="text" name="google_ln" value="{{ old('google_ln') }}" placeholder="90.4125" class="mt-1.5 w-full rounded-2xl border border-slate-300 px-4 py-2.5 text-sm">
+                        </div>
+                        <div class="sm:col-span-2">
+                            <label class="block text-sm font-medium text-slate-700">Extra Information</label>
+                            <textarea name="extra_information" rows="2" class="mt-1.5 w-full rounded-2xl border border-slate-300 px-4 py-2.5 text-sm">{{ old('extra_information') }}</textarea>
+                        </div>
+                    </div>
 
-                <div class="grid gap-4 lg:grid-cols-2">
+                    <div class="flex justify-end gap-3 pt-4 border-t border-slate-200">
+                        <button type="button" onclick="window.dispatchEvent(new CustomEvent('close-modal', { detail: 'add-building-{{ $road->id }}' }))" class="rounded-2xl border border-slate-300 px-6 py-2.5 text-sm font-medium text-slate-700 hover:bg-slate-50">Cancel</button>
+                        <button type="submit" class="rounded-2xl bg-teal-600 hover:bg-teal-700 px-6 py-2.5 text-sm font-medium text-white">Save Building</button>
+                    </div>
+                </form>
+            </div>
+        </x-modal>
+    @empty
+        <div class="rounded-3xl bg-white border border-slate-200 shadow-sm p-12 text-center">
+            <i class="fas fa-road text-5xl text-slate-300 mb-4"></i>
+            <h3 class="text-lg font-semibold text-slate-700">No roads yet</h3>
+            <p class="text-slate-500 mt-1">Click "Create Road" to add your first road.</p>
+        </div>
+    @endforelse
+
+    {{-- Create Road modal (simplified — no building in same form) --}}
+    <x-modal name="create-road" maxWidth="2xl">
+        <div class="bg-white p-6">
+            <div class="flex items-center justify-between gap-4 border-b border-slate-200 pb-4 mb-6">
+                <div>
+                    <h2 class="text-2xl font-semibold">Create Road</h2>
+                    <p class="text-slate-500 mt-1 text-sm">Add a new road. You can add buildings to it afterwards.</p>
+                </div>
+                <button type="button" onclick="window.dispatchEvent(new CustomEvent('close-modal', { detail: 'create-road' }))" class="text-slate-500 hover:text-slate-900">
+                    <i class="fas fa-times text-xl"></i>
+                </button>
+            </div>
+
+            <form action="{{ route('admin.our-area.store') }}" method="POST" enctype="multipart/form-data" class="space-y-4">
+                @csrf
+                <div class="grid gap-4 sm:grid-cols-2">
                     <div>
                         <label class="block text-sm font-medium text-slate-700">Road Name <span class="text-red-500">*</span></label>
-                        <input type="text" name="road_name" value="{{ old('road_name') }}" placeholder="e.g. Main Road, East Para Road" class="mt-1.5 w-full rounded-2xl border border-slate-300 bg-white px-4 py-2.5 text-sm">
-                        @error('road_name')<p class="text-sm text-red-600 mt-1">{{ $message }}</p>@enderror
+                        <input type="text" name="road_name" value="{{ old('road_name') }}" placeholder="e.g. Main Road" class="mt-1.5 w-full rounded-2xl border border-slate-300 px-4 py-2.5 text-sm" required>
                     </div>
                     <div>
                         <label class="block text-sm font-medium text-slate-700">Road Image</label>
-                        <input type="file" name="road_image" accept="image/*" class="mt-1.5 w-full text-sm text-slate-700 file:mr-3 file:rounded-full file:border-0 file:bg-emerald-100 file:px-3 file:py-1.5 file:text-emerald-700 hover:file:bg-emerald-200">
-                        @error('road_image')<p class="text-sm text-red-600 mt-1">{{ $message }}</p>@enderror
+                        <input type="file" name="road_image" accept="image/*" class="mt-1.5 w-full text-sm">
                     </div>
                 </div>
-
                 <div>
                     <label class="block text-sm font-medium text-slate-700">Short Description</label>
-                    <textarea name="road_description" rows="2" maxlength="500" placeholder="One-line description of this road (max 500 chars)" class="mt-1.5 w-full rounded-2xl border border-slate-300 bg-white px-4 py-2.5 text-sm">{{ old('road_description') }}</textarea>
-                    @error('road_description')<p class="text-sm text-red-600 mt-1">{{ $message }}</p>@enderror
+                    <textarea name="road_description" rows="2" maxlength="500" class="mt-1.5 w-full rounded-2xl border border-slate-300 px-4 py-2.5 text-sm">{{ old('road_description') }}</textarea>
                 </div>
-
                 <div>
                     <label class="block text-sm font-medium text-slate-700">Tags</label>
-                    <input type="text" name="road_tags" value="{{ old('road_tags') }}" placeholder="Comma-separated, e.g. Main Road, CCTV Covered, Cleanest 2024" class="mt-1.5 w-full rounded-2xl border border-slate-300 bg-white px-4 py-2.5 text-sm">
-                    <p class="text-xs text-slate-500 mt-1">Separate tags with commas. They'll appear as colored chips on the road card.</p>
-                    @error('road_tags')<p class="text-sm text-red-600 mt-1">{{ $message }}</p>@enderror
-                </div>
-            </div>
-
-            {{-- ============ BUILDING (OPTIONAL) ============ --}}
-            <div class="rounded-3xl bg-slate-50 border border-slate-200 p-6">
-                <div class="flex items-center justify-between gap-4 mb-4">
-                    <div>
-                        <h3 class="text-lg font-semibold">Building Information <span class="text-xs font-normal text-slate-500">(optional)</span></h3>
-                        <p class="text-slate-500 text-sm">Add a building now, or skip and add buildings later.</p>
-                    </div>
+                    <input type="text" name="road_tags" value="{{ old('road_tags') }}" placeholder="Comma-separated, e.g. Main Road, CCTV, Cleanest 2024" class="mt-1.5 w-full rounded-2xl border border-slate-300 px-4 py-2.5 text-sm">
+                    <p class="text-xs text-slate-500 mt-1">Separate tags with commas.</p>
                 </div>
 
-                <div class="grid gap-4 lg:grid-cols-2">
-                    <div>
-                        <label class="block text-sm font-medium text-slate-700">Building Name</label>
-                        <input type="text" name="buildings[0][building_name]" value="{{ old('buildings.0.building_name') }}" class="mt-1.5 w-full rounded-2xl border border-slate-300 bg-white px-4 py-2.5 text-sm">
-                        @error('buildings.0.building_name')<p class="text-sm text-red-600 mt-1">{{ $message }}</p>@enderror
-                    </div>
-                    <div>
-                        <label class="block text-sm font-medium text-slate-700">Owner Name</label>
-                        <input type="text" name="buildings[0][owner_name]" value="{{ old('buildings.0.owner_name') }}" class="mt-1.5 w-full rounded-2xl border border-slate-300 bg-white px-4 py-2.5 text-sm">
-                        @error('buildings.0.owner_name')<p class="text-sm text-red-600 mt-1">{{ $message }}</p>@enderror
-                    </div>
-                    <div>
-                        <label class="block text-sm font-medium text-slate-700">Total Floor</label>
-                        <input type="number" min="1" name="buildings[0][total_floor]" value="{{ old('buildings.0.total_floor') }}" class="mt-1.5 w-full rounded-2xl border border-slate-300 bg-white px-4 py-2.5 text-sm">
-                        @error('buildings.0.total_floor')<p class="text-sm text-red-600 mt-1">{{ $message }}</p>@enderror
-                    </div>
-                    <div>
-                        <label class="block text-sm font-medium text-slate-700">Total Family</label>
-                        <input type="number" min="0" name="buildings[0][total_family]" value="{{ old('buildings.0.total_family') }}" class="mt-1.5 w-full rounded-2xl border border-slate-300 bg-white px-4 py-2.5 text-sm">
-                        @error('buildings.0.total_family')<p class="text-sm text-red-600 mt-1">{{ $message }}</p>@enderror
-                    </div>
-                    <div>
-                        <label class="block text-sm font-medium text-slate-700">Building Type</label>
-                        <input type="text" name="buildings[0][building_type]" value="{{ old('buildings.0.building_type') }}" placeholder="Residential, Mixed, Commercial" class="mt-1.5 w-full rounded-2xl border border-slate-300 bg-white px-4 py-2.5 text-sm">
-                        @error('buildings.0.building_type')<p class="text-sm text-red-600 mt-1">{{ $message }}</p>@enderror
-                    </div>
-                    <div>
-                        <label class="block text-sm font-medium text-slate-700">Owner Number</label>
-                        <input type="text" name="buildings[0][owner_number]" value="{{ old('buildings.0.owner_number') }}" class="mt-1.5 w-full rounded-2xl border border-slate-300 bg-white px-4 py-2.5 text-sm">
-                        @error('buildings.0.owner_number')<p class="text-sm text-red-600 mt-1">{{ $message }}</p>@enderror
-                    </div>
-                    <div>
-                        <label class="block text-sm font-medium text-slate-700">Google Ln</label>
-                        <input type="text" name="buildings[0][google_ln]" value="{{ old('buildings.0.google_ln') }}" class="mt-1.5 w-full rounded-2xl border border-slate-300 bg-white px-4 py-2.5 text-sm">
-                        @error('buildings.0.google_ln')<p class="text-sm text-red-600 mt-1">{{ $message }}</p>@enderror
-                    </div>
-                    <div>
-                        <label class="block text-sm font-medium text-slate-700">Google Lt</label>
-                        <input type="text" name="buildings[0][google_lt]" value="{{ old('buildings.0.google_lt') }}" class="mt-1.5 w-full rounded-2xl border border-slate-300 bg-white px-4 py-2.5 text-sm">
-                        @error('buildings.0.google_lt')<p class="text-sm text-red-600 mt-1">{{ $message }}</p>@enderror
-                    </div>
-                    <div class="lg:col-span-2">
-                        <label class="block text-sm font-medium text-slate-700">Extra Information</label>
-                        <textarea name="buildings[0][extra_information]" rows="2" class="mt-1.5 w-full rounded-2xl border border-slate-300 bg-white px-4 py-2.5 text-sm">{{ old('buildings.0.extra_information') }}</textarea>
-                        @error('buildings.0.extra_information')<p class="text-sm text-red-600 mt-1">{{ $message }}</p>@enderror
-                    </div>
-                    <div>
-                        <label class="block text-sm font-medium text-slate-700">Service Taking</label>
-                        <div class="mt-1.5 flex flex-wrap gap-2">
-                            <label class="inline-flex items-center gap-2 rounded-full border border-slate-300 bg-white px-4 py-2 text-sm">
-                                <input type="checkbox" name="buildings[0][service_taking][]" value="cleaning" @checked(is_array(old('buildings.0.service_taking')) && in_array('cleaning', old('buildings.0.service_taking')))>Cleaning</label>
-                            <label class="inline-flex items-center gap-2 rounded-full border border-slate-300 bg-white px-4 py-2 text-sm">
-                                <input type="checkbox" name="buildings[0][service_taking][]" value="security" @checked(is_array(old('buildings.0.service_taking')) && in_array('security', old('buildings.0.service_taking')))>Security</label>
-                        </div>
-                        @error('buildings.0.service_taking')<p class="text-sm text-red-600 mt-1">{{ $message }}</p>@enderror
-                    </div>
-                    <div>
-                        <label class="block text-sm font-medium text-slate-700">Building Image</label>
-                        <input type="file" name="buildings[0][building_image]" accept="image/*" class="mt-1.5 w-full text-sm text-slate-700 file:mr-3 file:rounded-full file:border-0 file:bg-slate-200 file:px-3 file:py-1.5 file:text-slate-700 hover:file:bg-slate-300">
-                        @error('buildings.0.building_image')<p class="text-sm text-red-600 mt-1">{{ $message }}</p>@enderror
-                    </div>
+                <div class="flex justify-end gap-3 pt-4 border-t border-slate-200">
+                    <button type="button" onclick="window.dispatchEvent(new CustomEvent('close-modal', { detail: 'create-road' }))" class="rounded-2xl border border-slate-300 px-6 py-2.5 text-sm font-medium text-slate-700 hover:bg-slate-50">Cancel</button>
+                    <button type="submit" class="rounded-2xl bg-teal-600 hover:bg-teal-700 px-6 py-2.5 text-sm font-medium text-white">Save Road</button>
                 </div>
-            </div>
-
-            <div class="flex justify-end gap-3 pt-4 border-t border-slate-200">
-                <button type="button"
-                    onclick="window.dispatchEvent(new CustomEvent('close-modal', { detail: 'create-road' }))"
-                    class="rounded-2xl border border-slate-300 px-6 py-2.5 text-sm font-medium text-slate-700 hover:bg-slate-50 transition">
-                    Cancel
-                </button>
-                <button type="submit" class="rounded-2xl bg-teal-600 px-6 py-2.5 text-sm font-medium text-white hover:bg-teal-700 transition">
-                    Save Road
-                </button>
-            </div>
-        </form>
-    </div>
-</x-modal>
+            </form>
+        </div>
+    </x-modal>
+</div>
 @endsection

@@ -4,6 +4,7 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\AdminController;
 use App\Http\Controllers\Admin\UserController;
+use App\Http\Controllers\BuildingController;
 use App\Http\Controllers\ProfileController;
 use App\Models\Road;
 
@@ -12,13 +13,6 @@ Route::get('/', function () {
         'roads' => Road::with('buildings')->orderBy('name')->get(),
     ]);
 })->name('home');
-
-// ====================== TEMPORARY MODAL DEBUG ROUTE ======================
-// Visit /test-modal to see if the modal component + Alpine.js work.
-// DELETE THIS ROUTE after debugging.
-Route::get('/test-modal', function () {
-    return view('test-modal');
-})->name('test.modal');
 
 // ====================== ADMIN SECTION ======================
 Route::prefix('admin')->name('admin.')->group(function () {
@@ -33,8 +27,6 @@ Route::prefix('admin')->name('admin.')->group(function () {
     Route::post('/login', [AdminController::class, 'login'])->name('login.post');
 
     // Protected Admin Routes — require both authentication AND admin role.
-    // The is_admin middleware (App\Http\Middleware\IsAdmin) aborts with 403
-    // for any authenticated user whose role is not 'admin'.
     Route::middleware(['auth', 'is_admin'])->group(function () {
         Route::get('/dashboard', [AdminController::class, 'dashboard'])->name('dashboard');
         Route::get('/our-area', [AdminController::class, 'ourArea'])->name('our-area');
@@ -44,6 +36,24 @@ Route::prefix('admin')->name('admin.')->group(function () {
 
         // User management
         Route::resource('users', UserController::class);
+
+        // Building / Flat / Meter management
+        Route::get('/buildings/{building}', [BuildingController::class, 'show'])->name('buildings.show');
+        Route::post('/roads/{road}/buildings', [BuildingController::class, 'store'])->name('buildings.store');
+        Route::put('/buildings/{building}', [BuildingController::class, 'update'])->name('buildings.update');
+        Route::delete('/buildings/{building}', [BuildingController::class, 'destroy'])->name('buildings.destroy');
+
+        // Flats
+        Route::post('/buildings/{building}/flats', [BuildingController::class, 'storeFlat'])->name('flats.store');
+        Route::put('/flats/{flat}', [BuildingController::class, 'updateFlat'])->name('flats.update');
+        Route::delete('/flats/{flat}', [BuildingController::class, 'destroyFlat'])->name('flats.destroy');
+
+        // Meters
+        Route::post('/flats/{flat}/meters', [BuildingController::class, 'storeMeter'])->name('meters.store');
+        Route::delete('/meters/{meter}', [BuildingController::class, 'destroyMeter'])->name('meters.destroy');
+
+        // Meter readings (recharge records)
+        Route::post('/meters/{meter}/readings', [BuildingController::class, 'storeReading'])->name('readings.store');
     });
 });
 
