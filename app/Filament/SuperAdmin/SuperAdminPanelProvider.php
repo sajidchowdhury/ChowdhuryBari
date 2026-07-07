@@ -12,9 +12,9 @@ use Illuminate\Cookie\Middleware\AddQueuedCookiesToResponse;
 use Illuminate\Cookie\Middleware\EncryptCookies;
 use Illuminate\Foundation\Http\Middleware\VerifyCsrfToken;
 use Illuminate\Routing\Middleware\SubstituteBindings;
-use Illuminate\Session\Middleware\AuthenticateSession;
 use Illuminate\Session\Middleware\StartSession;
 use Illuminate\View\Middleware\ShareErrorsFromSession;
+// NOTE: AuthenticateSession import removed — see comment in middleware() below.
 
 /**
  * Panel #4 — Super Admin (the platform owner's control room).
@@ -56,7 +56,11 @@ class SuperAdminPanelProvider extends PanelProvider
                 EncryptCookies::class,
                 AddQueuedCookiesToResponse::class,
                 StartSession::class,
-                AuthenticateSession::class,
+                // NOTE: AuthenticateSession removed — it uses Laravel's DEFAULT guard
+                // ('web'), not our 'super_admin' guard. This causes a redirect loop
+                // after login: dashboard thinks you're not authenticated → redirects
+                // to login → login sees you ARE authenticated → redirects to dashboard.
+                // We don't need "logout other devices" feature anyway.
                 ShareErrorsFromSession::class,
                 VerifyCsrfToken::class,
                 SubstituteBindings::class,
