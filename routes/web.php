@@ -13,6 +13,13 @@ Route::get('/', function () {
     ]);
 })->name('home');
 
+// ====================== TEMPORARY MODAL DEBUG ROUTE ======================
+// Visit /test-modal to see if the modal component + Alpine.js work.
+// DELETE THIS ROUTE after debugging.
+Route::get('/test-modal', function () {
+    return view('test-modal');
+})->name('test.modal');
+
 // ====================== ADMIN SECTION ======================
 Route::prefix('admin')->name('admin.')->group(function () {
 
