@@ -52,8 +52,9 @@ Route::prefix('admin')->name('admin.')->group(function () {
         Route::post('/flats/{flat}/meters', [BuildingController::class, 'storeMeter'])->name('meters.store');
         Route::delete('/meters/{meter}', [BuildingController::class, 'destroyMeter'])->name('meters.destroy');
         Route::post('/meters/{meter}/sync', [BuildingController::class, 'syncMeter'])->name('meters.sync');
+        Route::post('/meters/{meter}/bulk-readings', [BuildingController::class, 'storeBulkReadings'])->name('meters.bulk-readings');
 
-        // Meter readings (recharge records)
+        // Meter readings (single recharge records)
         Route::post('/meters/{meter}/readings', [BuildingController::class, 'storeReading'])->name('readings.store');
     });
 });

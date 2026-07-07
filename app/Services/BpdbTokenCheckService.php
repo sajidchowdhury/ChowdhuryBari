@@ -9,55 +9,56 @@ use Carbon\Carbon;
 /**
  * BPDB Prepaid Meter Token Check Service
  *
- * Scrapes the official BPDB prepaid portal to fetch the last 3 recharge
- * tokens for a given meter number. NO login required — just enter the
- * meter number on the public token-check page.
+ * ⚠️  IMPORTANT — reCAPTCHA BLOCKER (confirmed July 2026):
+ *   The official BPDB portal at https://web.bpdbprepaid.gov.bd/bn/token-check
+ *   uses Google reCAPTCHA Enterprise. There is NO legitimate way to bypass
+ *   this programmatically:
+ *     - Paid CAPTCHA-solving services (2captcha etc.) are a legal gray area
+ *       and Google actively fights them
+ *     - Headless browsers are caught by reCAPTCHA Enterprise's behavioral
+ *       analysis (mouse movement, timing, fingerprinting)
+ *     - The only "right" way is to become an official BPDB API partner
+ *       (bureaucratic, takes months)
+ *
+ * WHAT WORKS INSTEAD — human-in-the-loop:
+ *   The secretary (human) visits the BPDB site, solves the CAPTCHA, enters
+ *   the meter number, and sees the last 3 recharge tokens. They then enter
+ *   those tokens into our admin panel via the "Quick Recharge Entry" modal.
+ *
+ *   We make this as painless as possible by:
+ *     1. Providing an "Open BPDB Site ↗" button that opens the portal in a
+ *        new tab (so the secretary doesn't lose their place in our admin)
+ *     2. A "Quick Recharge Entry" modal pre-filled with the meter number
+ *        where the secretary pastes the 3 token amounts + dates
+ *     3. One submit creates all 3 MeterReading records at once
+ *
+ * This service is KEPT for future use IF BPDB ever offers an official API
+ * (or if the owner becomes an authorized partner). Until then, the
+ * getLastTokens() method will likely return null because of reCAPTCHA.
  *
  * Official URL: https://web.bpdbprepaid.gov.bd/bn/token-check
- * Alternative:  http://180.211.137.10:3001/en/token-check (older, HTTP)
- *
- * How the portal works (from inspecting the page):
- *   1. User visits /bn/token-check
- *   2. Page contains a form with a meter_number input + submit button
- *   3. On submit, it POSTs to a backend endpoint (likely /api/token-check
- *      or similar) and returns JSON with customer info + last 3 tokens
- *   4. The page then renders the result via JS
- *
- * Strategy:
- *   - Try the modern HTTPS URL first (web.bpdbprepaid.gov.bd)
- *   - Fall back to the older HTTP IP-based URL (180.211.137.10:3001)
- *   - If both fail (network/blocked), return null — caller falls back
- *     to manual entry
- *
- * IMPORTANT: This service must be called from a server that can actually
- * reach the BPDB site. In dev, the developer's local machine in Bangladesh
- * can reach it. In production, the production server (also in BD) can.
- * Remote dev environments (like Z.ai's sandbox) may be geo-blocked.
  */
 class BpdbTokenCheckService
 {
     private const PRIMARY_URL = 'https://web.bpdbprepaid.gov.bd';
     private const FALLBACK_URL = 'http://180.211.137.10:3001';
 
-    private const TIMEOUT = 30; // BPDB site is slow — give it 30s
+    private const TIMEOUT = 30;
+
+    /**
+     * Get the URL to the BPDB token-check page (for humans to visit).
+     * Used by the "Open BPDB Site ↗" button in the admin UI.
+     */
+    public function getTokenCheckUrl(): string
+    {
+        return self::PRIMARY_URL . '/bn/token-check';
+    }
 
     /**
      * Fetch the last 3 recharge tokens for a meter number.
      *
-     * @param string $meterNumber e.g. "010110167284"
-     * @return array|null {
-     *     @var string $customer_name
-     *     @var string $account_no
-     *     @var string $meter_no
-     *     @var array $tokens [{
-     *         @var string $token_number
-     *         @var float $amount
-     *         @var Carbon $recharged_at
-     *         @var string $status  (e.g. "Used" / "Unused")
-     *     }]
-     *     @var ?float $last_recharge_amount  (denormalized for convenience)
-     *     @var ?Carbon $last_recharge_at
-     * } or null if the request failed or meter not found
+     * ⚠️ ALMOST CERTAIN TO RETURN NULL because of reCAPTCHA Enterprise.
+     * See class docblock above. Kept for the day BPDB offers a real API.
      */
     public function getLastTokens(string $meterNumber): ?array
     {

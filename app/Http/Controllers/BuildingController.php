@@ -242,7 +242,65 @@ class BuildingController extends Controller
     }
 
     /**
+     * Record multiple meter recharges at once (Quick Entry from BPDB site).
+     *
+     * The secretary visits the BPDB token-check page, solves the CAPTCHA,
+     * enters the meter number, and sees the last 3 recharge tokens. They
+     * paste those 3 amounts + dates into our Quick Entry modal, and this
+     * method creates all 3 MeterReading records in one go.
+     */
+    public function storeBulkReadings(Request $request, Meter $meter)
+    {
+        $validated = $request->validate([
+            'readings'              => ['required', 'array', 'max:3'],
+            'readings.*.recharge_amount' => ['required', 'numeric', 'min:0'],
+            'readings.*.recharged_at'    => ['required', 'date'],
+            'readings.*.token_number'    => ['nullable', 'string', 'max:255'],
+        ]);
+
+        $count = 0;
+        foreach ($validated['readings'] as $reading) {
+            // Skip empty rows
+            if (empty($reading['recharge_amount']) && empty($reading['recharged_at'])) {
+                continue;
+            }
+
+            $rechargedAt = \Carbon\Carbon::parse($reading['recharged_at']);
+            $readingDate = $rechargedAt->copy()->startOfMonth();
+
+            $meter->readings()->updateOrCreate(
+                ['meter_id' => $meter->id, 'reading_date' => $readingDate->toDateString()],
+                [
+                    'recharge_amount' => $reading['recharge_amount'],
+                    'recharged_at'    => $rechargedAt,
+                    'source'          => 'manual',
+                    'notes'           => !empty($reading['token_number']) ? "Token: {$reading['token_number']}" : null,
+                ]
+            );
+
+            $count++;
+        }
+
+        // Update the meter's denormalized last_recharge_* fields
+        // (use the most recent reading)
+        $latestReading = $meter->readings()->latest('recharged_at')->first();
+        if ($latestReading) {
+            $meter->update([
+                'last_recharge_amount' => $latestReading->recharge_amount,
+                'last_recharge_at'     => $latestReading->recharged_at,
+                'last_checked_at'      => now(),
+            ]);
+        }
+
+        return redirect()->route('admin.buildings.show', $meter->flat->building_id)
+            ->with('status', "{$count} recharge(s) recorded for meter {$meter->meter_number}.");
+    }
+
+    /**
      * Sync a single meter from BPDB's token-check portal.
+     * NOTE: This will almost always fail due to reCAPTCHA Enterprise on the
+     * BPDB site. Kept for the day BPDB offers an official API. Use
+     * storeBulkReadings() (Quick Entry) instead.
      */
     public function syncMeter(BpdbTokenCheckService $bpdb, Meter $meter)
     {
@@ -250,7 +308,7 @@ class BuildingController extends Controller
 
         if ($result === null) {
             return redirect()->route('admin.buildings.show', $meter->flat->building_id)
-                ->with('error', "Could not sync meter {$meter->meter_number} from BPDB. The BPDB site may be unreachable. You can still record recharges manually.");
+                ->with('error', "Could not auto-sync meter {$meter->meter_number} from BPDB (reCAPTCHA blocks automated requests). Please use the 'Quick Entry' button to manually enter the recharge data you see on the BPDB site.");
         }
 
         // Update the meter's denormalized fields

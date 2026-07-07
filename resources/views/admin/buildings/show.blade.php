@@ -114,31 +114,39 @@
                                     </div>
 
                                     @if($flat->meters->isNotEmpty())
-                                        <div class="mt-3 space-y-1">
+                                        <div class="mt-3 space-y-2">
                                             @foreach($flat->meters as $meter)
-                                                <div class="flex items-center gap-3 text-sm flex-wrap">
-                                                    <i class="fas fa-bolt text-amber-500"></i>
-                                                    <span class="font-mono">{{ $meter->meter_number }}</span>
-                                                    <span class="text-slate-400">({{ strtoupper($meter->provider) }})</span>
-                                                    @if($meter->last_recharge_at)
-                                                        <span class="text-xs text-slate-500">
-                                                            Last recharge: ৳{{ $meter->last_recharge_amount }} on {{ $meter->last_recharge_at->format('M d, Y') }}
-                                                        </span>
-                                                    @else
-                                                        <span class="text-xs text-red-500">No recharge recorded</span>
-                                                    @endif
-                                                    <div class="flex items-center gap-2 ml-auto">
-                                                        @if($meter->provider === 'bpdb')
-                                                            <form action="{{ route('admin.meters.sync', $meter) }}" method="POST" class="inline" onsubmit="this.querySelector('button').textContent = 'Syncing...'; this.querySelector('button').disabled = true;">
-                                                                @csrf
-                                                                <button type="submit" class="text-xs text-blue-600 hover:text-blue-800 font-medium" title="Fetch last 3 recharges from BPDB">
-                                                                    <i class="fas fa-sync-alt"></i> Sync BPDB
-                                                                </button>
-                                                            </form>
+                                                <div class="rounded-2xl bg-slate-50 p-3">
+                                                    <div class="flex items-center gap-3 text-sm flex-wrap">
+                                                        <i class="fas fa-bolt text-amber-500"></i>
+                                                        <span class="font-mono font-semibold">{{ $meter->meter_number }}</span>
+                                                        <span class="text-slate-400">({{ strtoupper($meter->provider) }})</span>
+                                                        @if($meter->last_recharge_at)
+                                                            <span class="text-xs text-slate-500">
+                                                                Last: ৳{{ $meter->last_recharge_amount }} on {{ $meter->last_recharge_at->format('M d, Y') }}
+                                                            </span>
+                                                        @else
+                                                            <span class="text-xs text-red-500">No recharge recorded</span>
                                                         @endif
+                                                    </div>
+                                                    <div class="mt-2 flex items-center gap-3 flex-wrap">
+                                                        @if($meter->provider === 'bpdb')
+                                                            <a href="https://web.bpdbprepaid.gov.bd/bn/token-check" target="_blank" rel="noopener"
+                                                               class="inline-flex items-center gap-1 text-xs text-blue-600 hover:text-blue-800 font-medium"
+                                                               title="Open BPDB token-check page in a new tab (you'll solve the CAPTCHA there)">
+                                                                <i class="fas fa-external-link-alt"></i> Open BPDB ↗
+                                                            </a>
+                                                            <span class="text-slate-300">|</span>
+                                                        @endif
+                                                        <button type="button" onclick="window.dispatchEvent(new CustomEvent('open-modal', { detail: 'quick-entry-{{ $meter->id }}' }))"
+                                                                class="inline-flex items-center gap-1 text-xs text-emerald-700 hover:text-emerald-900 font-medium"
+                                                                title="Quickly enter the 3 recharge tokens you see on the BPDB site">
+                                                            <i class="fas fa-bolt"></i> Quick Entry (3 tokens)
+                                                        </button>
+                                                        <span class="text-slate-300">|</span>
                                                         <button type="button" onclick="window.dispatchEvent(new CustomEvent('open-modal', { detail: 'record-recharge-{{ $meter->id }}' }))"
-                                                                class="text-xs text-teal-600 hover:text-teal-800 font-medium">
-                                                            <i class="fas fa-plus-circle"></i> Record Recharge
+                                                                class="inline-flex items-center gap-1 text-xs text-teal-600 hover:text-teal-800 font-medium">
+                                                            <i class="fas fa-plus-circle"></i> Single Recharge
                                                         </button>
                                                     </div>
                                                 </div>
@@ -229,7 +237,7 @@
                                 <div class="bg-white p-6">
                                     <div class="flex items-center justify-between mb-4">
                                         <div>
-                                            <h3 class="text-lg font-semibold">Record Recharge</h3>
+                                            <h3 class="text-lg font-semibold">Record Single Recharge</h3>
                                             <p class="text-xs text-slate-500">Meter: {{ $meter->meter_number }} (Flat {{ $flat->flat_number }})</p>
                                         </div>
                                         <button type="button" onclick="window.dispatchEvent(new CustomEvent('close-modal', { detail: 'record-recharge-{{ $meter->id }}' }))" class="text-slate-400 hover:text-slate-700"><i class="fas fa-times"></i></button>
@@ -251,6 +259,75 @@
                                         <div class="flex justify-end gap-2 pt-3 border-t border-slate-200">
                                             <button type="button" onclick="window.dispatchEvent(new CustomEvent('close-modal', { detail: 'record-recharge-{{ $meter->id }}' }))" class="rounded-2xl border border-slate-300 px-4 py-2 text-sm">Cancel</button>
                                             <button type="submit" class="rounded-2xl bg-teal-600 hover:bg-teal-700 px-4 py-2 text-sm text-white">Record</button>
+                                        </div>
+                                    </form>
+                                </div>
+                            </x-modal>
+
+                            {{-- Quick Entry modal — enter 3 tokens at once (from BPDB site) --}}
+                            <x-modal name="quick-entry-{{ $meter->id }}" maxWidth="2xl">
+                                <div class="bg-white p-6">
+                                    <div class="flex items-center justify-between mb-4">
+                                        <div>
+                                            <h3 class="text-lg font-semibold">Quick Recharge Entry — 3 Tokens</h3>
+                                            <p class="text-xs text-slate-500">Meter: <span class="font-mono font-semibold">{{ $meter->meter_number }}</span> (Flat {{ $flat->flat_number }})</p>
+                                        </div>
+                                        <button type="button" onclick="window.dispatchEvent(new CustomEvent('close-modal', { detail: 'quick-entry-{{ $meter->id }}' }))" class="text-slate-400 hover:text-slate-700"><i class="fas fa-times"></i></button>
+                                    </div>
+
+                                    <div class="rounded-2xl bg-blue-50 border border-blue-200 p-3 mb-4 text-sm text-blue-800">
+                                        <div class="flex items-start gap-2">
+                                            <i class="fas fa-info-circle mt-0.5"></i>
+                                            <div>
+                                                <p class="font-medium">How to use this:</p>
+                                                <ol class="list-decimal ml-4 mt-1 text-xs space-y-0.5">
+                                                    <li>Click <a href="https://web.bpdbprepaid.gov.bd/bn/token-check" target="_blank" rel="noopener" class="text-blue-700 underline font-medium">this link to open BPDB's token-check page</a> (opens in new tab)</li>
+                                                    <li>Solve the CAPTCHA + enter meter number <span class="font-mono">{{ $meter->meter_number }}</span></li>
+                                                    <li>BPDB shows the last 3 recharge tokens</li>
+                                                    <li>Copy the amounts + dates into the form below</li>
+                                                    <li>Click "Save 3 Tokens" — done!</li>
+                                                </ol>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <form action="{{ route('admin.meters.bulk-readings', $meter) }}" method="POST" class="space-y-3">
+                                        @csrf
+                                        <div class="space-y-2">
+                                            @for($i = 0; $i < 3; $i++)
+                                                <div class="grid grid-cols-12 gap-2 items-end">
+                                                    <div class="col-span-1">
+                                                        <label class="block text-xs font-medium text-slate-500">#{{ $i + 1 }}</label>
+                                                    </div>
+                                                    <div class="col-span-5">
+                                                        <label class="block text-xs font-medium text-slate-700">Token Number</label>
+                                                        <input type="text" name="readings[{{ $i }}][token_number]" class="mt-1 w-full rounded-2xl border border-slate-300 px-3 py-2 text-sm font-mono" placeholder="e.g. 5123406789012345">
+                                                    </div>
+                                                    <div class="col-span-3">
+                                                        <label class="block text-xs font-medium text-slate-700">Amount (৳)</label>
+                                                        <input type="number" name="readings[{{ $i }}][recharge_amount]" step="0.01" min="0" class="mt-1 w-full rounded-2xl border border-slate-300 px-3 py-2 text-sm" placeholder="500">
+                                                    </div>
+                                                    <div class="col-span-3">
+                                                        <label class="block text-xs font-medium text-slate-700">Date</label>
+                                                        <input type="date" name="readings[{{ $i }}][recharged_at]" class="mt-1 w-full rounded-2xl border border-slate-300 px-3 py-2 text-sm">
+                                                    </div>
+                                                </div>
+                                            @endfor
+                                        </div>
+
+                                        <p class="text-xs text-slate-500">Leave a row empty to skip it (if BPDB shows fewer than 3 tokens).</p>
+
+                                        <div class="flex justify-between items-center pt-3 border-t border-slate-200">
+                                            <a href="https://web.bpdbprepaid.gov.bd/bn/token-check" target="_blank" rel="noopener"
+                                               class="inline-flex items-center gap-1 text-sm text-blue-600 hover:text-blue-800 font-medium">
+                                                <i class="fas fa-external-link-alt"></i> Open BPDB ↗
+                                            </a>
+                                            <div class="flex gap-2">
+                                                <button type="button" onclick="window.dispatchEvent(new CustomEvent('close-modal', { detail: 'quick-entry-{{ $meter->id }}' }))" class="rounded-2xl border border-slate-300 px-4 py-2 text-sm">Cancel</button>
+                                                <button type="submit" class="rounded-2xl bg-emerald-600 hover:bg-emerald-700 px-4 py-2 text-sm text-white font-medium">
+                                                    <i class="fas fa-bolt mr-1"></i> Save Tokens
+                                                </button>
+                                            </div>
                                         </div>
                                     </form>
                                 </div>
