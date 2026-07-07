@@ -1,4 +1,5 @@
 @php
+    // Bengali digit + month conversion (matches index.html locale)
     $bn = ['০','১','২','৩','৪','৫','৬','৭','৮','৯'];
     $toBn = function($n) use ($bn) { return str_replace(range(0,9), $bn, (string) $n); };
     $bnMonths = ['January'=>'জানুয়ারি','February'=>'ফেব্রুয়ারি','March'=>'মার্চ','April'=>'এপ্রিল','May'=>'মে','June'=>'জুন','July'=>'জুলাই','August'=>'আগস্ট','September'=>'সেপ্টেম্বর','October'=>'অক্টোবর','November'=>'নভেম্বর','December'=>'ডিসেম্বর'];
@@ -18,6 +19,9 @@
         if ($d->format('A') === 'PM' && (int)$d->format('H') >= 12 && (int)$d->format('H') < 15) $a = 'দুপুর';
         return $toBn($h) . ':' . $toBn($m) . ' ' . $a;
     };
+
+    // Notice types that should be flagged "urgent" (red badge) — matches index.html demo intent
+    $urgentTypes = ['আসন্ন', 'জরুরি', 'নিরাপত্তা', 'গুরুত্বপূর্ণ'];
 @endphp
 
     <!-- ==================== NOTICES ==================== -->
@@ -27,8 +31,9 @@
                 <h2 class="section-header text-5xl tracking-tighter font-bold heading-serif">নোটিশ ও ঘোষণা</h2>
             </div>
             @if($notices->count() > 3)
-                <button onclick="nextNotices()" class="text-sm flex items-center gap-2 font-semibold px-5 py-2.5 text-emerald-700 hover:bg-emerald-50 rounded-2xl transition">
-                    <span>পরবর্তী নোটিশ</span> <i class="fas fa-arrow-right text-xs"></i>
+                <button onclick="showAllNotices()"
+                        class="text-sm hidden md:flex items-center gap-2 font-semibold px-5 py-2.5 text-emerald-700 hover:bg-emerald-50 rounded-2xl transition">
+                    সব দেখুন <i class="fas fa-arrow-right text-xs"></i>
                 </button>
             @endif
         </div>
@@ -37,6 +42,16 @@
             <div id="noticesGrid" class="grid md:grid-cols-3 gap-5">
                 {{-- Cards rendered by JS --}}
             </div>
+
+            {{-- Mobile "show all" button (visible only on small screens, below the grid) --}}
+            @if($notices->count() > 3)
+                <div class="md:hidden mt-6 text-center">
+                    <button onclick="showAllNotices()"
+                            class="text-sm inline-flex items-center gap-2 font-semibold px-5 py-2.5 text-emerald-700 hover:bg-emerald-50 rounded-2xl transition">
+                        সব দেখুন <i class="fas fa-arrow-right text-xs"></i>
+                    </button>
+                </div>
+            @endif
         @else
             <div class="grid md:grid-cols-3 gap-5">
                 @for($i = 0; $i < 3; $i++)
@@ -49,7 +64,7 @@
         @endif
     </section>
 
-    {{-- Old Newspaper Notice Modal --}}
+    {{-- Old Newspaper Notice Modal (detail view) --}}
     <div id="noticeModal" class="hidden fixed inset-0 z-[9999] items-center justify-center p-4 bg-black/70">
         <div class="modal-enter max-w-2xl w-full max-h-[90vh] overflow-y-auto">
             {{-- Old newspaper styled paper --}}
@@ -86,7 +101,7 @@
                     </div>
 
                     <div class="border-t border-[#3a2e1f]/20 mt-6 pt-3 text-center text-[10px] text-[#3a2e1f]/50 uppercase tracking-widest">
-                        — চৌধুরীপাড়া সমাজ উন্নায়ন সংস্থা —
+                        — চৌধুরীপাড়া সমাজ উন্নয়ন সংস্থা —
                     </div>
                 </div>
             </div>
@@ -100,65 +115,63 @@
         {
             "id": {{ $n->id }},
             "type": {!! json_encode($n->type) !!},
-            "headline": {!! json_encode($n->headline) !!},
-            "description": {!! json_encode($n->description) !!},
+            "urgent": @json(in_array($n->type, $urgentTypes)),
             "date": {!! json_encode($bnDate($n->published_at)) !!},
-            "time": {!! json_encode($bnTime($n->published_at)) !!}
+            "time": {!! json_encode($bnTime($n->published_at)) !!},
+            "title": {!! json_encode($n->headline) !!},
+            "desc": {!! json_encode($n->description) !!}
         }@if(!$loop->last),@endif
         @endforeach
     ]
     </script>
 
     <script>
-        const bnMonths = {1:'জানুয়ারি',2:'ফেব্রুয়ারি',3:'মার্চ',4:'এপ্রিল',5:'মে',6:'জুন',7:'জুলাই',8:'আগস্ট',9:'সেপ্টেম্বর',10:'অক্টোবর',11:'নভেম্বর',12:'ডিসেম্বর'};
-        const bnDigits = ['০','১','২','৩','৪','৫','৬','৭','৮','৯'];
-        const toBn = n => String(n).replace(/[0-9]/g, d => bnDigits[d]);
+        // ==================== NOTICES ====================
+        // Follows index.html UX: render 3 by default, "সব দেখুন" shows all.
+        let noticesData = [];
+        try { noticesData = JSON.parse(document.getElementById('allNoticesData').textContent); } catch(e) {}
+        let noticesShowAll = false;
 
-        let allNotices = [];
-        try { allNotices = JSON.parse(document.getElementById('allNoticesData').textContent); } catch(e) {}
-        let noticeOffset = 0;
+        function buildNoticeCard(notice) {
+            const div = document.createElement('div');
+            div.className = 'notice-card bg-white border border-slate-100 hover:border-emerald-200 rounded-3xl p-6 flex flex-col cursor-pointer transition-all';
+            div.onclick = () => showNoticeDetail(notice.id);
+            div.innerHTML = `
+                <div class="flex items-center justify-between">
+                    <span class="inline-block px-3 py-px text-xs font-semibold rounded-xl ${notice.urgent ? 'bg-red-100 text-red-700' : 'bg-emerald-100 text-emerald-700'}">${notice.type}</span>
+                    <span class="text-xs text-slate-400">${notice.date}</span>
+                </div>
+                <div class="mt-4 font-semibold text-xl leading-tight tracking-tight">${notice.title}</div>
+                <div class="text-sm text-slate-600 mt-2 flex-1 line-clamp-3">${notice.desc}</div>
+                ${notice.time ? `<div class="mt-4 text-xs text-emerald-700 font-medium"><i class="fas fa-clock mr-1"></i> ${notice.time}</div>` : ''}
+            `;
+            return div;
+        }
 
         function renderNotices() {
-            const grid = document.getElementById('noticesGrid');
-            if (!grid || allNotices.length === 0) return;
-
-            grid.innerHTML = '';
-            const visible = allNotices.slice(noticeOffset, noticeOffset + 3);
-
-            visible.forEach(n => {
-                const card = document.createElement('div');
-                card.className = 'notice-card bg-white border border-slate-100 hover:border-emerald-200 rounded-3xl p-6 flex flex-col cursor-pointer transition-all';
-                card.onclick = () => showNoticeDetail(n.id);
-                card.innerHTML = `
-                    <div class="flex items-center justify-between">
-                        <span class="inline-block px-3 py-px text-xs font-semibold rounded-xl bg-emerald-100 text-emerald-700">${n.type}</span>
-                        <span class="text-xs text-slate-400">${n.date}</span>
-                    </div>
-                    <div class="mt-4 font-semibold text-xl leading-tight tracking-tight">${n.headline}</div>
-                    <div class="text-sm text-slate-600 mt-2 flex-1 line-clamp-3">${n.description}</div>
-                    <div class="mt-4 text-xs text-emerald-700 font-medium"><i class="fas fa-clock mr-1"></i> ${n.time}</div>
-                `;
-                grid.appendChild(card);
-            });
+            const container = document.getElementById('noticesGrid');
+            if (!container) return;
+            container.innerHTML = '';
+            const limit = noticesShowAll ? noticesData.length : 3;
+            const toShow = noticesData.slice(0, limit);
+            toShow.forEach(notice => container.appendChild(buildNoticeCard(notice)));
         }
 
-        function nextNotices() {
-            const next = noticeOffset + 3;
-            if (next >= allNotices.length) {
-                noticeOffset = 0;
-            } else {
-                noticeOffset = next;
-            }
+        function showAllNotices() {
+            noticesShowAll = true;
             renderNotices();
+            // Hide the trigger buttons once everything is visible
+            document.querySelectorAll('[onclick="showAllNotices()"]').forEach(b => b.style.display = 'none');
         }
 
+        // ==================== NOTICE DETAIL MODAL ====================
         function showNoticeDetail(id) {
-            const n = allNotices.find(x => x.id === id);
+            const n = noticesData.find(x => x.id === id);
             if (!n) return;
 
             document.getElementById('noticeModalType').textContent = n.type;
-            document.getElementById('noticeModalHeadline').textContent = n.headline;
-            document.getElementById('noticeModalDescription').textContent = n.description;
+            document.getElementById('noticeModalHeadline').textContent = n.title;
+            document.getElementById('noticeModalDescription').textContent = n.desc;
             document.getElementById('noticeModalDate').textContent = n.date;
             document.getElementById('noticeModalTime').textContent = n.time;
 
