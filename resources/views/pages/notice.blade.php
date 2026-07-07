@@ -2,12 +2,12 @@
     $bn = ['০','১','২','৩','৪','৫','৬','৭','৮','৯'];
     $toBn = function($n) use ($bn) { return str_replace(range(0,9), $bn, (string) $n); };
     $bnMonths = ['January'=>'জানুয়ারি','February'=>'ফেব্রুয়ারি','March'=>'মার্চ','April'=>'এপ্রিল','May'=>'মে','June'=>'জুন','July'=>'জুলাই','August'=>'আগস্ট','September'=>'সেপ্টেম্বর','October'=>'অক্টোবর','November'=>'নভেম্বর','December'=>'ডিসেম্বর'];
-    $bnDate = function($date) use ($bn, $bnMonths) {
+    $bnDate = function($date) use ($toBn, $bnMonths) {
         if (!$date) return '';
         $d = $date instanceof \Illuminate\Support\Carbon ? $date : \Illuminate\Support\Carbon::parse($date);
         return $toBn($d->format('d')) . ' ' . ($bnMonths[$d->format('F')] ?? $d->format('F')) . ' ' . $toBn($d->format('Y'));
     };
-    $bnTime = function($date) use ($bn) {
+    $bnTime = function($date) use ($toBn) {
         if (!$date) return '';
         $d = $date instanceof \Illuminate\Support\Carbon ? $date : \Illuminate\Support\Carbon::parse($date);
         $h = (int)$d->format('g');
