@@ -6,10 +6,12 @@ use App\Http\Controllers\AdminController;
 use App\Http\Controllers\Admin\UserController;
 use App\Http\Controllers\BuildingController;
 use App\Http\Controllers\MemberController;
+use App\Http\Controllers\NoticeController;
 use App\Http\Controllers\ProfileController;
 use App\Models\Building;
 use App\Models\Flat;
 use App\Models\Member;
+use App\Models\Notice;
 use App\Models\Road;
 
 Route::get('/', function () {
@@ -17,6 +19,7 @@ Route::get('/', function () {
     $buildings = Building::with('road')->get();
     $totalFlats = Flat::count();
     $members = Member::where('is_active', true)->orderBy('sort_order')->orderBy('name')->get();
+    $notices = Notice::currentlyActive()->latestFirst()->take(10)->get();
 
     return view('welcome', [
         'roads'          => $roads,
@@ -24,6 +27,7 @@ Route::get('/', function () {
         'totalRoads'     => $roads->count(),
         'totalFlats'     => $totalFlats,
         'members'        => $members,
+        'notices'        => $notices,
     ]);
 })->name('home');
 
@@ -71,6 +75,12 @@ Route::prefix('admin')->name('admin.')->group(function () {
         Route::post('/members', [MemberController::class, 'store'])->name('members.store');
         Route::put('/members/{member}', [MemberController::class, 'update'])->name('members.update');
         Route::delete('/members/{member}', [MemberController::class, 'destroy'])->name('members.destroy');
+
+        // Notices
+        Route::get('/notices', [NoticeController::class, 'index'])->name('notices.index');
+        Route::post('/notices', [NoticeController::class, 'store'])->name('notices.store');
+        Route::put('/notices/{notice}', [NoticeController::class, 'update'])->name('notices.update');
+        Route::delete('/notices/{notice}', [NoticeController::class, 'destroy'])->name('notices.destroy');
     });
 });
 

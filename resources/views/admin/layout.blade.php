@@ -100,6 +100,11 @@
                 <span>আমাদের নেতৃত্ব</span>
             </a>
 
+            <a href="{{ route('admin.notices.index') }}" class="sidebar-link flex items-center gap-3 px-5 py-3.5 rounded-2xl text-white font-medium @if(request()->routeIs('admin.notices*')) active @endif">
+                <i class="fas fa-bullhorn w-5"></i>
+                <span>নোটিশ ও ঘোষণা</span>
+            </a>
+
             <div class="px-5 text-teal-200 text-xs font-semibold mt-6 mb-2">ম্যানেজমেন্ট</div>
 
             <a href="" class="sidebar-link flex items-center gap-3 px-5 py-3.5 rounded-2xl text-white font-medium">
