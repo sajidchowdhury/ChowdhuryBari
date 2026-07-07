@@ -5,11 +5,13 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\AdminController;
 use App\Http\Controllers\Admin\UserController;
 use App\Http\Controllers\BuildingController;
+use App\Http\Controllers\GalleryController;
 use App\Http\Controllers\MemberController;
 use App\Http\Controllers\NoticeController;
 use App\Http\Controllers\ProfileController;
 use App\Models\Building;
 use App\Models\Flat;
+use App\Models\GalleryItem;
 use App\Models\Member;
 use App\Models\Notice;
 use App\Models\Road;
@@ -20,6 +22,7 @@ Route::get('/', function () {
     $totalFlats = Flat::count();
     $members = Member::where('is_active', true)->orderBy('sort_order')->orderBy('name')->get();
     $notices = Notice::currentlyActive()->latestFirst()->take(10)->get();
+    $galleryItems = GalleryItem::active()->latestFirst()->take(10)->get();
 
     return view('welcome', [
         'roads'          => $roads,
@@ -28,6 +31,7 @@ Route::get('/', function () {
         'totalFlats'     => $totalFlats,
         'members'        => $members,
         'notices'        => $notices,
+        'galleryItems'   => $galleryItems,
     ]);
 })->name('home');
 
@@ -81,6 +85,11 @@ Route::prefix('admin')->name('admin.')->group(function () {
         Route::post('/notices', [NoticeController::class, 'store'])->name('notices.store');
         Route::put('/notices/{notice}', [NoticeController::class, 'update'])->name('notices.update');
         Route::delete('/notices/{notice}', [NoticeController::class, 'destroy'])->name('notices.destroy');
+
+        // Gallery — upload image + short caption
+        Route::get('/gallery', [GalleryController::class, 'index'])->name('gallery.index');
+        Route::post('/gallery', [GalleryController::class, 'store'])->name('gallery.store');
+        Route::delete('/gallery/{gallery}', [GalleryController::class, 'destroy'])->name('gallery.destroy');
     });
 });
 

@@ -105,6 +105,11 @@
                 <span>নোটিশ ও ঘোষণা</span>
             </a>
 
+            <a href="{{ route('admin.gallery.index') }}" class="sidebar-link flex items-center gap-3 px-5 py-3.5 rounded-2xl text-white font-medium @if(request()->routeIs('admin.gallery*')) active @endif">
+                <i class="fas fa-images w-5"></i>
+                <span>গ্যালারি</span>
+            </a>
+
             <div class="px-5 text-teal-200 text-xs font-semibold mt-6 mb-2">ম্যানেজমেন্ট</div>
 
             <a href="" class="sidebar-link flex items-center gap-3 px-5 py-3.5 rounded-2xl text-white font-medium">
