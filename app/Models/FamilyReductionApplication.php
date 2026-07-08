@@ -14,6 +14,7 @@ class FamilyReductionApplication extends Model
         'current_family_count',
         'requested_family_count',
         'vacant_flat_ids',
+        'requested_flat_states',
         'reason',
         'status',
         'admin_notes',
@@ -25,6 +26,7 @@ class FamilyReductionApplication extends Model
     {
         return [
             'vacant_flat_ids' => 'array',
+            'requested_flat_states' => 'array',
             'current_family_count' => 'integer',
             'requested_family_count' => 'integer',
             'reviewed_at' => 'datetime',

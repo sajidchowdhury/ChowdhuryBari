@@ -20,19 +20,26 @@
 
     {{-- Application summary --}}
     <div class="rounded-3xl bg-white border border-slate-200 shadow-sm p-6">
-        <div class="grid sm:grid-cols-3 gap-4">
+        <div class="grid sm:grid-cols-4 gap-4">
             <div>
                 <div class="text-xs text-slate-400 uppercase tracking-wide">বাড়ি</div>
                 <div class="font-semibold text-slate-800 mt-1">{{ $application->building?->name ?? '—' }}</div>
                 <div class="text-xs text-slate-500">{{ $application->building?->road?->name ?? '' }}</div>
             </div>
             <div>
-                <div class="text-xs text-slate-400 uppercase tracking-wide">বর্তমান বিলিং পরিবার</div>
+                <div class="text-xs text-slate-400 uppercase tracking-wide">বর্তমান বিলিং</div>
                 <div class="text-2xl font-bold text-slate-800 mt-1 tabular-nums">{{ $application->current_family_count }}</div>
             </div>
             <div>
-                <div class="text-xs text-slate-400 uppercase tracking-wide">অনুরোধ করা পরিবার</div>
+                <div class="text-xs text-slate-400 uppercase tracking-wide">অনুরোধ করা</div>
                 <div class="text-2xl font-bold text-emerald-700 mt-1 tabular-nums">{{ $application->requested_family_count }}</div>
+            </div>
+            <div>
+                <div class="text-xs text-slate-400 uppercase tracking-wide">পার্থক্য</div>
+                @php $diff = $application->current_family_count - $application->requested_family_count; @endphp
+                <div class="text-2xl font-bold mt-1 tabular-nums @if($diff > 0) text-amber-600 @elseif($diff < 0) text-emerald-600 @else text-slate-400 @endif">
+                    @if($diff > 0)−{{ $diff }}@elseif($diff < 0)+{{ abs($diff) }}@else 0 @endif
+                </div>
             </div>
         </div>
         <div class="mt-4 pt-4 border-t border-slate-100">
@@ -44,72 +51,79 @@
         </div>
     </div>
 
-    {{-- Flats + meters table (so admin can check which are vacant) --}}
+    {{-- Current vs Requested flat states --}}
+    @php
+        $requestedStates = collect($application->requested_flat_states ?? [])->keyBy('flat_id');
+        $building = $application->building;
+        $flats = $building ? $building->flats()->with('meters')->orderBy('floor_number')->orderBy('flat_number')->get() : collect();
+    @endphp
     <div class="rounded-3xl bg-white border border-slate-200 shadow-sm overflow-hidden">
         <div class="px-6 py-4 border-b border-slate-100 flex items-center justify-between">
             <div class="font-semibold text-slate-800 text-sm flex items-center gap-2">
-                <i class="fas fa-th-large text-emerald-600"></i> বাড়ির ফ্ল্যাট ও মিটার তালিকা
+                <i class="fas fa-th-large text-emerald-600"></i> ফ্ল্যাট স্ট্যাটাস তুলনা
             </div>
-            <span class="text-xs text-slate-400">মিটার নম্বর BPDB-তে যাচাই করুন</span>
+            <span class="text-xs text-slate-400">বর্তমান → অনুরোধ করা</span>
         </div>
         <div class="overflow-x-auto">
             <table class="w-full text-sm">
                 <thead class="bg-slate-50">
                     <tr class="text-left text-xs text-slate-500 uppercase tracking-wide">
-                        <th class="px-4 py-3 font-semibold">ফ্লোর</th>
                         <th class="px-4 py-3 font-semibold">ফ্ল্যাট</th>
-                        <th class="px-4 py-3 font-semibold">বাসিন্দা</th>
                         <th class="px-4 py-3 font-semibold">মিটার নম্বর</th>
-                        <th class="px-4 py-3 font-semibold text-center">স্ট্যাটাস</th>
+                        <th class="px-4 py-3 font-semibold text-center">বর্তমান স্ট্যাটাস</th>
+                        <th class="px-4 py-3 font-semibold text-center">অনুরোধ করা</th>
+                        <th class="px-4 py-3 font-semibold text-center">পরিবর্তন</th>
                         <th class="px-4 py-3 font-semibold text-right">BPDB যাচাই</th>
                     </tr>
                 </thead>
                 <tbody class="divide-y divide-slate-100">
-                    @php
-                        $vacantIds = $application->vacant_flat_ids ?? [];
-                        $building = $application->building;
-                        $flats = $building ? $building->flats()->orderBy('floor_number')->orderBy('flat_number')->get() : collect();
-                    @endphp
                     @foreach($flats as $flat)
                         @php
                             $meter = $flat->meters->first();
-                            $isVacant = in_array($flat->id, $vacantIds);
-                            $isActive = $flat->isFamilyActive();
+                            $requested = $requestedStates->get($flat->id);
+                            $requestedActive = $requested ? $requested['active'] : $flat->is_active;
+                            $requestedMeter = $requested ? ($requested['meter_number'] ?? '') : ($meter?->meter_number ?? '');
+                            $hasChange = $flat->is_active !== $requestedActive;
+                            $meterToCheck = $requestedMeter ?: ($meter?->meter_number ?? '');
                         @endphp
-                        <tr class="@if($isVacant) bg-amber-50/50 @endif">
-                            <td class="px-4 py-3 text-slate-500">{{ $flat->floor_number ?? '—' }}</td>
-                            <td class="px-4 py-3 font-medium text-slate-800">
-                                {{ $flat->flat_number }}
-                                @if($isVacant)
-                                    <span class="ml-1 text-[10px] bg-amber-200 text-amber-800 px-1.5 py-0.5 rounded-full font-semibold">আবেদনে খালি</span>
-                                @endif
-                            </td>
-                            <td class="px-4 py-3 text-slate-600">
-                                {{ $flat->resident_name ?: '—' }}
-                                @if($flat->resident_phone)<div class="text-xs text-slate-400">{{ $flat->resident_phone }}</div>@endif
-                            </td>
+                        <tr class="@if($hasChange) bg-amber-50/40 @endif">
+                            <td class="px-4 py-3 font-medium text-slate-800">{{ $flat->flat_number }}</td>
                             <td class="px-4 py-3 font-mono text-slate-700">
-                                @if($meter)
-                                    {{ $meter->meter_number }}
+                                @if($meterToCheck)
+                                    {{ $meterToCheck }}
                                 @else
-                                    <span class="text-slate-300">—</span>
+                                    <span class="text-slate-300 text-xs">নেই</span>
                                 @endif
                             </td>
                             <td class="px-4 py-3 text-center">
-                                @if(!$flat->is_active)
-                                    <span class="text-[10px] bg-slate-100 text-slate-500 px-2 py-0.5 rounded-full font-semibold">খালি</span>
-                                @elseif($isActive)
+                                @if($flat->is_active)
                                     <span class="text-[10px] bg-emerald-100 text-emerald-700 px-2 py-0.5 rounded-full font-semibold">সক্রিয়</span>
                                 @else
-                                    <span class="text-[10px] bg-red-100 text-red-600 px-2 py-0.5 rounded-full font-semibold">মিটার নিষ্ক্রিয়</span>
+                                    <span class="text-[10px] bg-slate-100 text-slate-500 px-2 py-0.5 rounded-full font-semibold">খালি</span>
+                                @endif
+                            </td>
+                            <td class="px-4 py-3 text-center">
+                                @if($requestedActive)
+                                    <span class="text-[10px] bg-emerald-100 text-emerald-700 px-2 py-0.5 rounded-full font-semibold">সক্রিয়</span>
+                                @else
+                                    <span class="text-[10px] bg-slate-100 text-slate-500 px-2 py-0.5 rounded-full font-semibold">খালি</span>
+                                @endif
+                            </td>
+                            <td class="px-4 py-3 text-center">
+                                @if($hasChange)
+                                    <span class="text-[10px] bg-amber-200 text-amber-800 px-2 py-0.5 rounded-full font-semibold">
+                                        <i class="fas fa-arrow-right"></i> পরিবর্তন
+                                    </span>
+                                @else
+                                    <span class="text-slate-300 text-xs">—</span>
                                 @endif
                             </td>
                             <td class="px-4 py-3 text-right">
-                                @if($meter && $meter->meter_number)
+                                @if($meterToCheck)
                                     <a href="https://www.bpdb.gov.bd/bill/check" target="_blank" rel="noopener"
-                                       onclick="setTimeout(()=>{ navigator.clipboard && navigator.clipboard.writeText('{{ $meter->meter_number }}') }, 200)"
+                                       onclick="setTimeout(()=>{ navigator.clipboard && navigator.clipboard.writeText('{{ $meterToCheck }}') }, 200)"
                                        class="inline-flex items-center gap-1 text-xs text-sky-600 hover:text-sky-800 font-medium">
-                                        <i class="fas fa-external-link-alt"></i> BPDB চেক করুন
+                                        <i class="fas fa-external-link-alt"></i> চেক করুন
                                     </a>
                                 @else
                                     <span class="text-xs text-slate-300">—</span>
@@ -129,7 +143,6 @@
                 <i class="fas fa-gavel text-amber-600"></i> সিদ্ধান্ত নিন
             </div>
             <div class="grid sm:grid-cols-2 gap-4">
-                {{-- Approve --}}
                 <form action="{{ route('admin.applications.approve', $application) }}" method="POST" class="space-y-3">
                     @csrf
                     <label class="block text-xs font-semibold text-slate-500">অনুমোদন নোট (ঐচ্ছিক)</label>
@@ -139,7 +152,6 @@
                         <i class="fas fa-check mr-1"></i> অনুমোদন করুন (বিলিং = {{ $application->requested_family_count }})
                     </button>
                 </form>
-                {{-- Reject --}}
                 <form action="{{ route('admin.applications.reject', $application) }}" method="POST" class="space-y-3">
                     @csrf
                     <label class="block text-xs font-semibold text-slate-500">প্রত্যাখ্যান কারণ (ঐচ্ছিক)</label>
@@ -165,6 +177,38 @@
                 </div>
             </div>
         @endif
+    @endif
+
+    {{-- Admin manual override (always available) --}}
+    @if($building)
+        <div class="rounded-3xl bg-amber-50 border border-amber-200 p-6">
+            <div class="font-semibold text-slate-800 mb-1 text-sm flex items-center gap-2">
+                <i class="fas fa-user-shield text-amber-600"></i> অ্যাডমিন ম্যানুয়াল ওভাররাইড
+            </div>
+            <p class="text-xs text-slate-500 mb-4">সদস্য আবেদন না করলেও আপনি সরাসরি বিলিং পরিবার সংখ্যা পরিবর্তন করতে পারেন। উদাহরণ: সদস্য ভুলে গেছে যে নতুন পরিবার এসেছে — আপনি মিটার যাচাই করে সংখ্যা বাড়িয়ে দিতে পারেন।</p>
+            <form action="{{ route('admin.buildings.override-billing', $building) }}" method="POST" class="flex flex-wrap items-end gap-3">
+                @csrf
+                <div>
+                    <label class="block text-xs font-semibold text-slate-500 mb-1">বিলিং পরিবার সংখ্যা</label>
+                    <input type="number" name="billing_family_count" min="0" max="{{ $building->expected_family_count }}"
+                           value="{{ $building->billing_family_count ?? $building->getActiveFamilyCount() }}"
+                           class="w-32 rounded-xl border border-amber-300 bg-white px-4 py-2.5 text-sm">
+                </div>
+                <div class="flex-1 min-w-[200px]">
+                    <label class="block text-xs font-semibold text-slate-500 mb-1">কারণ (ঐচ্ছিক)</label>
+                    <input type="text" name="override_reason" placeholder="যেমন: মিটার যাচাই করে নতুন পরিবার পাওয়া গেছে"
+                           class="w-full rounded-xl border border-amber-300 bg-white px-4 py-2.5 text-sm">
+                </div>
+                <button type="submit" class="px-6 py-2.5 bg-amber-600 hover:bg-amber-700 text-white text-sm font-semibold rounded-xl transition active:scale-95">
+                    <i class="fas fa-edit mr-1"></i> ওভাররাইড করুন
+                </button>
+            </form>
+            <div class="mt-3 text-xs text-slate-500">
+                বর্তমান বিলিং: <strong>{{ $building->billing_family_count ?? $building->getActiveFamilyCount() }}</strong> পরিবার •
+                প্রত্যাশিত: <strong>{{ $building->expected_family_count }}</strong> পরিবার •
+                সক্রিয় মিটার: <strong>{{ $building->getActiveFamilyCount() }}</strong> পরিবার
+            </div>
+        </div>
     @endif
 </div>
 @endsection

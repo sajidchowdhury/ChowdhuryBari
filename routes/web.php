@@ -134,6 +134,9 @@ Route::prefix('admin')->name('admin.')->group(function () {
         Route::get('/applications/{application}', [FamilyReductionApplicationController::class, 'show'])->name('applications.show');
         Route::post('/applications/{application}/approve', [FamilyReductionApplicationController::class, 'approve'])->name('applications.approve');
         Route::post('/applications/{application}/reject', [FamilyReductionApplicationController::class, 'reject'])->name('applications.reject');
+
+        // Manual billing override (admin discovers member has more/fewer families than reported)
+        Route::post('/buildings/{building}/override-billing', [FamilyReductionApplicationController::class, 'overrideBilling'])->name('buildings.override-billing');
     });
 });
 

@@ -363,9 +363,12 @@
                         </div>
 
                         {{-- Instructions for non-tech users --}}
-                        <div class="px-6 py-3 bg-emerald-50 border-b border-emerald-100 text-xs text-emerald-800 flex items-center gap-2">
-                            <i class="fas fa-info-circle"></i>
-                            <span>যে ফ্ল্যাটে পরিবার আছে — সেটির সুইচ <strong>চালু (সবুজ)</strong> রাখুন। যে ফ্ল্যাট খালি হয়ে গেছে — সেটির সুইচ <strong>বন্ধ</strong> করুন। তারপর নিচে "সংরক্ষণ করুন" বাটনে চাপুন।</span>
+                        <div class="px-6 py-3 bg-emerald-50 border-b border-emerald-100 text-xs text-emerald-800 flex items-start gap-2">
+                            <i class="fas fa-info-circle mt-0.5"></i>
+                            <span>
+                                যে ফ্ল্যাটে পরিবার আছে — সেটির সুইচ <strong>চালু (সবুজ)</strong> রাখুন। যে ফ্ল্যাট খালি হয়ে গেছে — সেটির সুইচ <strong>বন্ধ</strong> করুন।
+                                তারপর "সংরক্ষণ করুন" বাটনে চাপুন। <strong>আপনার আবেদন অ্যাডমিনের কাছে যাবে — তিনি মিটার নম্বর যাচাই করে অনুমোদন দিলে বিল আপডেট হবে।</strong>
+                            </span>
                         </div>
 
                         <form action="{{ route('member.flats.update-statuses') }}" method="POST">
@@ -425,27 +428,45 @@
                         </form>
                     </div>
 
-                    {{-- Application history (kept for reference) --}}
+                    {{-- Application history with pending status --}}
                     @if($myApplications->isNotEmpty())
                         <div class="card overflow-hidden">
                             <div class="px-6 py-4 border-b border-slate-100 font-semibold text-slate-800 text-sm flex items-center gap-2">
-                                <i class="fas fa-history text-slate-400"></i> আবেদনের ইতিহাস
+                                <i class="fas fa-history text-slate-400"></i> আবেদনের তালিকা
                             </div>
                             <div class="divide-y divide-slate-100">
                                 @foreach($myApplications as $app)
-                                    <div class="px-6 py-3 flex items-center justify-between">
-                                        <div>
-                                            <div class="text-sm text-slate-700">
-                                                {{ $app->current_family_count }} → <strong>{{ $app->requested_family_count }}</strong> পরিবার
+                                    <div class="px-6 py-4 @if($app->status === 'pending') bg-amber-50/30 @endif">
+                                        <div class="flex items-center justify-between">
+                                            <div>
+                                                <div class="text-sm text-slate-700">
+                                                    <span class="text-slate-400">{{ $app->current_family_count }}</span>
+                                                    <i class="fas fa-arrow-right text-[10px] mx-1 text-slate-400"></i>
+                                                    <strong>{{ $app->requested_family_count }}</strong> পরিবার
+                                                </div>
+                                                <div class="text-xs text-slate-400">{{ $app->created_at->format('M d, Y') }}</div>
                                             </div>
-                                            <div class="text-xs text-slate-400">{{ $app->created_at->format('M d, Y') }}</div>
+                                            <span class="text-xs px-2.5 py-1 rounded-full font-semibold
+                                                @if($app->status === 'pending') bg-amber-100 text-amber-700
+                                                @elseif($app->status === 'approved') bg-emerald-100 text-emerald-700
+                                                @else bg-red-100 text-red-700 @endif">
+                                                {{ $app->status_label }}
+                                            </span>
                                         </div>
-                                        <span class="text-xs px-2.5 py-1 rounded-full font-semibold
-                                            @if($app->status === 'pending') bg-amber-100 text-amber-700
-                                            @elseif($app->status === 'approved') bg-emerald-100 text-emerald-700
-                                            @else bg-red-100 text-red-700 @endif">
-                                            {{ $app->status_label }}
-                                        </span>
+                                        @if($app->status === 'pending')
+                                            <div class="mt-1 text-[11px] text-amber-600">
+                                                <i class="fas fa-clock mr-1"></i> অ্যাডমিন যাচাই করছেন — অনুমোদন হলে বিল আপডেট হবে
+                                            </div>
+                                        @elseif($app->status === 'approved')
+                                            <div class="mt-1 text-[11px] text-emerald-600">
+                                                <i class="fas fa-check mr-1"></i> অনুমোদিত — বিলিং আপডেট হয়েছে
+                                                @if($app->reviewed_at) • {{ $app->reviewed_at->format('M d, Y') }}@endif
+                                            </div>
+                                        @elseif($app->status === 'rejected' && $app->admin_notes)
+                                            <div class="mt-1 text-[11px] text-red-500">
+                                                <i class="fas fa-times mr-1"></i> {{ $app->admin_notes }}
+                                            </div>
+                                        @endif
                                     </div>
                                 @endforeach
                             </div>

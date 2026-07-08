@@ -13,10 +13,10 @@ class FamilyReductionApplicationController extends Controller
     // ============ MEMBER SIDE ============
 
     /**
-     * Member: update which flats/families are active.
-     * Simple toggle approach — member marks each flat as active/inactive.
-     * When flats are turned OFF, a FamilyReductionApplication is created
-     * with the meter numbers so admin can verify on BPDB.
+     * Member: submit a flat-status change request.
+     * Creates a PENDING application — does NOT change flats or billing yet.
+     * Admin reviews + approves → then changes take effect.
+     * Each save creates a separate application record.
      */
     public function updateFlatStatuses(Request $request)
     {
@@ -44,55 +44,54 @@ class FamilyReductionApplicationController extends Controller
             }
         }
 
-        $previousActiveCount = $building->flats()->where('is_active', true)->count();
-        $turnedOffFlats = [];
-        $activeCount = 0;
+        // Build the requested flat states (what the member wants)
         $flatsInput = $validated['flats'] ?? [];
+        $requestedStates = [];
+        $requestedCount = 0;
+        $hasChanges = false;
 
         foreach ($validated['flat_ids'] as $flatId) {
-            $flat = \App\Models\Flat::with('meters')->find($flatId);
-            $wasActive = $flat->is_active;
+            $flat = Flat::with('meters')->find($flatId);
             $isActive = isset($flatsInput[$flatId]) && $flatsInput[$flatId] === '1';
+            $meterNumber = $validated['meter_numbers'][$flatId] ?? $flat->meters->first()?->meter_number ?? '';
+            if (empty($meterNumber)) $meterNumber = '';
 
-            if ($isActive) $activeCount++;
+            $requestedStates[] = [
+                'flat_id'      => (int) $flatId,
+                'flat_number'  => $flat->flat_number,
+                'active'       => $isActive,
+                'meter_number' => $meterNumber,
+            ];
 
-            // Track flats being turned OFF (for application record)
-            if ($wasActive && !$isActive) {
-                $meterNumber = $validated['meter_numbers'][$flatId] ?? $flat->meters->first()?->meter_number ?? '—';
-                if (empty($meterNumber)) $meterNumber = '—';
-                $turnedOffFlats[] = [
-                    'flat_id'      => $flatId,
-                    'flat_number'  => $flat->flat_number,
-                    'meter_number' => $meterNumber,
-                ];
+            if ($isActive) $requestedCount++;
+
+            // Check if this is actually a change from current state
+            if ($flat->is_active !== $isActive) {
+                $hasChanges = true;
             }
-
-            $flat->update(['is_active' => $isActive]);
         }
 
-        // Auto-update billing_family_count to match active flats
-        $building->update(['billing_family_count' => $activeCount]);
-
-        // Create an application record for admin verification if any flats were turned off
-        if (!empty($turnedOffFlats)) {
-            FamilyReductionApplication::create([
-                'user_id'                => $user->id,
-                'building_id'            => $building->id,
-                'current_family_count'   => $previousActiveCount,
-                'requested_family_count' => $activeCount,
-                'vacant_flat_ids'        => array_column($turnedOffFlats, 'flat_id'),
-                'reason'                 => 'সদস্য টগল করে ' . count($turnedOffFlats) . 'টি ফ্ল্যাট খালি করেছেন। মিটার নম্বর: ' . implode(', ', array_column($turnedOffFlats, 'meter_number')),
-                'status'                 => 'pending',
-            ]);
+        if (!$hasChanges) {
+            return redirect()->route('member.dashboard', ['tab' => 'building'])
+                ->with('app_error', 'কোনো পরিবর্তন করা হয়নি। সুইচ পরিবর্তন করে আবার চেষ্টা করুন।');
         }
 
-        $msg = "আপডেট সফল! বর্তমানে সক্রিয় পরিবার: {$activeCount}টি।";
-        if (!empty($turnedOffFlats)) {
-            $msg .= ' অ্যাডমিন মিটার নম্বর যাচাই করে নিশ্চিত করবেন।';
-        }
+        $currentCount = $building->effective_billing_family_count;
+
+        // Create application — flats and billing DO NOT change yet
+        FamilyReductionApplication::create([
+            'user_id'                => $user->id,
+            'building_id'            => $building->id,
+            'current_family_count'   => $currentCount,
+            'requested_family_count' => $requestedCount,
+            'vacant_flat_ids'        => array_column(array_filter($requestedStates, fn($s) => !$s['active']), 'flat_id'),
+            'requested_flat_states'  => $requestedStates,
+            'reason'                 => "সদস্য পরিবার সংখ্যা আপডেটের অনুরোধ করেছেন: {$currentCount} → {$requestedCount} পরিবার।",
+            'status'                 => 'pending',
+        ]);
 
         return redirect()->route('member.dashboard', ['tab' => 'building'])
-            ->with('app_success', $msg);
+            ->with('app_success', "আপনার আবেদন জমা হয়েছে! অনুরোধ করা পরিবার: {$requestedCount}টি (বর্তমান: {$currentCount}টি)। অ্যাডমিন মিটার নম্বর যাচাই করে অনুমোদন দিলে আপনার বিল আপডেট হবে।");
     }
 
     /**
@@ -191,13 +190,22 @@ class FamilyReductionApplicationController extends Controller
             'reviewed_at'  => now(),
         ]);
 
-        // Set the building's billing family count to the approved amount
+        // Apply the requested flat states to the actual flats
+        if (!empty($application->requested_flat_states)) {
+            foreach ($application->requested_flat_states as $state) {
+                Flat::where('id', $state['flat_id'])->update([
+                    'is_active' => $state['active'],
+                ]);
+            }
+        }
+
+        // Update billing_family_count to the approved requested count
         $application->building->update([
             'billing_family_count' => $application->requested_family_count,
         ]);
 
         return redirect()->route('admin.applications.index')
-            ->with('status', "আবেদন অনুমোদিত। বিলিং পরিবার সংখ্যা আপডেট হয়েছে: {$application->requested_family_count}");
+            ->with('status', "আবেদন অনুমোদিত। ফ্ল্যাট স্ট্যাটাস ও বিলিং আপডেট হয়েছে। বিলিং পরিবার: {$application->requested_family_count}");
     }
 
     /**
@@ -222,5 +230,27 @@ class FamilyReductionApplicationController extends Controller
 
         return redirect()->route('admin.applications.index')
             ->with('status', 'আবেদন প্রত্যাখ্যাত।');
+    }
+
+    /**
+     * Admin: manually override the billing family count for a building.
+     * Used when admin discovers the actual family count differs from what
+     * the member reported (e.g. member forgot to report new families).
+     * This bypasses the application system entirely.
+     */
+    public function overrideBilling(Request $request, Building $building)
+    {
+        $validated = $request->validate([
+            'billing_family_count' => ['required', 'integer', 'min:0', 'max:' . $building->expected_family_count],
+            'override_reason'      => ['nullable', 'string', 'max:500'],
+        ]);
+
+        $oldCount = $building->billing_family_count ?? $building->getActiveFamilyCount();
+
+        $building->update([
+            'billing_family_count' => $validated['billing_family_count'],
+        ]);
+
+        return back()->with('status', "বিলিং পরিবার সংখ্যা ম্যানুয়ালি আপডেট হয়েছে: {$oldCount} → {$validated['billing_family_count']}");
     }
 }
