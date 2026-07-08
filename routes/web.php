@@ -10,10 +10,12 @@ use App\Http\Controllers\ContactController;
 use App\Http\Controllers\GalleryController;
 use App\Http\Controllers\MemberAuthController;
 use App\Http\Controllers\MemberController;
+use App\Http\Controllers\MemberUploadController;
 use App\Http\Controllers\NoticeController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\ServiceChargeController;
 use App\Http\Controllers\SiteSettingController;
+use App\Services\SocialValueService;
 use App\Models\AboutInfo;
 use App\Models\Building;
 use App\Models\Flat;
@@ -30,6 +32,7 @@ Route::get('/', function () {
     $notices = Notice::currentlyActive()->latestFirst()->take(10)->get();
     $galleryItems = GalleryItem::active()->latestFirst()->take(10)->get();
     $about = AboutInfo::current();
+    $topRanked = app(SocialValueService::class)->leaderboard(\App\Models\MemberUpload::currentMonthKey(), limit: 10);
 
     return view('welcome', [
         'roads'          => $roads,
@@ -40,6 +43,7 @@ Route::get('/', function () {
         'notices'        => $notices,
         'galleryItems'   => $galleryItems,
         'about'          => $about,
+        'topRanked'      => $topRanked,
     ]);
 })->name('home');
 
@@ -119,6 +123,10 @@ Route::prefix('admin')->name('admin.')->group(function () {
         Route::post('/service-charges', [ServiceChargeController::class, 'store'])->name('service-charges.store');
         Route::put('/service-charges/{serviceCharge}', [ServiceChargeController::class, 'update'])->name('service-charges.update');
         Route::delete('/service-charges/{serviceCharge}', [ServiceChargeController::class, 'destroy'])->name('service-charges.destroy');
+
+        // Social Value — anonymously rate member yard-photo uploads 1-10 stars
+        Route::get('/social-value', [MemberUploadController::class, 'adminIndex'])->name('social-value.index');
+        Route::post('/social-value/{upload}/rate', [MemberUploadController::class, 'rate'])->name('social-value.rate');
     });
 });
 
@@ -131,6 +139,10 @@ Route::prefix('member')->name('member.')->group(function () {
     Route::middleware(['auth'])->group(function () {
         Route::get('/dashboard', [MemberAuthController::class, 'dashboard'])->name('dashboard');
         Route::post('/logout', [MemberAuthController::class, 'logout'])->name('logout');
+
+        // Member yard-photo uploads (4 per month, monthly rotation)
+        Route::post('/uploads', [MemberUploadController::class, 'store'])->name('uploads.store');
+        Route::delete('/uploads/{upload}', [MemberUploadController::class, 'destroy'])->name('uploads.destroy');
     });
 });
 

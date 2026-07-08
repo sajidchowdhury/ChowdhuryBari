@@ -120,6 +120,11 @@
                 <span>সেবা চার্জ</span>
             </a>
 
+            <a href="{{ route('admin.social-value.index') }}" class="sidebar-link flex items-center gap-3 px-5 py-3.5 rounded-2xl text-white font-medium @if(request()->routeIs('admin.social-value*')) active @endif">
+                <i class="fas fa-star w-5"></i>
+                <span>Social Value</span>
+            </a>
+
             <div class="px-5 text-teal-200 text-xs font-semibold mt-6 mb-2">সেটিংস</div>
 
             <a href="{{ route('admin.contact.edit') }}" class="sidebar-link flex items-center gap-3 px-5 py-3.5 rounded-2xl text-white font-medium @if(request()->routeIs('admin.contact*')) active @endif">

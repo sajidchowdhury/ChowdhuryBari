@@ -3,7 +3,9 @@
 namespace App\Http\Controllers;
 
 use App\Models\User;
+use App\Models\MemberUpload;
 use App\Models\ServiceCharge;
+use App\Services\SocialValueService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Crypt;
@@ -137,7 +139,7 @@ class MemberAuthController extends Controller
     /**
      * Show the member dashboard.
      */
-    public function dashboard()
+    public function dashboard(SocialValueService $sv)
     {
         $user = Auth::user();
 
@@ -150,10 +152,43 @@ class MemberAuthController extends Controller
             return redirect()->route('admin.dashboard');
         }
 
+        $monthKey = MemberUpload::currentMonthKey();
+        $prevMonthKey = MemberUpload::previousMonthKey();
+
+        // Member's current-month uploads
+        $myUploads = MemberUpload::where('user_id', $user->id)
+            ->where('month_key', $monthKey)
+            ->latest()
+            ->get();
+
+        // Social value + ranking
+        $currentSV = $sv->currentSocialValue($user->id);
+        $prevSV    = $sv->previousSocialValue($user->id);
+        $rank      = $sv->rankFor($user->id);
+        $totalRanked = $sv->totalRankedMembers();
+
+        // Best image this month (for the stat card)
+        $bestImage = MemberUpload::bestImageFor($user->id, $monthKey);
+        $ratedCount = $myUploads->where('star_rating', '!==', null)->count();
+
         return view('member.dashboard', [
             'user'           => $user,
             'serviceCharges' => ServiceCharge::activeOrdered()->get(),
             'totalCharge'    => ServiceCharge::totalActive(),
+
+            // Gallery / social-value data
+            'myUploads'      => $myUploads,
+            'uploadLimit'    => SocialValueService::MAX_UPLOADS_PER_MONTH,
+            'uploadRemaining'=> SocialValueService::MAX_UPLOADS_PER_MONTH - $myUploads->count(),
+            'monthKey'       => $monthKey,
+
+            // Ranking data
+            'currentSV'      => $currentSV,
+            'prevSV'         => $prevSV,
+            'rank'           => $rank,
+            'totalRanked'    => $totalRanked,
+            'bestImageStars' => $bestImage?->star_rating,
+            'ratedCount'     => $ratedCount,
         ]);
     }
 

@@ -171,23 +171,23 @@
                             <div class="w-9 h-9 rounded-lg bg-emerald-50 text-emerald-700 flex items-center justify-center"><i class="fas fa-star text-sm"></i></div>
                             <span class="text-[10px] text-slate-400 font-medium">এই মাস</span>
                         </div>
-                        <div class="text-3xl font-bold text-slate-800 mt-3 tabular-nums">৮৭</div>
-                        <div class="text-slate-400 text-xs mt-0.5">/ ১০০ স্কোর</div>
+                        <div class="text-3xl font-bold text-slate-800 mt-3 tabular-nums">{{ $currentSV ?? '--' }}</div>
+                        <div class="text-slate-400 text-xs mt-0.5">@if($currentSV)/ ১০০ স্কোর @else রেট করা হয়নি @endif</div>
                     </div>
                     <div class="card card-hover p-5">
                         <div class="flex items-center justify-between">
                             <div class="w-9 h-9 rounded-lg bg-amber-50 text-amber-600 flex items-center justify-center"><i class="fas fa-medal text-sm"></i></div>
                             <span class="text-[10px] text-slate-400 font-medium">র‍্যাঙ্ক</span>
                         </div>
-                        <div class="text-3xl font-bold text-slate-800 mt-3 tabular-nums">৩</div>
-                        <div class="text-slate-400 text-xs mt-0.5">৫২০ জনের মধ্যে</div>
+                        <div class="text-3xl font-bold text-slate-800 mt-3 tabular-nums">{{ $rank ?? '--' }}</div>
+                        <div class="text-slate-400 text-xs mt-0.5">@if($rank){{ $totalRanked }} জনের মধ্যে @else ছবি আপলোড করুন @endif</div>
                     </div>
                     <div class="card card-hover p-5">
                         <div class="flex items-center justify-between">
                             <div class="w-9 h-9 rounded-lg bg-sky-50 text-sky-600 flex items-center justify-center"><i class="fas fa-camera text-sm"></i></div>
                             <span class="text-[10px] text-slate-400 font-medium">আপলোড</span>
                         </div>
-                        <div class="text-3xl font-bold text-slate-800 mt-3 tabular-nums">৪</div>
+                        <div class="text-3xl font-bold text-slate-800 mt-3 tabular-nums">{{ $myUploads->count() }}<span class="text-lg text-slate-400">/{{ $uploadLimit }}</span></div>
                         <div class="text-slate-400 text-xs mt-0.5">এই মাসের ছবি</div>
                     </div>
                     <div class="card card-hover p-5">
@@ -195,7 +195,7 @@
                             <div class="w-9 h-9 rounded-lg bg-rose-50 text-rose-600 flex items-center justify-center"><i class="fas fa-fire text-sm"></i></div>
                             <span class="text-[10px] text-slate-400 font-medium">সর্বোচ্চ</span>
                         </div>
-                        <div class="text-3xl font-bold text-slate-800 mt-3 tabular-nums">৯<span class="text-lg text-slate-400">/১০</span></div>
+                        <div class="text-3xl font-bold text-slate-800 mt-3 tabular-nums">{{ $bestImageStars ?? '--' }}<span class="text-lg text-slate-400">@if($bestImageStars)/১০ @endif</span></div>
                         <div class="text-slate-400 text-xs mt-0.5">একটি ছবিতে</div>
                     </div>
                 </div>
@@ -262,6 +262,17 @@
                     <p class="text-slate-500 text-sm mt-1">আপনার সকল পেমেন্ট ও বকেয়ার তালিকা</p>
                 </div>
 
+                {{-- DEMO DATA BANNER --}}
+                <div class="rounded-2xl bg-amber-50 border border-amber-200 p-4 flex items-start gap-3">
+                    <div class="w-9 h-9 bg-amber-100 text-amber-600 rounded-lg flex items-center justify-center flex-shrink-0">
+                        <i class="fas fa-flask"></i>
+                    </div>
+                    <div class="text-sm text-amber-800">
+                        <div class="font-semibold">এটি ডেমো ডেটা</div>
+                        <p class="text-amber-700 text-xs mt-0.5 leading-relaxed">নিচের পেমেন্ট ইতিহাস ও বকেয়ার পরিমাণ শুধু প্রদর্শনের জন্য। পেমেন্ট গেটওয়ে (bKash / Nagad / SSL Commerz) যুক্ত হওয়ার পর এখানে আপনার আসল লেনদেনের তথ্য দেখা যাবে — ইনশাআল্লাহ শীঘ্রই।</p>
+                    </div>
+                </div>
+
                 <!-- Summary cards (subtle) -->
                 <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
                     <div class="card p-5">
@@ -324,44 +335,99 @@
                 <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
                     <div>
                         <h2 class="text-xl font-bold heading-serif text-slate-800">আমার গ্যালারি</h2>
-                        <p class="text-slate-500 text-sm mt-1">সামনের উঠানের ছবি আপলোড করুন — অ্যাডমিন পরিচ্ছন্নতার ভিত্তিতে স্কোর দেবেন</p>
+                        <p class="text-slate-500 text-sm mt-1">সামনের উঠানের ছবি আপলোড করুন — অ্যাডমিন বেনামেভাবে স্কোর দেবেন (১-১০ স্টার)</p>
                     </div>
-                    <button onclick="showComingSoon()"
-                            class="flex items-center gap-2 px-5 py-2.5 bg-slate-900 hover:bg-slate-800 text-white text-sm font-medium rounded-xl transition active:scale-95">
-                        <i class="fas fa-camera"></i>
-                        <span>ছবি আপলোড করুন</span>
-                    </button>
+                    <div class="text-right">
+                        <div class="text-xs text-slate-400">এই মাসে আপলোড</div>
+                        <div class="text-lg font-bold text-slate-800 tabular-nums">{{ $myUploads->count() }}<span class="text-sm text-slate-400">/{{ $uploadLimit }}</span></div>
+                    </div>
                 </div>
 
-                <!-- Upload zone (demo) -->
-                <div class="card border-dashed border-2 border-slate-200 p-10 text-center hover:border-emerald-300 hover:bg-emerald-50/30 transition cursor-pointer">
-                    <i class="fas fa-cloud-upload-alt text-3xl text-slate-400 mb-3"></i>
-                    <div class="font-medium text-slate-700 text-sm">ছবি টেনে আনুন অথবা ক্লিক করুন</div>
-                    <div class="text-xs text-slate-400 mt-1">JPG / PNG • সর্বোচ্চ ৫MB</div>
-                </div>
+                {{-- Upload feedback messages --}}
+                @if(session('upload_success'))
+                    <div class="rounded-2xl bg-emerald-50 border border-emerald-200 p-4 text-emerald-700 text-sm flex items-center gap-2">
+                        <i class="fas fa-check-circle"></i> {{ session('upload_success') }}
+                    </div>
+                @endif
+                @if(session('upload_error'))
+                    <div class="rounded-2xl bg-red-50 border border-red-200 p-4 text-red-700 text-sm flex items-center gap-2">
+                        <i class="fas fa-exclamation-circle"></i> {{ session('upload_error') }}
+                    </div>
+                @endif
 
-                <!-- My photos grid (demo) -->
+                {{-- Upload form — only if under the monthly limit --}}
+                @if($uploadRemaining > 0)
+                    <form action="{{ route('member.uploads.store') }}" method="POST" enctype="multipart/form-data" class="card border-dashed border-2 border-slate-200 p-8 text-center hover:border-emerald-300 hover:bg-emerald-50/30 transition">
+                        @csrf
+                        <label class="cursor-pointer block">
+                            <input type="file" name="image" accept="image/*" required class="hidden" onchange="document.getElementById('upload-submit-btn').disabled = !this.files.length; document.getElementById('upload-fname').textContent = this.files[0]?.name || ''">
+                            <i class="fas fa-cloud-upload-alt text-3xl text-slate-400 mb-3"></i>
+                            <div class="font-medium text-slate-700 text-sm">ছবি নির্বাচন করুন (ক্লিক করুন)</div>
+                            <div class="text-xs text-slate-400 mt-1" id="upload-fname">JPG / PNG / WEBP • সর্বোচ্চ ৫MB</div>
+                        </label>
+                        <div class="mt-4">
+                            <input type="text" name="caption" placeholder="ছবির ক্যাপশন (ঐচ্ছিক)" maxlength="200"
+                                   class="w-full max-w-sm mx-auto border border-slate-200 rounded-lg px-3 py-2 text-sm text-center">
+                        </div>
+                        <button type="submit" id="upload-submit-btn" disabled
+                                class="mt-4 inline-flex items-center gap-2 px-6 py-2.5 bg-slate-900 hover:bg-slate-800 disabled:opacity-40 disabled:cursor-not-allowed text-white text-sm font-medium rounded-xl transition active:scale-95">
+                            <i class="fas fa-upload"></i> আপলোড করুন
+                        </button>
+                    </form>
+                    <div class="text-[11px] text-slate-400 -mt-3 text-center">প্রতি মাসে সর্বোচ্চ {{ $uploadLimit }}টি ছবি। নতুন মাসে গণনা রিসেট হবে।</div>
+                @else
+                    <div class="card border border-amber-200 bg-amber-50/50 p-8 text-center">
+                        <i class="fas fa-check-circle text-3xl text-amber-500 mb-2"></i>
+                        <div class="font-medium text-slate-700 text-sm">এই মাসের জন্য আপনার {{ $uploadLimit }}টি ছবি আপলোড সম্পন্ন</div>
+                        <div class="text-xs text-slate-400 mt-1">আগামী মাসে আবার {{ $uploadLimit }}টি ছবি আপলোড করতে পারবেন।</div>
+                    </div>
+                @endif
+
+                {{-- My photos grid (dynamic) --}}
                 <div>
                     <div class="text-sm font-medium text-slate-700 mb-3 flex items-center justify-between">
-                        <span>আমার আপলোড করা ছবি</span>
-                        <span class="text-slate-400 text-xs font-normal">৪টি ছবি</span>
+                        <span>এই মাসের ছবি ও স্কোর</span>
+                        <span class="text-slate-400 text-xs font-normal">{{ $myUploads->count() }}টি ছবি</span>
                     </div>
-                    <div class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-4">
-                        @for($i = 1; $i <= 4; $i++)
-                            <div class="card overflow-hidden">
-                                <div class="aspect-square bg-slate-100 flex items-center justify-center">
-                                    <i class="fas fa-image text-3xl text-slate-300"></i>
-                                </div>
-                                <div class="p-3">
-                                    <div class="text-xs font-medium text-slate-700">উঠানের ছবি {{ $i }}</div>
-                                    <div class="flex items-center justify-between mt-1">
-                                        <span class="text-[10px] text-slate-400">{{ $i }} দিন আগে</span>
-                                        <span class="text-[10px] bg-amber-50 text-amber-700 px-1.5 py-0.5 rounded font-semibold">★ {{ 7 + $i }}/১০</span>
+                    @if($myUploads->isNotEmpty())
+                        <div class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-4">
+                            @foreach($myUploads as $upload)
+                                <div class="card overflow-hidden">
+                                    <div class="aspect-square bg-slate-100 relative">
+                                        <img src="{{ $upload->image_url }}" alt="{{ $upload->caption ?? 'My upload' }}" class="w-full h-full object-cover">
+                                        @if($upload->is_rated)
+                                            <span class="absolute top-2 right-2 bg-amber-400 text-white text-xs px-2 py-0.5 rounded-full font-bold flex items-center gap-0.5">
+                                                <i class="fas fa-star text-[10px]"></i> {{ $upload->star_rating }}/১০
+                                            </span>
+                                        @else
+                                            <span class="absolute top-2 right-2 bg-slate-800/80 text-white text-[10px] px-2 py-0.5 rounded-full font-medium">রিভিউ চলছে</span>
+                                        @endif
+                                    </div>
+                                    <div class="p-3">
+                                        <div class="text-xs font-medium text-slate-700 truncate">{{ $upload->caption ?? 'উঠানের ছবি' }}</div>
+                                        <div class="flex items-center justify-between mt-1">
+                                            <span class="text-[10px] text-slate-400">{{ $upload->created_at->format('M d') }}</span>
+                                            @if($upload->is_rated)
+                                                <span class="text-[10px] text-emerald-600 font-medium"><i class="fas fa-check text-[8px]"></i> রেট করা হয়েছে</span>
+                                            @else
+                                                <form method="POST" action="{{ route('member.uploads.destroy', $upload) }}" onsubmit="return confirm('এই ছবি মুছবেন?')">
+                                                    @csrf
+                                                    @method('DELETE')
+                                                    <button type="submit" class="text-[10px] text-red-500 hover:text-red-700 font-medium"><i class="fas fa-trash text-[8px]"></i> মুছুন</button>
+                                                </form>
+                                            @endif
+                                        </div>
                                     </div>
                                 </div>
-                            </div>
-                        @endfor
-                    </div>
+                            @endforeach
+                        </div>
+                    @else
+                        <div class="card p-10 text-center">
+                            <i class="fas fa-camera text-4xl text-slate-300 mb-3"></i>
+                            <div class="text-slate-500 text-sm">এই মাসে এখনো কোনো ছবি আপলোড করেননি</div>
+                            <div class="text-slate-400 text-xs mt-1">স্কোর ও র‍্যাঙ্কিং পেতে উঠানের ছবি আপলোড করুন।</div>
+                        </div>
+                    @endif
                 </div>
             </div>
 
@@ -373,54 +439,78 @@
                 </div>
 
                 <div class="max-w-2xl space-y-5">
-                    <!-- Big score card (single accent, decent) -->
-                    <div class="card p-8 relative overflow-hidden">
-                        <div class="absolute top-0 right-0 w-40 h-40 bg-emerald-50 rounded-full -mr-16 -mt-16"></div>
-                        <div class="relative">
-                            <div class="uppercase tracking-widest text-[11px] text-emerald-700 font-semibold">SOCIAL VALUE SCORE</div>
-                            <div class="text-6xl font-bold mt-2 heading-serif text-slate-800 tabular-nums">৮৭</div>
-                            <div class="text-slate-500 mt-1 text-sm">এই মাসের সামাজিক অবদান স্কোর</div>
+                    {{-- Big score card — dynamic --}}
+                    @if($currentSV !== null)
+                        <div class="card p-8 relative overflow-hidden">
+                            <div class="absolute top-0 right-0 w-40 h-40 bg-emerald-50 rounded-full -mr-16 -mt-16"></div>
+                            <div class="relative">
+                                <div class="uppercase tracking-widest text-[11px] text-emerald-700 font-semibold">SOCIAL VALUE SCORE</div>
+                                <div class="text-6xl font-bold mt-2 heading-serif text-slate-800 tabular-nums">{{ $currentSV }}</div>
+                                <div class="text-slate-500 mt-1 text-sm">এই মাসের সামাজিক অবদান স্কোর ({{ $ratedCount }}টি রেট করা ছবির গড় × ১০)</div>
 
-                            <div class="mt-7">
-                                <div class="flex justify-between text-xs text-slate-500 mb-2">
-                                    <div>আপনার স্কোর</div>
-                                    <div class="tabular-nums">৮৭ / ১০০</div>
-                                </div>
-                                <div class="h-2 bg-slate-100 rounded-full overflow-hidden">
-                                    <div class="h-full bg-emerald-600 rounded-full transition-all" style="width: 87%"></div>
+                                <div class="mt-7">
+                                    <div class="flex justify-between text-xs text-slate-500 mb-2">
+                                        <div>আপনার স্কোর</div>
+                                        <div class="tabular-nums">{{ $currentSV }} / ১০০</div>
+                                    </div>
+                                    <div class="h-2 bg-slate-100 rounded-full overflow-hidden">
+                                        <div class="h-full bg-emerald-600 rounded-full transition-all" style="width: {{ $currentSV }}%"></div>
+                                    </div>
                                 </div>
                             </div>
                         </div>
-                    </div>
+                    @else
+                        {{-- No uploads state --}}
+                        <div class="card p-8 text-center border-dashed border-2 border-slate-200">
+                            <i class="fas fa-camera text-4xl text-slate-300 mb-3"></i>
+                            <div class="text-2xl font-bold text-slate-400 tabular-nums">--</div>
+                            <div class="text-slate-600 text-sm mt-2 font-medium">এই মাসে আপনার কোনো রেট করা ছবি নেই</div>
+                            <div class="text-slate-400 text-xs mt-1">র‍্যাঙ্কিং পেতে "আমার গ্যালারি" তে গিয়ে উঠানের ছবি আপলোড করুন।</div>
+                        </div>
+                    @endif
 
-                    <!-- Rank badges (subtle) -->
+                    {{-- Rank + last-month comparison badges --}}
                     <div class="grid grid-cols-2 gap-4">
                         <div class="card p-5 text-center">
                             <div class="w-12 h-12 mx-auto bg-amber-50 text-amber-600 rounded-xl flex items-center justify-center text-xl">
                                 <i class="fas fa-medal"></i>
                             </div>
-                            <div class="text-2xl font-bold text-slate-800 mt-3 tabular-nums">৩য়</div>
-                            <div class="text-xs text-slate-400">বর্তমান র‍্যাঙ্ক</div>
+                            <div class="text-2xl font-bold text-slate-800 mt-3 tabular-nums">
+                                @if($rank){{ $rank }}@else--@endif
+                            </div>
+                            <div class="text-xs text-slate-400">বর্তমান র‍্যাঙ্ক @if($rank)({{ $totalRanked }} জনের মধ্যে)@endif</div>
                         </div>
                         <div class="card p-5 text-center">
-                            <div class="w-12 h-12 mx-auto bg-emerald-50 text-emerald-700 rounded-xl flex items-center justify-center text-xl">
-                                <i class="fas fa-arrow-up"></i>
+                            @php
+                                $trendIcon = 'minus';
+                                $trendText = 'নতুন';
+                                $trendColor = 'slate';
+                                if ($currentSV !== null && $prevSV !== null) {
+                                    if ($currentSV > $prevSV) { $trendIcon = 'arrow-up'; $trendText = '+' . ($currentSV - $prevSV); $trendColor = 'emerald'; }
+                                    elseif ($currentSV < $prevSV) { $trendIcon = 'arrow-down'; $trendText = ($currentSV - $prevSV); $trendColor = 'rose'; }
+                                    else { $trendText = 'অপরিবর্তিত'; }
+                                } elseif ($prevSV !== null) { $trendIcon = 'arrow-down'; $trendText = 'এই মাস নেই'; $trendColor = 'slate'; }
+                            @endphp
+                            <div class="w-12 h-12 mx-auto bg-{{ $trendColor }}-50 text-{{ $trendColor }}-600 rounded-xl flex items-center justify-center text-xl">
+                                <i class="fas fa-{{ $trendIcon }}"></i>
                             </div>
-                            <div class="text-2xl font-bold text-slate-800 mt-3 tabular-nums">+৫</div>
-                            <div class="text-xs text-slate-400">গত মাস থেকে</div>
+                            <div class="text-2xl font-bold text-slate-800 mt-3 tabular-nums">{{ $trendText }}</div>
+                            <div class="text-xs text-slate-400">গত মাসের স্কোর: {{ $prevSV ?? '--' }}</div>
                         </div>
                     </div>
 
-                    <!-- How scoring works -->
+                    {{-- How scoring works (clear formula) --}}
                     <div class="card p-6">
                         <div class="font-semibold text-slate-800 mb-3 flex items-center gap-2 text-sm">
-                            <i class="fas fa-info-circle text-emerald-700"></i> কীভাবে স্কোর হয়?
+                            <i class="fas fa-info-circle text-emerald-700"></i> স্কোর কীভাবে কাজ করে?
                         </div>
-                        <ul class="space-y-2.5 text-sm text-slate-600">
-                            <li class="flex gap-2"><span class="text-emerald-600 font-bold">•</span> প্রতিটি আপলোড করা ছবি অ্যাডমিন ১-১০ স্কোর দেন (পরিচ্ছন্নতা, গোছানো, সবুজের উপস্থিতি)</li>
-                            <li class="flex gap-2"><span class="text-emerald-600 font-bold">•</span> মাস শেষে সব ছবির গড় স্কোর থেকে আপনার সামাজিক মান নির্ধারিত হয়</li>
-                            <li class="flex gap-2"><span class="text-emerald-600 font-bold">•</span> সর্বোচ্চ স্কোর পাওয়া সদস্যরা "মাসের সেরা পরিচ্ছন্ন পরিবার" হিসেবে স্বীকৃতি পান</li>
-                        </ul>
+                        <div class="space-y-2.5 text-sm text-slate-600">
+                            <div class="flex gap-2"><span class="text-emerald-600 font-bold">১.</span> আপনি উঠানের ছবি আপলোড করেন (মাসে সর্বোচ্চ {{ $uploadLimit }}টি)</div>
+                            <div class="flex gap-2"><span class="text-emerald-600 font-bold">২.</span> অ্যাডমিন <strong>বেনামেভাবে</strong> প্রতিটি ছবিকে ১-১০ স্টার দেন (পরিচ্ছন্নতা, গোছানো, সবুজের উপস্থিতি দেখে)</div>
+                            <div class="flex gap-2"><span class="text-emerald-600 font-bold">৩.</span> আপনার <strong>Social Value</strong> = রেট করা ছবিগুলোর গড় স্টার × ১০ (উদাহরণ: গড় ৮.৫ → স্কোর ৮৫/১০০)</div>
+                            <div class="flex gap-2"><span class="text-emerald-600 font-bold">৪.</span> র‍্যাঙ্কিং এই স্কোরের ভিত্তিতে — সমান স্কোর হলে গত মাসের স্কোর বিবেচিত হয়</div>
+                            <div class="flex gap-2"><span class="text-emerald-600 font-bold">৫.</span> সর্বোচ্চ স্কোরের সদস্যরা "মাসের সেরা পরিচ্ছন্ন পরিবার" হিসেবে ওয়েবসাইটে প্রদর্শিত হন</div>
+                        </div>
                     </div>
                 </div>
             </div>

@@ -12,6 +12,7 @@
     @include('pages.team')
     @include('pages.notice')
     @include('pages.gallery')
+    @include('pages.top-ranked')
     @include('pages.TopMember')
     @include('pages.Review')
     @include('pages.MemberApplication')
