@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\User;
+use App\Models\ServiceCharge;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Crypt;
@@ -150,7 +151,9 @@ class MemberAuthController extends Controller
         }
 
         return view('member.dashboard', [
-            'user' => $user,
+            'user'           => $user,
+            'serviceCharges' => ServiceCharge::activeOrdered()->get(),
+            'totalCharge'    => ServiceCharge::totalActive(),
         ]);
     }
 

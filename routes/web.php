@@ -12,6 +12,7 @@ use App\Http\Controllers\MemberAuthController;
 use App\Http\Controllers\MemberController;
 use App\Http\Controllers\NoticeController;
 use App\Http\Controllers\ProfileController;
+use App\Http\Controllers\ServiceChargeController;
 use App\Http\Controllers\SiteSettingController;
 use App\Models\AboutInfo;
 use App\Models\Building;
@@ -112,6 +113,12 @@ Route::prefix('admin')->name('admin.')->group(function () {
         Route::get('/settings', [SiteSettingController::class, 'edit'])->name('settings.edit');
         Route::put('/settings', [SiteSettingController::class, 'update'])->name('settings.update');
         Route::post('/settings', [SiteSettingController::class, 'update'])->name('settings.update.post');
+
+        // Service charges — monthly fee breakdown shown on member dashboard
+        Route::get('/service-charges', [ServiceChargeController::class, 'index'])->name('service-charges.index');
+        Route::post('/service-charges', [ServiceChargeController::class, 'store'])->name('service-charges.store');
+        Route::put('/service-charges/{serviceCharge}', [ServiceChargeController::class, 'update'])->name('service-charges.update');
+        Route::delete('/service-charges/{serviceCharge}', [ServiceChargeController::class, 'destroy'])->name('service-charges.destroy');
     });
 });
 
