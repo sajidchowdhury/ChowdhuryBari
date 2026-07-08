@@ -43,13 +43,13 @@
 
             <!-- Desktop CTA -->
             <div class="hidden lg:flex items-center">
-                <button onclick="openMemberLoginModal()"
+                <a href="{{ route('member.login') }}"
                    class="px-6 py-2.5 text-sm font-semibold rounded-2xl border border-emerald-700/70 
                           hover:bg-emerald-50 hover:border-emerald-700 text-emerald-800 transition-all 
                           flex items-center gap-2 active:scale-[0.985]">
                     <i class="fas fa-user-check"></i>
                     <span>সদস্য লগইন</span>
-                </button>
+                </a>
             </div>
 
             <!-- Mobile Menu Button -->
@@ -92,7 +92,7 @@
         </div>
 
         <div class="p-6 border-t bg-slate-50 space-y-3">
-            <button onclick="closeMobileMenu(); openMemberLoginModal()" 
+            <button onclick="closeMobileMenu(); window.location='{{ route('member.login') }}'" 
                class="w-full flex items-center justify-center gap-2 text-center py-3.5 border border-emerald-700/60 rounded-2xl font-semibold text-emerald-800 hover:bg-emerald-50">
                 <i class="fas fa-user-check"></i>
                 <span>সদস্য লগইন</span>

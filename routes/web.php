@@ -8,6 +8,7 @@ use App\Http\Controllers\Admin\UserController;
 use App\Http\Controllers\BuildingController;
 use App\Http\Controllers\ContactController;
 use App\Http\Controllers\GalleryController;
+use App\Http\Controllers\MemberAuthController;
 use App\Http\Controllers\MemberController;
 use App\Http\Controllers\NoticeController;
 use App\Http\Controllers\ProfileController;
@@ -111,6 +112,18 @@ Route::prefix('admin')->name('admin.')->group(function () {
         Route::get('/settings', [SiteSettingController::class, 'edit'])->name('settings.edit');
         Route::put('/settings', [SiteSettingController::class, 'update'])->name('settings.update');
         Route::post('/settings', [SiteSettingController::class, 'update'])->name('settings.update.post');
+    });
+});
+
+// ====================== MEMBER SECTION ======================
+Route::prefix('member')->name('member.')->group(function () {
+    Route::get('/login', [MemberAuthController::class, 'showLogin'])->name('login');
+    Route::post('/login/otp', [MemberAuthController::class, 'sendOtp'])->name('login.otp');
+    Route::post('/login/verify', [MemberAuthController::class, 'verifyOtp'])->name('login.verify');
+
+    Route::middleware(['auth'])->group(function () {
+        Route::get('/dashboard', [MemberAuthController::class, 'dashboard'])->name('dashboard');
+        Route::post('/logout', [MemberAuthController::class, 'logout'])->name('logout');
     });
 });
 
