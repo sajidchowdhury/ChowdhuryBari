@@ -167,7 +167,7 @@ class FamilyReductionApplicationController extends Controller
      */
     public function show(FamilyReductionApplication $application)
     {
-        $application->load(['building.road.flats.meters', 'user', 'reviewer']);
+        $application->load(['building.road', 'building.flats.meters', 'user', 'reviewer']);
         return view('admin.applications.show', compact('application'));
     }
 
