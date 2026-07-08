@@ -8,6 +8,7 @@ use App\Http\Controllers\Admin\UserController;
 use App\Http\Controllers\BuildingController;
 use App\Http\Controllers\ContactController;
 use App\Http\Controllers\FamilyReductionApplicationController;
+use App\Http\Controllers\FieldDataController;
 use App\Http\Controllers\GalleryController;
 use App\Http\Controllers\MemberAuthController;
 use App\Http\Controllers\MemberController;
@@ -137,6 +138,16 @@ Route::prefix('admin')->name('admin.')->group(function () {
 
         // Manual billing override (admin discovers member has more/fewer families than reported)
         Route::post('/buildings/{building}/override-billing', [FamilyReductionApplicationController::class, 'overrideBilling'])->name('buildings.override-billing');
+
+        // Field data collection — on-site building survey form + migration
+        Route::get('/field-data', [FieldDataController::class, 'index'])->name('field-data.index');
+        Route::get('/field-data/create', [FieldDataController::class, 'create'])->name('field-data.create');
+        Route::post('/field-data', [FieldDataController::class, 'store'])->name('field-data.store');
+        Route::get('/field-data/{fieldData}/edit', [FieldDataController::class, 'edit'])->name('field-data.edit');
+        Route::put('/field-data/{fieldData}', [FieldDataController::class, 'update'])->name('field-data.update');
+        Route::delete('/field-data/{fieldData}', [FieldDataController::class, 'destroy'])->name('field-data.destroy');
+        Route::post('/field-data/migrate-all', [FieldDataController::class, 'migrateAll'])->name('field-data.migrate-all');
+        Route::post('/field-data/{fieldData}/migrate', [FieldDataController::class, 'migrateOne'])->name('field-data.migrate-one');
     });
 });
 

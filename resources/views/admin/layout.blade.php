@@ -100,6 +100,11 @@
                 <span>আওতাধীন এলাকা</span>
             </a>
 
+            <a href="{{ route('admin.field-data.index') }}" class="sidebar-link flex items-center gap-3 px-5 py-3.5 rounded-2xl text-white font-medium @if(request()->routeIs('admin.field-data*')) active @endif">
+                <i class="fas fa-clipboard-list w-5"></i>
+                <span>ফিল্ড ডাটা সংগ্রহ</span>
+            </a>
+
             <a href="{{ route('admin.members.index') }}" class="sidebar-link flex items-center gap-3 px-5 py-3.5 rounded-2xl text-white font-medium @if(request()->routeIs('admin.members*')) active @endif">
                 <i class="fas fa-users w-5"></i>
                 <span>আমাদের নেতৃত্ব</span>
