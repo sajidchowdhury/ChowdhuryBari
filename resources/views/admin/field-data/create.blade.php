@@ -295,7 +295,7 @@ function fieldDataForm() {
         caretakerName: '',
         caretakerPhone: '',
         extraInfo: '',
-        roads: {{ $roads->toJson() }},
+        roads: @json($roads->map(fn($r) => ['id' => $r->id, 'name' => $r->name])),
         flats: [],
 
         nextStep() {
@@ -349,6 +349,7 @@ function fieldDataForm() {
             const container = document.getElementById('flatsContainer');
             if (!container) return;
             container.innerHTML = '';
+            const self = this;
 
             this.flats.forEach((flat, idx) => {
                 const div = document.createElement('div');
@@ -356,20 +357,25 @@ function fieldDataForm() {
                 div.innerHTML = `
                     <div class="flex items-center justify-between">
                         <span class="text-xs font-semibold text-slate-500">ফ্ল্যাট #${idx + 1}</span>
-                        <button type="button" onclick="document.querySelector('[x-data]').__x.\$data.removeFlat(${flat.id})" class="text-red-400 hover:text-red-600 text-xs">
-                            <i class="fas fa-times"></i>
-                        </button>
+                        <button type="button" class="text-red-400 hover:text-red-600 text-xs"><i class="fas fa-times"></i></button>
                     </div>
                     <div class="grid grid-cols-2 gap-2">
-                        <input type="number" placeholder="ফ্লোর" value="${flat.floor}" min="0" class="text-sm border border-slate-200 rounded-lg px-3 py-2" onchange="document.querySelector('[x-data]').__x.\$data.flats[${idx}].floor = this.value">
-                        <input type="text" placeholder="ফ্ল্যাট নম্বর" value="${flat.flatNumber}" class="text-sm border border-slate-200 rounded-lg px-3 py-2" onchange="document.querySelector('[x-data]').__x.\$data.flats[${idx}].flatNumber = this.value">
+                        <input type="number" placeholder="ফ্লোর" value="${flat.floor}" min="0" class="text-sm border border-slate-200 rounded-lg px-3 py-2">
+                        <input type="text" placeholder="ফ্ল্যাট নম্বর" value="${flat.flatNumber}" class="text-sm border border-slate-200 rounded-lg px-3 py-2">
                     </div>
                     <div class="grid grid-cols-2 gap-2">
-                        <input type="text" placeholder="বাসিন্দার নাম" value="${flat.residentName}" class="text-sm border border-slate-200 rounded-lg px-3 py-2" onchange="document.querySelector('[x-data]').__x.\$data.flats[${idx}].residentName = this.value">
-                        <input type="tel" placeholder="বাসিন্দার ফোন" value="${flat.residentPhone}" class="text-sm border border-slate-200 rounded-lg px-3 py-2" onchange="document.querySelector('[x-data]').__x.\$data.flats[${idx}].residentPhone = this.value">
+                        <input type="text" placeholder="বাসিন্দার নাম" value="${flat.residentName}" class="text-sm border border-slate-200 rounded-lg px-3 py-2">
+                        <input type="tel" placeholder="বাসিন্দার ফোন" value="${flat.residentPhone}" class="text-sm border border-slate-200 rounded-lg px-3 py-2">
                     </div>
-                    <input type="text" placeholder="মিটার নম্বর" value="${flat.meterNumber}" class="w-full text-sm border border-slate-200 rounded-lg px-3 py-2" onchange="document.querySelector('[x-data]').__x.\$data.flats[${idx}].meterNumber = this.value">
+                    <input type="text" placeholder="মিটার নম্বর" value="${flat.meterNumber}" class="w-full text-sm border border-slate-200 rounded-lg px-3 py-2">
                 `;
+                const inputs = div.querySelectorAll('input');
+                inputs[0].onchange = (e) => self.flats[idx].floor = e.target.value;
+                inputs[1].onchange = (e) => self.flats[idx].flatNumber = e.target.value;
+                inputs[2].onchange = (e) => self.flats[idx].residentName = e.target.value;
+                inputs[3].onchange = (e) => self.flats[idx].residentPhone = e.target.value;
+                inputs[4].onchange = (e) => self.flats[idx].meterNumber = e.target.value;
+                div.querySelector('button').onclick = () => self.removeFlat(flat.id);
                 container.appendChild(div);
             });
         },

@@ -13,7 +13,20 @@
 @endsection
 
 @section('content')
-<div class="max-w-3xl mx-auto space-y-6" x-data="fieldDataForm({{ $fieldData->flats_data ? json_encode($fieldData->flats_data) : '[]' }})">
+<div class="max-w-3xl mx-auto space-y-6" x-data="fieldDataForm(@json([
+    'roadId' => $fieldData->road_id ?? '',
+    'newRoadName' => $fieldData->new_road_name ?? '',
+    'buildingName' => $fieldData->building_name ?? '',
+    'floorCount' => $fieldData->floor_count ?? 1,
+    'familiesPerFloor' => $fieldData->families_per_floor ?? 1,
+    'buildingCategory' => $fieldData->building_category ?? '',
+    'ownerName' => $fieldData->owner_name ?? '',
+    'ownerPhone' => $fieldData->owner_phone ?? '',
+    'caretakerName' => $fieldData->caretaker_name ?? '',
+    'caretakerPhone' => $fieldData->caretaker_phone ?? '',
+    'extraInfo' => $fieldData->extra_information ?? '',
+    'flats' => $fieldData->flats_data ?? [],
+]))">
 
     <div class="flex items-center justify-between">
         <a href="{{ route('admin.field-data.index') }}" class="text-sm text-slate-500 hover:text-slate-700 flex items-center gap-1">
@@ -193,28 +206,30 @@
 </div>
 
 <script>
-function fieldDataForm(existingFlats = []) {
+function fieldDataForm(config = {}) {
+    const flats = (config.flats || []).map((f, i) => ({
+        id: Date.now() + i,
+        floor: f.floor || 1,
+        flatNumber: f.flat_number || '',
+        residentName: f.resident_name || '',
+        residentPhone: f.resident_phone || '',
+        meterNumber: f.meter_number || ''
+    }));
+
     return {
         currentStep: 1,
-        roadId: '{{ $fieldData->road_id }}',
-        newRoadName: '{{ $fieldData->new_road_name }}',
-        buildingName: '{{ addslashes($fieldData->building_name) }}',
-        floorCount: {{ $fieldData->floor_count }},
-        familiesPerFloor: {{ $fieldData->families_per_floor }},
-        buildingCategory: '{{ $fieldData->building_category }}',
-        ownerName: '{{ addslashes($fieldData->owner_name) }}',
-        ownerPhone: '{{ $fieldData->owner_phone }}',
-        caretakerName: '{{ addslashes($fieldData->caretaker_name ?? '') }}',
-        caretakerPhone: '{{ $fieldData->caretaker_phone ?? '' }}',
-        extraInfo: '{{ addslashes($fieldData->extra_information ?? '') }}',
-        flats: existingFlats.map((f, i) => ({
-            id: Date.now() + i,
-            floor: f.floor || 1,
-            flatNumber: f.flat_number || '',
-            residentName: f.resident_name || '',
-            residentPhone: f.resident_phone || '',
-            meterNumber: f.meter_number || ''
-        })),
+        roadId: config.roadId || '',
+        newRoadName: config.newRoadName || '',
+        buildingName: config.buildingName || '',
+        floorCount: config.floorCount || 1,
+        familiesPerFloor: config.familiesPerFloor || 1,
+        buildingCategory: config.buildingCategory || '',
+        ownerName: config.ownerName || '',
+        ownerPhone: config.ownerPhone || '',
+        caretakerName: config.caretakerName || '',
+        caretakerPhone: config.caretakerPhone || '',
+        extraInfo: config.extraInfo || '',
+        flats: flats,
 
         nextStep() { if (this.currentStep < 5) { this.currentStep++; window.scrollTo({ top: 0, behavior: 'smooth' }); } },
         prevStep() { if (this.currentStep > 1) { this.currentStep--; window.scrollTo({ top: 0, behavior: 'smooth' }); } },
