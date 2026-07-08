@@ -85,69 +85,70 @@
 
         <!-- Menu -->
         <nav class="flex-1 overflow-y-auto px-4 py-6 space-y-2">
+
+            {{-- Dashboard (always first, no group header) --}}
             <a href="{{ route('admin.dashboard') }}" class="sidebar-link flex items-center gap-3 px-5 py-3.5 rounded-2xl text-white font-medium @if(request()->routeIs('admin.dashboard')) active @endif">
                 <i class="fas fa-tachometer-alt w-5"></i>
                 <span>ড্যাশবোর্ড</span>
             </a>
 
+            {{-- Group: ওয়েবসাইট কনটেন্ট --}}
+            <div class="px-5 text-teal-200 text-xs font-semibold mt-5 mb-1">ওয়েবসাইট কনটেন্ট</div>
             <a href="{{ route('admin.about.edit') }}" class="sidebar-link flex items-center gap-3 px-5 py-3.5 rounded-2xl text-white font-medium @if(request()->routeIs('admin.about*')) active @endif">
                 <i class="fas fa-info-circle w-5"></i>
                 <span>আমাদের সম্পর্কে</span>
             </a>
-
-            <a href="{{ route('admin.our-area') }}" class="sidebar-link flex items-center gap-3 px-5 py-3.5 rounded-2xl text-white font-medium @if(request()->routeIs('admin.our-area*')) active @endif">
-                <i class="fas fa-map-marker-alt w-5"></i>
-                <span>আওতাধীন এলাকা</span>
+            <a href="{{ route('admin.notices.index') }}" class="sidebar-link flex items-center gap-3 px-5 py-3.5 rounded-2xl text-white font-medium @if(request()->routeIs('admin.notices*')) active @endif">
+                <i class="fas fa-bullhorn w-5"></i>
+                <span>নোটিশ ও ঘোষণা</span>
             </a>
-
-            <a href="{{ route('admin.field-data.index') }}" class="sidebar-link flex items-center gap-3 px-5 py-3.5 rounded-2xl text-white font-medium @if(request()->routeIs('admin.field-data*')) active @endif">
-                <i class="fas fa-clipboard-list w-5"></i>
-                <span>ফিল্ড ডাটা সংগ্রহ</span>
+            <a href="{{ route('admin.gallery.index') }}" class="sidebar-link flex items-center gap-3 px-5 py-3.5 rounded-2xl text-white font-medium @if(request()->routeIs('admin.gallery*')) active @endif">
+                <i class="fas fa-images w-5"></i>
+                <span>গ্যালারি</span>
             </a>
-
             <a href="{{ route('admin.members.index') }}" class="sidebar-link flex items-center gap-3 px-5 py-3.5 rounded-2xl text-white font-medium @if(request()->routeIs('admin.members*')) active @endif">
                 <i class="fas fa-users w-5"></i>
                 <span>আমাদের নেতৃত্ব</span>
             </a>
 
-            <a href="{{ route('admin.notices.index') }}" class="sidebar-link flex items-center gap-3 px-5 py-3.5 rounded-2xl text-white font-medium @if(request()->routeIs('admin.notices*')) active @endif">
-                <i class="fas fa-bullhorn w-5"></i>
-                <span>নোটিশ ও ঘোষণা</span>
+            {{-- Group: এলাকা ও বিল্ডিং --}}
+            <div class="px-5 text-teal-200 text-xs font-semibold mt-5 mb-1">এলাকা ও বিল্ডিং</div>
+            <a href="{{ route('admin.our-area') }}" class="sidebar-link flex items-center gap-3 px-5 py-3.5 rounded-2xl text-white font-medium @if(request()->routeIs('admin.our-area*')) active @endif">
+                <i class="fas fa-map-marker-alt w-5"></i>
+                <span>আওতাধীন এলাকা</span>
+            </a>
+            <a href="{{ route('admin.field-data.index') }}" class="sidebar-link flex items-center gap-3 px-5 py-3.5 rounded-2xl text-white font-medium @if(request()->routeIs('admin.field-data*')) active @endif">
+                <i class="fas fa-clipboard-list w-5"></i>
+                <span>ফিল্ড ডাটা সংগ্রহ</span>
             </a>
 
-            <a href="{{ route('admin.gallery.index') }}" class="sidebar-link flex items-center gap-3 px-5 py-3.5 rounded-2xl text-white font-medium @if(request()->routeIs('admin.gallery*')) active @endif">
-                <i class="fas fa-images w-5"></i>
-                <span>গ্যালারি</span>
-            </a>
-
+            {{-- Group: সদস্য ব্যবস্থাপনা --}}
+            <div class="px-5 text-teal-200 text-xs font-semibold mt-5 mb-1">সদস্য ব্যবস্থাপনা</div>
             <a href="{{ route('admin.service-charges.index') }}" class="sidebar-link flex items-center gap-3 px-5 py-3.5 rounded-2xl text-white font-medium @if(request()->routeIs('admin.service-charges*')) active @endif">
                 <i class="fas fa-receipt w-5"></i>
                 <span>সেবা চার্জ</span>
             </a>
-
             <a href="{{ route('admin.social-value.index') }}" class="sidebar-link flex items-center gap-3 px-5 py-3.5 rounded-2xl text-white font-medium @if(request()->routeIs('admin.social-value*')) active @endif">
                 <i class="fas fa-star w-5"></i>
                 <span>Social Value</span>
             </a>
-
             <a href="{{ route('admin.applications.index') }}" class="sidebar-link flex items-center gap-3 px-5 py-3.5 rounded-2xl text-white font-medium @if(request()->routeIs('admin.applications*')) active @endif">
                 <i class="fas fa-file-alt w-5"></i>
                 <span>অ্যাপ্লিকেশন</span>
             </a>
 
-            <div class="px-5 text-teal-200 text-xs font-semibold mt-6 mb-2">সেটিংস</div>
-
+            {{-- Group: সেটিংস --}}
+            <div class="px-5 text-teal-200 text-xs font-semibold mt-5 mb-1">সেটিংস</div>
             <a href="{{ route('admin.contact.edit') }}" class="sidebar-link flex items-center gap-3 px-5 py-3.5 rounded-2xl text-white font-medium @if(request()->routeIs('admin.contact*')) active @endif">
                 <i class="fas fa-envelope w-5"></i>
                 <span>Get In Touch</span>
             </a>
-
             <a href="{{ route('admin.settings.edit') }}" class="sidebar-link flex items-center gap-3 px-5 py-3.5 rounded-2xl text-white font-medium @if(request()->routeIs('admin.settings*')) active @endif">
                 <i class="fas fa-sliders-h w-5"></i>
                 <span>Navigation &amp; Footer</span>
             </a>
 
-            {{-- Logout (minimal, at the bottom of nav — no profile card) --}}
+            {{-- Logout --}}
             <form method="POST" action="{{ route('logout') }}" class="mt-2">
                 @csrf
                 <button type="submit" class="sidebar-link w-full flex items-center gap-3 px-5 py-3.5 rounded-2xl text-white/70 hover:text-white font-medium">
