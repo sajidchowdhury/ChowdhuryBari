@@ -83,7 +83,8 @@ class MemberUploadController extends Controller
             'month_key' => $monthKey,
         ]);
 
-        return back()->with('upload_success', 'ছবি আপলোড হয়েছে। অ্যাডমিন রিভিউ করে স্কোর দেবেন।');
+        return redirect()->route('member.dashboard', ['tab' => 'gallery', 'uploaded' => 1])
+            ->with('upload_success', 'ছবি আপলোড হয়েছে। অ্যাডমিন রিভিউ করে স্কোর দেবেন।');
     }
 
     /**
@@ -110,7 +111,8 @@ class MemberUploadController extends Controller
         }
         $upload->delete();
 
-        return back()->with('upload_success', 'ছবি মুছে ফেলা হয়েছে।');
+        return redirect()->route('member.dashboard', ['tab' => 'gallery'])
+            ->with('upload_success', 'ছবি মুছে ফেলা হয়েছে।');
     }
 
     // ============ ADMIN: Social Value (anonymous rating) ============

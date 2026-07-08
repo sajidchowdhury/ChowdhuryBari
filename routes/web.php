@@ -153,6 +153,9 @@ Route::prefix('member')->name('member.')->group(function () {
 
         // Family reduction application
         Route::post('/applications', [FamilyReductionApplicationController::class, 'store'])->name('applications.store');
+
+        // Flat status toggle (simpler approach — member marks which families are active)
+        Route::post('/flats/update-statuses', [FamilyReductionApplicationController::class, 'updateFlatStatuses'])->name('flats.update-statuses');
     });
 });
 

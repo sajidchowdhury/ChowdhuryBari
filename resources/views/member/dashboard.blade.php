@@ -51,7 +51,7 @@
         ::-webkit-scrollbar-thumb { background: rgba(0,0,0,.12); border-radius: 4px; }
     </style>
 </head>
-<body class="bg-slate-50 min-h-screen" x-data="{ activeTab: 'dashboard', showToast: false, toastMsg: '' }">
+<body class="bg-slate-50 min-h-screen" x-data="{ activeTab: new URLSearchParams(window.location.search).get('tab') || 'dashboard', showToast: false, toastMsg: '' }" x-init="if (new URLSearchParams(window.location.search).get('uploaded')) { toastMsg = 'ছবি আপলোড হয়েছে!'; showToast = true; setTimeout(() => showToast = false, 3000); }">
 
 <div class="flex min-h-screen">
 
@@ -339,52 +339,7 @@
                         </div>
                     </div>
 
-                    {{-- Flats + meters table (read-only) --}}
-                    <div class="card overflow-hidden">
-                        <div class="px-6 py-4 border-b border-slate-100 font-semibold text-slate-800 text-sm flex items-center gap-2">
-                            <i class="fas fa-th-large text-emerald-600"></i> ফ্ল্যাট ও মিটার তালিকা
-                        </div>
-                        <div class="overflow-x-auto">
-                            <table class="w-full text-sm">
-                                <thead class="bg-slate-50">
-                                    <tr class="text-left text-xs text-slate-500 uppercase tracking-wide">
-                                        <th class="px-4 py-3 font-semibold">ফ্লোর</th>
-                                        <th class="px-4 py-3 font-semibold">ফ্ল্যাট</th>
-                                        <th class="px-4 py-3 font-semibold">বাসিন্দা</th>
-                                        <th class="px-4 py-3 font-semibold">মিটার নম্বর</th>
-                                        <th class="px-4 py-3 font-semibold text-center">স্ট্যাটাস</th>
-                                    </tr>
-                                </thead>
-                                <tbody class="divide-y divide-slate-100">
-                                    @foreach($buildingFlats as $flat)
-                                        @php $meter = $flat->meters->first(); @endphp
-                                        <tr>
-                                            <td class="px-4 py-3 text-slate-500">{{ $flat->floor_number ?? '—' }}</td>
-                                            <td class="px-4 py-3 font-medium text-slate-800">{{ $flat->flat_number }}</td>
-                                            <td class="px-4 py-3 text-slate-600">
-                                                {{ $flat->resident_name ?: '—' }}
-                                                @if($flat->resident_phone)<div class="text-xs text-slate-400">{{ $flat->resident_phone }}</div>@endif
-                                            </td>
-                                            <td class="px-4 py-3 font-mono text-slate-700">
-                                                @if($meter) {{ $meter->meter_number }} @else <span class="text-slate-300">—</span> @endif
-                                            </td>
-                                            <td class="px-4 py-3 text-center">
-                                                @if(!$flat->is_active)
-                                                    <span class="text-[10px] bg-slate-100 text-slate-500 px-2 py-0.5 rounded-full font-semibold">খালি</span>
-                                                @elseif($flat->isFamilyActive())
-                                                    <span class="text-[10px] bg-emerald-100 text-emerald-700 px-2 py-0.5 rounded-full font-semibold">সক্রিয়</span>
-                                                @else
-                                                    <span class="text-[10px] bg-red-100 text-red-600 px-2 py-0.5 rounded-full font-semibold">মিটার নিষ্ক্রিয়</span>
-                                                @endif
-                                            </td>
-                                        </tr>
-                                    @endforeach
-                                </tbody>
-                            </table>
-                        </div>
-                    </div>
-
-                    {{-- Family reduction application --}}
+                    {{-- Flash messages --}}
                     @if(session('app_success'))
                         <div class="rounded-2xl bg-emerald-50 border border-emerald-200 p-4 text-emerald-700 text-sm flex items-center gap-2">
                             <i class="fas fa-check-circle"></i> {{ session('app_success') }}
@@ -396,60 +351,70 @@
                         </div>
                     @endif
 
-                    @if($hasPendingApplication)
-                        <div class="card border-amber-200 bg-amber-50/50 p-6 text-center">
-                            <i class="fas fa-hourglass-half text-2xl text-amber-500 mb-2"></i>
-                            <div class="font-medium text-slate-700 text-sm">আপনার একটি আবেদন অপেক্ষমাণ অবস্থায় আছে</div>
-                            <div class="text-xs text-slate-400 mt-1">অ্যাডমিন রিভিউ করার পর নতুন আবেদন করতে পারবেন।</div>
-                        </div>
-                    @else
-                        <div class="card p-6">
-                            <div class="font-semibold text-slate-800 mb-1 text-sm flex items-center gap-2">
-                                <i class="fas fa-paper-plane text-emerald-600"></i> পরিবার কমানোর আবেদন
+                    {{-- SIMPLE TOGGLE INTERFACE for non-tech users --}}
+                    <div class="card overflow-hidden">
+                        <div class="px-6 py-4 border-b border-slate-100 flex items-center justify-between">
+                            <div class="font-semibold text-slate-800 text-sm flex items-center gap-2">
+                                <i class="fas fa-th-large text-emerald-600"></i> আমার ফ্ল্যাট ও পরিবার
                             </div>
-                            <p class="text-xs text-slate-500 mb-4">আপনার বাড়ির কিছু পরিবার চলে গেলে এবং মিটার নিষ্ক্রিয় থাকলে বিলিং কমানোর জন্য আবেদন করুন। অ্যাডমিন মিটার নম্বর BPDB-তে যাচাই করে অনুমোদন দেবেন।</p>
-                            <form action="{{ route('member.applications.store') }}" method="POST" class="space-y-4">
-                                @csrf
-                                <div class="grid sm:grid-cols-2 gap-4">
-                                    <div>
-                                        <label class="block text-xs font-semibold text-slate-500 mb-1">বর্তমান বিলিং পরিবার</label>
-                                        <input type="text" value="{{ $billingFamilyCount }}" disabled
-                                               class="w-full rounded-xl border border-slate-200 bg-slate-50 px-4 py-2.5 text-sm text-slate-500">
-                                    </div>
-                                    <div>
-                                        <label class="block text-xs font-semibold text-slate-500 mb-1">অনুরোধ করা পরিবার সংখ্যা <span class="text-red-500">*</span></label>
-                                        <input type="number" name="requested_family_count" min="0" max="{{ $billingFamilyCount }}" required
-                                               placeholder="যেমন: {{ max(0, $billingFamilyCount - 2) }}"
-                                               class="w-full rounded-xl border border-slate-300 px-4 py-2.5 text-sm">
-                                    </div>
-                                </div>
-                                <div>
-                                    <label class="block text-xs font-semibold text-slate-500 mb-1">খালি ফ্ল্যাটগুলো নির্বাচন করুন (ঐচ্ছিক)</label>
-                                    <div class="flex flex-wrap gap-2 mt-1">
-                                        @foreach($buildingFlats as $flat)
-                                            @if(!$flat->is_active || !$flat->isFamilyActive())
-                                                <label class="inline-flex items-center gap-1.5 text-xs border border-slate-200 rounded-lg px-2.5 py-1.5 cursor-pointer hover:bg-slate-50">
-                                                    <input type="checkbox" name="vacant_flat_ids[]" value="{{ $flat->id }}" class="rounded">
-                                                    {{ $flat->flat_number }}
-                                                </label>
-                                            @endif
-                                        @endforeach
-                                    </div>
-                                    <p class="text-[11px] text-slate-400 mt-1">শুধু নিষ্ক্রিয়/খালি ফ্ল্যাটগুলো দেখানো হয়েছে।</p>
-                                </div>
-                                <div>
-                                    <label class="block text-xs font-semibold text-slate-500 mb-1">কারণ <span class="text-red-500">*</span></label>
-                                    <textarea name="reason" rows="2" required placeholder="যেমন: ২টি পরিবার চলে গেছে, মিটার নিষ্ক্রিয়"
-                                              class="w-full rounded-xl border border-slate-300 px-4 py-2.5 text-sm"></textarea>
-                                </div>
-                                <button type="submit" class="px-6 py-2.5 bg-slate-900 hover:bg-slate-800 text-white text-sm font-medium rounded-xl transition active:scale-95">
-                                    <i class="fas fa-paper-plane mr-1"></i> আবেদন জমা দিন
-                                </button>
-                            </form>
+                            <div class="text-xs text-slate-500">
+                                সক্রিয় পরিবার: <span class="font-bold text-emerald-700 tabular-nums">{{ $buildingFlats->where('is_active', true)->count() }}</span> / {{ $buildingFlats->count() }}
+                            </div>
                         </div>
-                    @endif
 
-                    {{-- Application history --}}
+                        {{-- Instructions for non-tech users --}}
+                        <div class="px-6 py-3 bg-emerald-50 border-b border-emerald-100 text-xs text-emerald-800 flex items-center gap-2">
+                            <i class="fas fa-info-circle"></i>
+                            <span>যে ফ্ল্যাটে পরিবার আছে — সেটির সুইচ <strong>চালু (সবুজ)</strong> রাখুন। যে ফ্ল্যাট খালি হয়ে গেছে — সেটির সুইচ <strong>বন্ধ</strong> করুন। তারপর নিচে "সংরক্ষণ করুন" বাটনে চাপুন।</span>
+                        </div>
+
+                        <form action="{{ route('member.flats.update-statuses') }}" method="POST">
+                            @csrf
+                            <div class="divide-y divide-slate-100">
+                                @foreach($buildingFlats as $flat)
+                                    @php $meter = $flat->meters->first(); @endphp
+                                    <input type="hidden" name="flat_ids[]" value="{{ $flat->id }}">
+                                    <div class="px-6 py-4 flex items-center justify-between gap-4 hover:bg-slate-50 transition">
+                                        {{-- Left: flat info --}}
+                                        <div class="flex items-center gap-3 flex-1 min-w-0">
+                                            <div class="w-10 h-10 rounded-xl flex items-center justify-center flex-shrink-0
+                                                @if($flat->is_active) bg-emerald-100 text-emerald-700 @else bg-slate-100 text-slate-400 @endif">
+                                                <i class="fas fa-door-open text-sm"></i>
+                                            </div>
+                                            <div class="min-w-0">
+                                                <div class="font-medium text-slate-800 text-sm">{{ $flat->flat_number }}</div>
+                                                <div class="text-xs text-slate-400 truncate">
+                                                    {{ $flat->resident_name ?: 'বাসিন্দা নেই' }}
+                                                    @if($meter) • মিটার: <span class="font-mono">{{ $meter->meter_number }}</span> @endif
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                        {{-- Right: toggle switch --}}
+                                        <div class="flex items-center gap-3 flex-shrink-0">
+                                            <span class="text-xs font-medium @if($flat->is_active) text-emerald-600 @else text-slate-400 @endif" x-data="{ on: {{ $flat->is_active ? 'true' : 'false' }} }" x-text="on ? 'সক্রিয়' : 'খালি'"></span>
+                                            <label class="relative inline-flex items-center cursor-pointer" x-data="{ on: {{ $flat->is_active ? 'true' : 'false' }} }">
+                                                <input type="checkbox" name="flats[{{ $flat->id }}]" value="1" class="sr-only peer" @change="on = $event.target.checked" @checked($flat->is_active)>
+                                                <div class="w-12 h-6 bg-slate-200 rounded-full peer peer-checked:bg-emerald-500 transition-colors after:content-[''] after:absolute after:top-0.5 after:left-0.5 after:bg-white after:rounded-full after:h-5 after:w-5 after:transition-transform peer-checked:after:translate-x-6 after:shadow"></div>
+                                            </label>
+                                        </div>
+                                    </div>
+                                @endforeach
+                            </div>
+
+                            {{-- Save button --}}
+                            <div class="px-6 py-4 border-t border-slate-100 bg-slate-50 flex items-center justify-between">
+                                <div class="text-xs text-slate-500">
+                                    <i class="fas fa-shield-alt mr-1"></i> পরিবর্তন সংরক্ষণ করলে আপনার মাসিক বিল আপডেট হবে
+                                </div>
+                                <button type="submit" class="px-6 py-3 bg-emerald-600 hover:bg-emerald-700 text-white text-sm font-semibold rounded-xl transition active:scale-95 shadow-sm">
+                                    <i class="fas fa-save mr-1"></i> সংরক্ষণ করুন
+                                </button>
+                            </div>
+                        </form>
+                    </div>
+
+                    {{-- Application history (kept for reference) --}}
                     @if($myApplications->isNotEmpty())
                         <div class="card overflow-hidden">
                             <div class="px-6 py-4 border-b border-slate-100 font-semibold text-slate-800 text-sm flex items-center gap-2">

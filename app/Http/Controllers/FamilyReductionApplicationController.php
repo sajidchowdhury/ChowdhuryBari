@@ -13,7 +13,52 @@ class FamilyReductionApplicationController extends Controller
     // ============ MEMBER SIDE ============
 
     /**
-     * Member: submit a family-reduction application.
+     * Member: update which flats/families are active.
+     * Simple toggle approach — member marks each flat as active/inactive,
+     * which directly affects billing (active count = billing count).
+     */
+    public function updateFlatStatuses(Request $request)
+    {
+        $user = Auth::guard('member')->user();
+        $building = $user->building;
+
+        if (!$building) {
+            return back()->with('app_error', 'আপনার কোনো বাড়ি নিবন্ধিত নেই।');
+        }
+
+        $validated = $request->validate([
+            'flats'               => ['required', 'array'],
+            'flats.*'              => ['in:0,1'],
+            'flat_ids'            => ['required', 'array'],
+            'flat_ids.*'          => ['exists:flats,id'],
+        ]);
+
+        // Verify all flats belong to this member's building
+        $buildingFlatIds = $building->flats()->pluck('id')->toArray();
+        foreach ($validated['flat_ids'] as $flatId) {
+            if (!in_array($flatId, $buildingFlatIds)) {
+                return back()->with('app_error', 'অবৈধ ফ্ল্যাট নির্বাচন।');
+            }
+        }
+
+        // Update each flat's is_active status
+        $activeCount = 0;
+        foreach ($validated['flat_ids'] as $flatId) {
+            $isActive = isset($validated['flats'][$flatId]) && $validated['flats'][$flatId] === '1';
+            if ($isActive) $activeCount++;
+            \App\Models\Flat::where('id', $flatId)->update(['is_active' => $isActive]);
+        }
+
+        // Auto-update billing_family_count to match active flats
+        // (admin can still override manually later)
+        $building->update(['billing_family_count' => $activeCount]);
+
+        return redirect()->route('member.dashboard', ['tab' => 'building'])
+            ->with('app_success', "আপডেট সফল! বর্তমানে সক্রিয় পরিবার: {$activeCount}টি।");
+    }
+
+    /**
+     * Member: submit a family-reduction application (legacy — kept for admin review flow).
      */
     public function store(Request $request)
     {
