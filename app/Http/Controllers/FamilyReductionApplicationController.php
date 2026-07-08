@@ -14,8 +14,9 @@ class FamilyReductionApplicationController extends Controller
 
     /**
      * Member: update which flats/families are active.
-     * Simple toggle approach — member marks each flat as active/inactive,
-     * which directly affects billing (active count = billing count).
+     * Simple toggle approach — member marks each flat as active/inactive.
+     * When flats are turned OFF, a FamilyReductionApplication is created
+     * with the meter numbers so admin can verify on BPDB.
      */
     public function updateFlatStatuses(Request $request)
     {
@@ -31,6 +32,8 @@ class FamilyReductionApplicationController extends Controller
             'flats.*'              => ['in:0,1'],
             'flat_ids'            => ['required', 'array'],
             'flat_ids.*'          => ['exists:flats,id'],
+            'meter_numbers'       => ['nullable', 'array'],
+            'meter_numbers.*'     => ['string', 'max:100'],
         ]);
 
         // Verify all flats belong to this member's building
@@ -41,20 +44,53 @@ class FamilyReductionApplicationController extends Controller
             }
         }
 
-        // Update each flat's is_active status
+        $previousActiveCount = $building->flats()->where('is_active', true)->count();
+        $turnedOffFlats = [];
         $activeCount = 0;
+
         foreach ($validated['flat_ids'] as $flatId) {
+            $flat = \App\Models\Flat::with('meters')->find($flatId);
+            $wasActive = $flat->is_active;
             $isActive = isset($validated['flats'][$flatId]) && $validated['flats'][$flatId] === '1';
+
             if ($isActive) $activeCount++;
-            \App\Models\Flat::where('id', $flatId)->update(['is_active' => $isActive]);
+
+            // Track flats being turned OFF (for application record)
+            if ($wasActive && !$isActive) {
+                $meterNumber = $validated['meter_numbers'][$flatId] ?? $flat->meters->first()?->meter_number ?? '—';
+                $turnedOffFlats[] = [
+                    'flat_id'      => $flatId,
+                    'flat_number'  => $flat->flat_number,
+                    'meter_number' => $meterNumber,
+                ];
+            }
+
+            $flat->update(['is_active' => $isActive]);
         }
 
         // Auto-update billing_family_count to match active flats
-        // (admin can still override manually later)
         $building->update(['billing_family_count' => $activeCount]);
 
+        // Create an application record for admin verification if any flats were turned off
+        if (!empty($turnedOffFlats)) {
+            FamilyReductionApplication::create([
+                'user_id'                => $user->id,
+                'building_id'            => $building->id,
+                'current_family_count'   => $previousActiveCount,
+                'requested_family_count' => $activeCount,
+                'vacant_flat_ids'        => array_column($turnedOffFlats, 'flat_id'),
+                'reason'                 => 'সদস্য টগল করে ' . count($turnedOffFlats) . 'টি ফ্ল্যাট খালি করেছেন। মিটার নম্বর: ' . implode(', ', array_column($turnedOffFlats, 'meter_number')),
+                'status'                 => 'pending',
+            ]);
+        }
+
+        $msg = "আপডেট সফল! বর্তমানে সক্রিয় পরিবার: {$activeCount}টি।";
+        if (!empty($turnedOffFlats)) {
+            $msg .= ' অ্যাডমিন মিটার নম্বর যাচাই করে নিশ্চিত করবেন।';
+        }
+
         return redirect()->route('member.dashboard', ['tab' => 'building'])
-            ->with('app_success', "আপডেট সফল! বর্তমানে সক্রিয় পরিবার: {$activeCount}টি।");
+            ->with('app_success', $msg);
     }
 
     /**

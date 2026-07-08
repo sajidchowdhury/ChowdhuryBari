@@ -374,26 +374,37 @@
                                 @foreach($buildingFlats as $flat)
                                     @php $meter = $flat->meters->first(); @endphp
                                     <input type="hidden" name="flat_ids[]" value="{{ $flat->id }}">
-                                    <div class="px-6 py-4 flex items-center justify-between gap-4 hover:bg-slate-50 transition">
-                                        {{-- Left: flat info --}}
+                                    <div class="px-6 py-4 flex items-center justify-between gap-4 hover:bg-slate-50 transition"
+                                         x-data="{ on: {{ $flat->is_active ? 'true' : 'false' }} }">
+                                        {{-- Left: flat info + meter number --}}
                                         <div class="flex items-center gap-3 flex-1 min-w-0">
-                                            <div class="w-10 h-10 rounded-xl flex items-center justify-center flex-shrink-0
-                                                @if($flat->is_active) bg-emerald-100 text-emerald-700 @else bg-slate-100 text-slate-400 @endif">
+                                            <div class="w-10 h-10 rounded-xl flex items-center justify-center flex-shrink-0 transition-colors"
+                                                 :class="on ? 'bg-emerald-100 text-emerald-700' : 'bg-slate-100 text-slate-400'">
                                                 <i class="fas fa-door-open text-sm"></i>
                                             </div>
-                                            <div class="min-w-0">
+                                            <div class="min-w-0 flex-1">
                                                 <div class="font-medium text-slate-800 text-sm">{{ $flat->flat_number }}</div>
-                                                <div class="text-xs text-slate-400 truncate">
-                                                    {{ $flat->resident_name ?: 'বাসিন্দা নেই' }}
-                                                    @if($meter) • মিটার: <span class="font-mono">{{ $meter->meter_number }}</span> @endif
+                                                <div class="text-xs text-slate-400 truncate">{{ $flat->resident_name ?: 'বাসিন্দা নেই' }}</div>
+                                                {{-- Meter number — prominent, with input if no meter assigned --}}
+                                                <div class="mt-1 flex items-center gap-1.5">
+                                                    <i class="fas fa-bolt text-[10px] text-amber-500"></i>
+                                                    @if($meter)
+                                                        <span class="text-[11px] font-mono font-medium text-slate-600 bg-slate-100 px-1.5 py-0.5 rounded">{{ $meter->meter_number }}</span>
+                                                        <input type="hidden" name="meter_numbers[{{ $flat->id }}]" value="{{ $meter->meter_number }}">
+                                                    @else
+                                                        <input type="text" name="meter_numbers[{{ $flat->id }}]" placeholder="মিটার নম্বর দিন"
+                                                               class="text-[11px] border border-slate-200 rounded px-2 py-0.5 w-32 focus:border-emerald-400 outline-none">
+                                                    @endif
                                                 </div>
                                             </div>
                                         </div>
 
                                         {{-- Right: toggle switch --}}
                                         <div class="flex items-center gap-3 flex-shrink-0">
-                                            <span class="text-xs font-medium @if($flat->is_active) text-emerald-600 @else text-slate-400 @endif" x-data="{ on: {{ $flat->is_active ? 'true' : 'false' }} }" x-text="on ? 'সক্রিয়' : 'খালি'"></span>
-                                            <label class="relative inline-flex items-center cursor-pointer" x-data="{ on: {{ $flat->is_active ? 'true' : 'false' }} }">
+                                            <span class="text-xs font-medium transition-colors"
+                                                  :class="on ? 'text-emerald-600' : 'text-slate-400'"
+                                                  x-text="on ? 'সক্রিয়' : 'খালি'"></span>
+                                            <label class="relative inline-flex items-center cursor-pointer">
                                                 <input type="checkbox" name="flats[{{ $flat->id }}]" value="1" class="sr-only peer" @change="on = $event.target.checked" @checked($flat->is_active)>
                                                 <div class="w-12 h-6 bg-slate-200 rounded-full peer peer-checked:bg-emerald-500 transition-colors after:content-[''] after:absolute after:top-0.5 after:left-0.5 after:bg-white after:rounded-full after:h-5 after:w-5 after:transition-transform peer-checked:after:translate-x-6 after:shadow"></div>
                                             </label>
@@ -405,7 +416,7 @@
                             {{-- Save button --}}
                             <div class="px-6 py-4 border-t border-slate-100 bg-slate-50 flex items-center justify-between">
                                 <div class="text-xs text-slate-500">
-                                    <i class="fas fa-shield-alt mr-1"></i> পরিবর্তন সংরক্ষণ করলে আপনার মাসিক বিল আপডেট হবে
+                                    <i class="fas fa-shield-alt mr-1"></i> খালি করা ফ্ল্যাটের মিটার নম্বর অ্যাডমিন যাচাই করবেন
                                 </div>
                                 <button type="submit" class="px-6 py-3 bg-emerald-600 hover:bg-emerald-700 text-white text-sm font-semibold rounded-xl transition active:scale-95 shadow-sm">
                                     <i class="fas fa-save mr-1"></i> সংরক্ষণ করুন
@@ -549,26 +560,21 @@
                     </div>
                 @endif
 
-                {{-- Upload form — only if under the monthly limit --}}
+                {{-- Upload form — single button, auto-submit on file select --}}
                 @if($uploadRemaining > 0)
-                    <form action="{{ route('member.uploads.store') }}" method="POST" enctype="multipart/form-data" class="card border-dashed border-2 border-slate-200 p-8 text-center hover:border-emerald-300 hover:bg-emerald-50/30 transition">
+                    <form action="{{ route('member.uploads.store') }}" method="POST" enctype="multipart/form-data" id="uploadForm" class="hidden">
                         @csrf
-                        <label class="cursor-pointer block">
-                            <input type="file" name="image" accept="image/*" class="sr-only">
-                            <i class="fas fa-cloud-upload-alt text-3xl text-slate-400 mb-3"></i>
-                            <div class="font-medium text-slate-700 text-sm">ছবি নির্বাচন করুন (ক্লিক করুন)</div>
-                            <div class="text-xs text-slate-400 mt-1" id="upload-fname">JPG / PNG / WEBP • সর্বোচ্চ ৫MB</div>
-                        </label>
-                        <div class="mt-4">
-                            <input type="text" name="caption" placeholder="ছবির ক্যাপশন (ঐচ্ছিক)" maxlength="200"
-                                   class="w-full max-w-sm mx-auto border border-slate-200 rounded-lg px-3 py-2 text-sm text-center">
-                        </div>
-                        <button type="submit"
-                                class="mt-4 inline-flex items-center gap-2 px-6 py-2.5 bg-slate-900 hover:bg-slate-800 text-white text-sm font-medium rounded-xl transition active:scale-95">
-                            <i class="fas fa-upload"></i> আপলোড করুন
-                        </button>
                     </form>
-                    <div class="text-[11px] text-slate-400 -mt-3 text-center">প্রতি মাসে সর্বোচ্চ {{ $uploadLimit }}টি ছবি। নতুন মাসে গণনা রিসেট হবে।</div>
+                    <div class="card border-dashed border-2 border-slate-200 p-8 text-center hover:border-emerald-300 hover:bg-emerald-50/30 transition cursor-pointer" onclick="document.getElementById('uploadInput').click()">
+                        <div class="w-16 h-16 mx-auto bg-emerald-100 rounded-2xl flex items-center justify-center mb-3">
+                            <i class="fas fa-camera text-2xl text-emerald-600"></i>
+                        </div>
+                        <div class="font-semibold text-slate-700 text-base">ছবি আপলোড করুন</div>
+                        <div class="text-xs text-slate-400 mt-1">ক্লিক করুন → ছবি নির্বাচন করুন → স্বয়ংক্রিয়ভাবে সংরক্ষিত হবে</div>
+                        <div class="text-[10px] text-slate-400 mt-2">JPG / PNG / WEBP • সর্বোচ্চ ৫MB</div>
+                        <input type="file" id="uploadInput" name="image" accept="image/*" form="uploadForm" class="hidden" onchange="document.getElementById('uploadForm').submit()">
+                    </div>
+                    <div class="text-[11px] text-slate-400 text-center">এই মাসে আর {{ $uploadRemaining }}টি ছবি আপলোড করতে পারবেন (মাসে সর্বোচ্চ {{ $uploadLimit }}টি)</div>
                 @else
                     <div class="card border border-amber-200 bg-amber-50/50 p-8 text-center">
                         <i class="fas fa-check-circle text-3xl text-amber-500 mb-2"></i>

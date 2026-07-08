@@ -102,7 +102,7 @@
                                     <p class="text-sm text-slate-500 mb-4 text-center italic">"{{ $upload->caption }}"</p>
                                 @endif
 
-                                <form action="{{ route('admin.social-value.rate', $upload) }}" method="POST" class="space-y-5" onsubmit="if(rating===0){alert('দয়া করে একটি স্টার নির্বাচন করুন');return false}">
+                                <form action="{{ route('admin.social-value.rate', $upload) }}" method="POST" class="space-y-5" @submit="if(rating === 0){ alert('দয়া করে একটি স্টার নির্বাচন করুন'); $event.preventDefault(); }">
                                     @csrf
                                     <input type="hidden" name="star_rating" :value="rating">
 
