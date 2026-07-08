@@ -171,10 +171,22 @@ class MemberAuthController extends Controller
         $bestImage = MemberUpload::bestImageFor($user->id, $monthKey);
         $ratedCount = $myUploads->where('star_rating', '!==', null)->count();
 
+        // Service charges — filtered by the member's building category
+        $building = $user->building;
+        $buildingCategory = $building?->building_category;
+        $serviceCharges = $buildingCategory
+            ? ServiceCharge::activeForCategory($buildingCategory)
+            : collect();
+        $totalCharge = $buildingCategory
+            ? ServiceCharge::totalForCategory($buildingCategory)
+            : 0;
+
         return view('member.dashboard', [
             'user'           => $user,
-            'serviceCharges' => ServiceCharge::activeOrdered()->get(),
-            'totalCharge'    => ServiceCharge::totalActive(),
+            'serviceCharges' => $serviceCharges,
+            'totalCharge'    => $totalCharge,
+            'building'       => $building,
+            'buildingCategory' => $buildingCategory,
 
             // Gallery / social-value data
             'myUploads'      => $myUploads,

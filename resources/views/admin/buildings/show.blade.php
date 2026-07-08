@@ -413,6 +413,17 @@
                         <option value="mixed" @selected($building->usage_type === 'mixed')>Mixed</option>
                     </select>
                 </div>
+                <div class="sm:col-span-2">
+                    <label class="block text-sm font-medium text-slate-700">Building Category (সেবা চার্জের ধরন) <span class="text-red-500">*</span></label>
+                    <select name="building_category" class="mt-1.5 w-full rounded-2xl border border-slate-300 px-4 py-2.5 text-sm bg-white" required>
+                        <option value="" disabled @selected(!$building->building_category)>— বাড়ির ধরন নির্বাচন করুন —</option>
+                        <option value="tin_shed" @selected(old('building_category', $building->building_category) === 'tin_shed')>টিন শেড</option>
+                        <option value="below_or_equal_4_floor" @selected(old('building_category', $building->building_category) === 'below_or_equal_4_floor')>৪তলা বা নিচে</option>
+                        <option value="above_4_floor" @selected(old('building_category', $building->building_category) === 'above_4_floor')>৪তলার উপরে</option>
+                        <option value="shop" @selected(old('building_category', $building->building_category) === 'shop')>দোকান</option>
+                    </select>
+                    <p class="text-xs text-slate-500 mt-1">এই ধরনের ভিত্তিতে সদস্যের মাসিক সেবা চার্জ নির্ধারিত হবে।</p>
+                </div>
                 <div>
                     <label class="block text-sm font-medium text-slate-700">Number of Floors <span class="text-red-500">*</span></label>
                     <input type="number" name="floor_count" min="1" max="50" value="{{ old('floor_count', $building->floor_count) }}" class="mt-1.5 w-full rounded-2xl border border-slate-300 px-4 py-2.5 text-sm" required>

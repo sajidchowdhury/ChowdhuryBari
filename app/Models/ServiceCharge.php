@@ -9,6 +9,7 @@ class ServiceCharge extends Model
 {
     protected $fillable = [
         'name',
+        'building_category',
         'amount',
         'description',
         'is_active',
@@ -35,10 +36,40 @@ class ServiceCharge extends Model
     }
 
     /**
-     * Sum of all active charges (the total monthly due).
+     * Scope: charges for a specific building category.
      */
-    public static function totalActive(): int
+    public function scopeForCategory(Builder $query, string $category): Builder
     {
-        return (int) self::where('is_active', true)->sum('amount');
+        return $query->where('building_category', $category);
+    }
+
+    /**
+     * Active charges for a specific building category, ordered.
+     */
+    public static function activeForCategory(string $category): \Illuminate\Support\Collection
+    {
+        return self::where('is_active', true)
+            ->where('building_category', $category)
+            ->orderBy('sort_order')
+            ->orderBy('name')
+            ->get();
+    }
+
+    /**
+     * Total monthly due for a specific building category.
+     */
+    public static function totalForCategory(string $category): int
+    {
+        return (int) self::where('is_active', true)
+            ->where('building_category', $category)
+            ->sum('amount');
+    }
+
+    /**
+     * Bengali label for this charge's building category.
+     */
+    public function getCategoryLabelAttribute(): string
+    {
+        return Building::CATEGORIES[$this->building_category] ?? '—';
     }
 }

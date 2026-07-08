@@ -13,9 +13,15 @@ class ServiceChargeController extends Controller
     public function index()
     {
         $charges = ServiceCharge::orderBy('sort_order')->orderBy('name')->get();
-        $total = $charges->where('is_active', true)->sum('amount');
+        $categories = \App\Models\Building::CATEGORIES;
 
-        return view('admin.service-charges.index', compact('charges', 'total'));
+        // Per-category totals (only active charges)
+        $totalsByCategory = [];
+        foreach ($categories as $key => $label) {
+            $totalsByCategory[$key] = $charges->where('building_category', $key)->where('is_active', true)->sum('amount');
+        }
+
+        return view('admin.service-charges.index', compact('charges', 'categories', 'totalsByCategory'));
     }
 
     /**
@@ -24,19 +30,21 @@ class ServiceChargeController extends Controller
     public function store(Request $request)
     {
         $validated = $request->validate([
-            'name'        => ['required', 'string', 'max:150'],
-            'amount'      => ['required', 'integer', 'min:0'],
-            'description' => ['nullable', 'string', 'max:500'],
-            'is_active'   => ['nullable', 'boolean'],
-            'sort_order'  => ['nullable', 'integer', 'min:0'],
+            'name'              => ['required', 'string', 'max:150'],
+            'building_category' => ['required', 'in:tin_shed,below_or_equal_4_floor,above_4_floor,shop'],
+            'amount'            => ['required', 'integer', 'min:0'],
+            'description'       => ['nullable', 'string', 'max:500'],
+            'is_active'         => ['nullable', 'boolean'],
+            'sort_order'        => ['nullable', 'integer', 'min:0'],
         ]);
 
         ServiceCharge::create([
-            'name'        => $validated['name'],
-            'amount'      => $validated['amount'],
-            'description' => $validated['description'] ?? null,
-            'is_active'   => $request->boolean('is_active', true),
-            'sort_order'  => $validated['sort_order'] ?? 0,
+            'name'              => $validated['name'],
+            'building_category' => $validated['building_category'],
+            'amount'            => $validated['amount'],
+            'description'       => $validated['description'] ?? null,
+            'is_active'         => $request->boolean('is_active', true),
+            'sort_order'        => $validated['sort_order'] ?? 0,
         ]);
 
         return redirect()->route('admin.service-charges.index')
@@ -49,19 +57,21 @@ class ServiceChargeController extends Controller
     public function update(Request $request, ServiceCharge $serviceCharge)
     {
         $validated = $request->validate([
-            'name'        => ['required', 'string', 'max:150'],
-            'amount'      => ['required', 'integer', 'min:0'],
-            'description' => ['nullable', 'string', 'max:500'],
-            'is_active'   => ['nullable', 'boolean'],
-            'sort_order'  => ['nullable', 'integer', 'min:0'],
+            'name'              => ['required', 'string', 'max:150'],
+            'building_category' => ['required', 'in:tin_shed,below_or_equal_4_floor,above_4_floor,shop'],
+            'amount'            => ['required', 'integer', 'min:0'],
+            'description'       => ['nullable', 'string', 'max:500'],
+            'is_active'         => ['nullable', 'boolean'],
+            'sort_order'        => ['nullable', 'integer', 'min:0'],
         ]);
 
         $serviceCharge->update([
-            'name'        => $validated['name'],
-            'amount'      => $validated['amount'],
-            'description' => $validated['description'] ?? null,
-            'is_active'   => $request->boolean('is_active', false),
-            'sort_order'  => $validated['sort_order'] ?? 0,
+            'name'              => $validated['name'],
+            'building_category' => $validated['building_category'],
+            'amount'            => $validated['amount'],
+            'description'       => $validated['description'] ?? null,
+            'is_active'         => $request->boolean('is_active', false),
+            'sort_order'        => $validated['sort_order'] ?? 0,
         ]);
 
         return redirect()->route('admin.service-charges.index')

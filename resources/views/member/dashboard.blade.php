@@ -226,29 +226,39 @@
                         <div class="text-[10px] text-slate-400 mt-3 text-center">bKash / Nagad / ব্যাংক ট্রান্সফার সাপোর্টেড</div>
                     </div>
 
-                    <!-- Charge breakdown — dynamic from admin -->
+                    <!-- Charge breakdown — based on member's building type -->
                     <div class="lg:col-span-2 card p-6">
-                        <div class="font-semibold text-slate-800 mb-4 flex items-center gap-2 text-sm">
+                        <div class="font-semibold text-slate-800 mb-1 flex items-center gap-2 text-sm">
                             <i class="fas fa-file-invoice text-slate-400"></i> সেবা চার্জের বিবরণ
                         </div>
-                        @if($serviceCharges->isNotEmpty())
-                            <div class="space-y-2.5 text-[13px]">
-                                @foreach($serviceCharges as $charge)
-                                    <div class="flex justify-between items-center">
-                                        <span class="text-slate-600">{{ $charge->name }}</span>
-                                        <span class="font-medium text-slate-800 tabular-nums">৳ {{ number_format($charge->amount) }}</span>
-                                    </div>
-                                @endforeach
-                                <div class="h-px bg-slate-200 my-2"></div>
-                                <div class="flex justify-between font-semibold text-slate-900">
-                                    <span>মোট মাসিক</span>
-                                    <span class="tabular-nums">৳ {{ number_format($totalCharge) }}</span>
-                                </div>
+                        @if($buildingCategory)
+                            <div class="text-[11px] text-sky-700 bg-sky-50 inline-block px-2 py-0.5 rounded-full mb-3">
+                                আপনার বাড়ির ধরন: {{ \App\Models\Building::CATEGORIES[$buildingCategory] ?? '—' }}
                             </div>
+                            @if($serviceCharges->isNotEmpty())
+                                <div class="space-y-2.5 text-[13px]">
+                                    @foreach($serviceCharges as $charge)
+                                        <div class="flex justify-between items-center">
+                                            <span class="text-slate-600">{{ $charge->name }}</span>
+                                            <span class="font-medium text-slate-800 tabular-nums">৳ {{ number_format($charge->amount) }}</span>
+                                        </div>
+                                    @endforeach
+                                    <div class="h-px bg-slate-200 my-2"></div>
+                                    <div class="flex justify-between font-semibold text-slate-900">
+                                        <span>মোট মাসিক</span>
+                                        <span class="tabular-nums">৳ {{ number_format($totalCharge) }}</span>
+                                    </div>
+                                </div>
+                            @else
+                                <div class="text-center py-6 text-slate-400 text-xs">
+                                    <i class="fas fa-info-circle text-2xl mb-2 block"></i>
+                                    আপনার বাড়ির ধরনের জন্য এখনো কোনো সেবা চার্জ যোগ করা হয়নি।
+                                </div>
+                            @endif
                         @else
                             <div class="text-center py-6 text-slate-400 text-xs">
                                 <i class="fas fa-info-circle text-2xl mb-2 block"></i>
-                                এখনো কোনো সেবা চার্জ যোগ করা হয়নি।
+                                আপনার বাড়ির ধরন এখনো নির্ধারিত হয়নি।<br>অ্যাডমিন আপনার বাড়ির তথ্য যোগ করলে চার্জ দেখা যাবে।
                             </div>
                         @endif
                     </div>
@@ -360,17 +370,17 @@
                     <form action="{{ route('member.uploads.store') }}" method="POST" enctype="multipart/form-data" class="card border-dashed border-2 border-slate-200 p-8 text-center hover:border-emerald-300 hover:bg-emerald-50/30 transition">
                         @csrf
                         <label class="cursor-pointer block">
-                            <input type="file" name="image" accept="image/*" required class="hidden" onchange="document.getElementById('upload-submit-btn').disabled = !this.files.length; document.getElementById('upload-fname').textContent = this.files[0]?.name || ''">
+                            <input type="file" name="image" accept="image/*" required class="hidden">
                             <i class="fas fa-cloud-upload-alt text-3xl text-slate-400 mb-3"></i>
                             <div class="font-medium text-slate-700 text-sm">ছবি নির্বাচন করুন (ক্লিক করুন)</div>
-                            <div class="text-xs text-slate-400 mt-1" id="upload-fname">JPG / PNG / WEBP • সর্বোচ্চ ৫MB</div>
+                            <div class="text-xs text-slate-400 mt-1">JPG / PNG / WEBP • সর্বোচ্চ ৫MB</div>
                         </label>
                         <div class="mt-4">
                             <input type="text" name="caption" placeholder="ছবির ক্যাপশন (ঐচ্ছিক)" maxlength="200"
                                    class="w-full max-w-sm mx-auto border border-slate-200 rounded-lg px-3 py-2 text-sm text-center">
                         </div>
-                        <button type="submit" id="upload-submit-btn" disabled
-                                class="mt-4 inline-flex items-center gap-2 px-6 py-2.5 bg-slate-900 hover:bg-slate-800 disabled:opacity-40 disabled:cursor-not-allowed text-white text-sm font-medium rounded-xl transition active:scale-95">
+                        <button type="submit"
+                                class="mt-4 inline-flex items-center gap-2 px-6 py-2.5 bg-slate-900 hover:bg-slate-800 text-white text-sm font-medium rounded-xl transition active:scale-95">
                             <i class="fas fa-upload"></i> আপলোড করুন
                         </button>
                     </form>

@@ -8,7 +8,7 @@
     <div class="flex flex-col lg:flex-row justify-between gap-4 items-start">
         <div>
             <h1 class="text-3xl font-semibold">সেবা চার্জ</h1>
-            <p class="text-slate-600 mt-2">Manage the monthly service-charge breakdown shown on member dashboards. The total of all active charges becomes the member's monthly due.</p>
+            <p class="text-slate-600 mt-2">প্রতিটি সেবা একটি নির্দিষ্ট বাড়ির ধরনের জন্য কনফিগার করুন। সদস্য তার বাড়ির ধরন অনুযায়ী শুধু তার চার্জ দেখতে পাবে।</p>
         </div>
         <button type="button"
             onclick="window.dispatchEvent(new CustomEvent('open-modal', { detail: 'create-charge' }))"
@@ -23,27 +23,27 @@
         </div>
     @endif
 
-    {{-- Total summary card --}}
-    <div class="rounded-3xl bg-gradient-to-br from-emerald-700 to-emerald-900 text-white p-6 flex items-center justify-between">
-        <div>
-            <div class="text-emerald-200 text-sm font-medium">সক্রিয় সেবার মোট মাসিক চার্জ</div>
-            <div class="text-4xl font-bold mt-1 tabular-nums">৳ {{ number_format($total) }}</div>
-        </div>
-        <div class="text-right">
-            <div class="text-5xl opacity-30"><i class="fas fa-receipt"></i></div>
-            <div class="text-emerald-200 text-xs mt-1">{{ $charges->where('is_active', true)->count() }} টি সক্রিয় সেবা</div>
-        </div>
+    {{-- Per-category total cards (4 building types) --}}
+    <div class="grid grid-cols-2 lg:grid-cols-4 gap-4">
+        @foreach($categories as $key => $label)
+            @php $count = $charges->where('building_category', $key)->where('is_active', true)->count(); @endphp
+            <div class="rounded-3xl bg-white border border-slate-200 p-5">
+                <div class="text-xs text-slate-500 font-medium">{{ $label }}</div>
+                <div class="text-3xl font-bold text-slate-800 mt-1 tabular-nums">৳ {{ number_format($totalsByCategory[$key]) }}</div>
+                <div class="text-[11px] text-slate-400 mt-0.5">{{ $count }} টি সক্রিয় সেবা</div>
+            </div>
+        @endforeach
     </div>
 
     @if($charges->isNotEmpty())
-        <div class="rounded-3xl bg-white border border-slate-200 shadow-sm overflow-hidden">
+        <div class="rounded-3xl bg-white border border-slate-200 shadow-sm overflow-hidden overflow-x-auto">
             <table class="w-full text-sm">
                 <thead class="bg-slate-50 border-b border-slate-200">
                     <tr class="text-left text-xs text-slate-500 uppercase tracking-wide">
                         <th class="px-6 py-3 font-semibold">সেবার নাম</th>
+                        <th class="px-6 py-3 font-semibold">বাড়ির ধরন</th>
                         <th class="px-6 py-3 font-semibold text-right">পরিমাণ</th>
                         <th class="px-6 py-3 font-semibold text-center">স্ট্যাটাস</th>
-                        <th class="px-6 py-3 font-semibold text-center">ক্রম</th>
                         <th class="px-6 py-3 font-semibold text-right">অ্যাকশন</th>
                     </tr>
                 </thead>
@@ -56,6 +56,9 @@
                                     <div class="text-xs text-slate-400 mt-0.5">{{ $charge->description }}</div>
                                 @endif
                             </td>
+                            <td class="px-6 py-4">
+                                <span class="text-xs bg-sky-50 text-sky-700 px-2.5 py-1 rounded-full font-medium">{{ $charge->category_label }}</span>
+                            </td>
                             <td class="px-6 py-4 text-right font-semibold text-slate-800 tabular-nums">৳ {{ number_format($charge->amount) }}</td>
                             <td class="px-6 py-4 text-center">
                                 @if($charge->is_active)
@@ -64,7 +67,6 @@
                                     <span class="text-xs bg-slate-100 text-slate-500 px-2.5 py-1 rounded-full font-semibold">নিষ্ক্রিয়</span>
                                 @endif
                             </td>
-                            <td class="px-6 py-4 text-center text-slate-500">{{ $charge->sort_order }}</td>
                             <td class="px-6 py-4 text-right">
                                 <button type="button" onclick="window.dispatchEvent(new CustomEvent('open-modal', { detail: 'edit-charge-{{ $charge->id }}' }))"
                                         class="rounded-xl border border-slate-200 hover:bg-slate-50 px-3 py-1.5 text-xs font-medium text-slate-700">
@@ -78,13 +80,6 @@
                         </tr>
                     @endforeach
                 </tbody>
-                <tfoot class="bg-slate-50 border-t-2 border-slate-200">
-                    <tr>
-                        <td class="px-6 py-4 font-semibold text-slate-800">মোট মাসিক (সক্রিয়)</td>
-                        <td class="px-6 py-4 text-right font-bold text-emerald-700 tabular-nums text-base">৳ {{ number_format($total) }}</td>
-                        <td colspan="3"></td>
-                    </tr>
-                </tfoot>
             </table>
         </div>
     @else
@@ -102,7 +97,7 @@
         <div class="flex items-center justify-between gap-4 border-b border-slate-200 pb-4 mb-6">
             <div>
                 <h2 class="text-2xl font-semibold">নতুন সেবা যোগ করুন</h2>
-                <p class="text-slate-500 mt-1 text-sm">এই সেবাটি সদস্যদের ড্যাশবোর্ডে চার্জের তালিকায় দেখাবে।</p>
+                <p class="text-slate-500 mt-1 text-sm">এই সেবাটি একটি নির্দিষ্ট বাড়ির ধরনের জন্য কনফিগার করুন।</p>
             </div>
             <button type="button" onclick="window.dispatchEvent(new CustomEvent('close-modal', { detail: 'create-charge' }))" class="text-slate-500 hover:text-slate-900">
                 <i class="fas fa-times text-xl"></i>
@@ -111,6 +106,16 @@
 
         <form action="{{ route('admin.service-charges.store') }}" method="POST" class="space-y-4">
             @csrf
+            <div>
+                <label class="block text-sm font-medium text-slate-700">বাড়ির ধরন <span class="text-red-500">*</span></label>
+                <select name="building_category" class="mt-1.5 w-full rounded-2xl border border-slate-300 px-4 py-2.5 text-sm bg-white" required>
+                    <option value="" disabled selected>— বাড়ির ধরন নির্বাচন করুন —</option>
+                    @foreach($categories as $key => $label)
+                        <option value="{{ $key }}" @selected(old('building_category') === $key)>{{ $label }}</option>
+                    @endforeach
+                </select>
+                <p class="text-xs text-slate-500 mt-1">শুধু এই ধরনের বাড়ির সদস্যরা এই চার্জ দেখতে পাবে।</p>
+            </div>
             <div class="grid gap-4 sm:grid-cols-2">
                 <div>
                     <label class="block text-sm font-medium text-slate-700">সেবার নাম <span class="text-red-500">*</span></label>
@@ -164,6 +169,14 @@
             <form action="{{ route('admin.service-charges.update', $charge) }}" method="POST" class="space-y-4">
                 @csrf
                 @method('PUT')
+                <div>
+                    <label class="block text-sm font-medium text-slate-700">বাড়ির ধরন <span class="text-red-500">*</span></label>
+                    <select name="building_category" class="mt-1.5 w-full rounded-2xl border border-slate-300 px-4 py-2.5 text-sm bg-white" required>
+                        @foreach($categories as $key => $label)
+                            <option value="{{ $key }}" @selected(old('building_category', $charge->building_category) === $key)>{{ $label }}</option>
+                        @endforeach
+                    </select>
+                </div>
                 <div class="grid gap-4 sm:grid-cols-2">
                     <div>
                         <label class="block text-sm font-medium text-slate-700">সেবার নাম <span class="text-red-500">*</span></label>

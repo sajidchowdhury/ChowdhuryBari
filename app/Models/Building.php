@@ -18,6 +18,7 @@ class Building extends Model
         'caretaker_phone',
         'structure_type',
         'usage_type',
+        'building_category',
         'floor_count',
         'families_per_floor',
         'has_security',
@@ -27,6 +28,24 @@ class Building extends Model
         'extra_information',
         'image_path',
     ];
+
+    /**
+     * The 4 building categories used for service-charge grouping.
+     */
+    public const CATEGORIES = [
+        'tin_shed'              => 'টিন শেড',
+        'below_or_equal_4_floor' => '৪তলা বা নিচে',
+        'above_4_floor'          => '৪তলার উপরে',
+        'shop'                   => 'দোকান',
+    ];
+
+    /**
+     * Bengali label for this building's category.
+     */
+    public function getCategoryLabelAttribute(): string
+    {
+        return self::CATEGORIES[$this->building_category] ?? '—';
+    }
 
     protected function casts(): array
     {
