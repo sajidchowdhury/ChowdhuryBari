@@ -10,7 +10,8 @@ class AdminController extends Controller
 {
     public function loginForm()
     {
-        if (Auth::check()) {
+        // Only redirect if logged in via the web guard AND is an admin
+        if (Auth::guard('web')->check() && Auth::guard('web')->user()->role === 'admin') {
             return redirect()->route('admin.dashboard');
         }
         return view('admin.login');
@@ -23,15 +24,15 @@ class AdminController extends Controller
             'password' => ['required'],
         ]);
 
-        if (Auth::attempt($credentials)) {
-            $user = Auth::user();
+        if (Auth::guard('web')->attempt($credentials)) {
+            $user = Auth::guard('web')->user();
             if (!$user->is_active) {
-                Auth::logout();
+                Auth::guard('web')->logout();
                 return back()->withErrors(['email' => 'Your account has been deactivated. Please contact the administrator.']);
             }
 
             if ($user->role !== 'admin') {
-                Auth::logout();
+                Auth::guard('web')->logout();
                 return back()->withErrors(['email' => 'You do not have admin privileges. Please contact the administrator.']);
             }
 

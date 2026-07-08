@@ -589,10 +589,10 @@
                     <form action="{{ route('member.uploads.store') }}" method="POST" enctype="multipart/form-data" class="card border-dashed border-2 border-slate-200 p-8 text-center hover:border-emerald-300 hover:bg-emerald-50/30 transition">
                         @csrf
                         <label class="cursor-pointer block">
-                            <input type="file" name="image" accept="image/*" required class="hidden">
+                            <input type="file" name="image" accept="image/*" class="sr-only">
                             <i class="fas fa-cloud-upload-alt text-3xl text-slate-400 mb-3"></i>
                             <div class="font-medium text-slate-700 text-sm">ছবি নির্বাচন করুন (ক্লিক করুন)</div>
-                            <div class="text-xs text-slate-400 mt-1">JPG / PNG / WEBP • সর্বোচ্চ ৫MB</div>
+                            <div class="text-xs text-slate-400 mt-1" id="upload-fname">JPG / PNG / WEBP • সর্বোচ্চ ৫MB</div>
                         </label>
                         <div class="mt-4">
                             <input type="text" name="caption" placeholder="ছবির ক্যাপশন (ঐচ্ছিক)" maxlength="200"
