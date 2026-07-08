@@ -70,7 +70,7 @@
                     @foreach($unrated as $upload)
                         <div class="rounded-3xl bg-white border border-slate-200 overflow-hidden shadow-sm">
                             <div class="relative aspect-square bg-slate-100 cursor-pointer"
-                                 @click="selectedStars = 0; ratingModal = {{ $upload->id }}; $dispatch('open-modal', { detail: 'rate-{{ $upload->id }}' })">
+                                 onclick="window.dispatchEvent(new CustomEvent('open-modal', { detail: 'rate-{{ $upload->id }}' }))">
                                 <img src="{{ $upload->image_url }}" alt="Member upload" class="w-full h-full object-cover hover:scale-105 transition">
                                 <div class="absolute inset-0 bg-black/0 hover:bg-black/20 transition flex items-center justify-center">
                                     <span class="opacity-0 hover:opacity-100 bg-white/90 text-emerald-800 text-xs font-semibold px-3 py-1.5 rounded-xl transition">

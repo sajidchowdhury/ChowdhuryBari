@@ -28,12 +28,12 @@ class FamilyReductionApplicationController extends Controller
         }
 
         $validated = $request->validate([
-            'flats'               => ['required', 'array'],
-            'flats.*'              => ['in:0,1'],
+            'flats'               => ['nullable', 'array'],
+            'flats.*'              => ['string'],
             'flat_ids'            => ['required', 'array'],
             'flat_ids.*'          => ['exists:flats,id'],
             'meter_numbers'       => ['nullable', 'array'],
-            'meter_numbers.*'     => ['string', 'max:100'],
+            'meter_numbers.*'     => ['nullable', 'string', 'max:100'],
         ]);
 
         // Verify all flats belong to this member's building
@@ -47,17 +47,19 @@ class FamilyReductionApplicationController extends Controller
         $previousActiveCount = $building->flats()->where('is_active', true)->count();
         $turnedOffFlats = [];
         $activeCount = 0;
+        $flatsInput = $validated['flats'] ?? [];
 
         foreach ($validated['flat_ids'] as $flatId) {
             $flat = \App\Models\Flat::with('meters')->find($flatId);
             $wasActive = $flat->is_active;
-            $isActive = isset($validated['flats'][$flatId]) && $validated['flats'][$flatId] === '1';
+            $isActive = isset($flatsInput[$flatId]) && $flatsInput[$flatId] === '1';
 
             if ($isActive) $activeCount++;
 
             // Track flats being turned OFF (for application record)
             if ($wasActive && !$isActive) {
                 $meterNumber = $validated['meter_numbers'][$flatId] ?? $flat->meters->first()?->meter_number ?? '—';
+                if (empty($meterNumber)) $meterNumber = '—';
                 $turnedOffFlats[] = [
                     'flat_id'      => $flatId,
                     'flat_number'  => $flat->flat_number,
