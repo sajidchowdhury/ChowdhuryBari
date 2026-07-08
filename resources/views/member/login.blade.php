@@ -134,6 +134,8 @@
 
                         <form action="{{ route('member.login.verify') }}" method="POST" class="space-y-5">
                             @csrf
+                            {{-- Pass the encrypted phone token so step 2 doesn't depend on session persistence --}}
+                            <input type="hidden" name="phone_token" value="{{ $phoneToken }}">
                             <div>
                                 <div class="text-xs font-semibold text-slate-500 mb-2 text-center">৪ সংখ্যার OTP লিখুন</div>
                                 <input name="otp" type="text" maxlength="4" inputmode="numeric" required autofocus
@@ -164,6 +166,9 @@
                                     <i class="fas fa-redo"></i> OTP আবার পাঠান
                                 </button>
                             </form>
+                        </div>
+                        <div class="mt-4 text-center text-[11px] text-slate-400">
+                            <i class="fas fa-clock mr-1"></i> টোকেন মেয়াদ: ১০ মিনিট
                         </div>
                     </div>
                 @endif

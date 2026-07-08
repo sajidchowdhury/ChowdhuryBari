@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Crypt;
 
 class MemberAuthController extends Controller
 {
@@ -13,6 +14,9 @@ class MemberAuthController extends Controller
      * Real OTP via SMS will be added later.
      */
     const DEMO_OTP = '9999';
+
+    /** How long a phone-verification token stays valid (minutes). */
+    const TOKEN_TTL_MINUTES = 10;
 
     /**
      * Show the member login form (step 1: phone, step 2: OTP).
@@ -23,15 +27,36 @@ class MemberAuthController extends Controller
             return redirect()->route('member.dashboard');
         }
 
+        // Step 2 (OTP) requires a valid phone token in the query string.
+        // If it's missing/invalid, fall back to step 1.
+        $step = $request->query('step', 'phone');
+        $phoneToken = $request->query('phone_token', '');
+
+        $phone = '';
+        if ($step === 'otp') {
+            try {
+                $data = Crypt::decrypt($phoneToken);
+                if (!is_array($data) || ($data['expires_at'] ?? 0) < now()->timestamp) {
+                    return redirect()->route('member.login')
+                        ->withErrors(['phone' => 'সময় শেষ হয়ে গেছে, আবার চেষ্টা করুন।']);
+                }
+                $phone = $data['phone'] ?? '';
+            } catch (\Throwable $e) {
+                return redirect()->route('member.login')
+                    ->withErrors(['phone' => 'অবৈধ অনুরোধ। আবার চেষ্টা করুন।']);
+            }
+        }
+
         return view('member.login', [
-            'step' => $request->query('step', 'phone'),
-            'phone' => old('phone', $request->query('phone', session('member_login_phone', ''))),
+            'step' => $step,
+            'phone' => $phone,
+            'phoneToken' => $phoneToken,
         ]);
     }
 
     /**
      * Step 1: Validate the phone number exists in the users table,
-     * then move to the OTP step.
+     * then redirect to the OTP step with an encrypted token.
      */
     public function sendOtp(Request $request)
     {
@@ -52,10 +77,15 @@ class MemberAuthController extends Controller
                 ->withErrors(['phone' => 'এই নম্বরে কোনো নিবন্ধিত সদস্য পাওয়া যায়নি।']);
         }
 
-        // Store phone for the OTP step
-        session(['member_login_phone' => $phone]);
+        // Build an encrypted, time-limited token carrying the verified phone.
+        // This avoids depending on session persistence between the two steps
+        // (which is the common cause of 419 CSRF errors during 2-step logins).
+        $token = Crypt::encrypt([
+            'phone'      => $phone,
+            'expires_at' => now()->addMinutes(self::TOKEN_TTL_MINUTES)->timestamp,
+        ]);
 
-        return redirect()->route('member.login', ['step' => 'otp']);
+        return redirect()->route('member.login', ['step' => 'otp', 'phone_token' => $token]);
     }
 
     /**
@@ -64,13 +94,21 @@ class MemberAuthController extends Controller
     public function verifyOtp(Request $request)
     {
         $validated = $request->validate([
-            'otp' => ['required', 'string', 'size:4'],
+            'otp'         => ['required', 'string', 'size:4'],
+            'phone_token' => ['required', 'string'],
         ]);
 
-        $phone = session('member_login_phone');
-        if (!$phone) {
+        // Decrypt + validate the phone token
+        try {
+            $data = Crypt::decrypt($validated['phone_token']);
+            if (!is_array($data) || ($data['expires_at'] ?? 0) < now()->timestamp) {
+                return redirect()->route('member.login')
+                    ->withErrors(['phone' => 'সময় শেষ হয়ে গেছে, আবার চেষ্টা করুন।']);
+            }
+            $phone = $data['phone'] ?? '';
+        } catch (\Throwable $e) {
             return redirect()->route('member.login')
-                ->withErrors(['phone' => 'দয়া করে আবার আপনার নম্বর দিন।']);
+                ->withErrors(['phone' => 'অবৈধ অনুরোধ। আবার চেষ্টা করুন।']);
         }
 
         if ($validated['otp'] !== self::DEMO_OTP) {
@@ -90,7 +128,6 @@ class MemberAuthController extends Controller
         }
 
         Auth::login($user, true);
-        session()->forget('member_login_phone');
         $request->session()->regenerate();
 
         return redirect()->route('member.dashboard');
