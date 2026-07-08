@@ -68,6 +68,7 @@
         </div>
 
         @include('layouts.FloatingButton')
+        @include('layouts.delivery-finder')
         @include('layouts.footer')
     </body>
 </html>

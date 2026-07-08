@@ -387,6 +387,16 @@
         document.body.style.overflow = '';
     }
 
+    // Open a building detail directly by roadId + buildingId.
+    // Used by the Delivery Finder's "বিস্তারিত দেখুন" button (so it doesn't
+    // need the road modal to be open first).
+    function showBuildingDetailsById(roadId, buildingId) {
+        const road = getRoadData(roadId);
+        if (!road) return;
+        currentRoad = road;
+        showBuildingDetails(buildingId);
+    }
+
     function showRoadFromBuilding() {
         closeBuildingModal();
         if (currentRoad) {
