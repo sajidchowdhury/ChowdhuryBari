@@ -98,7 +98,7 @@
                                 </div>
                                 <div class="text-[11px] text-emerald-700 flex items-center gap-1.5">
                                     <i class="fas fa-info-circle"></i>
-                                    শুধুমাত্র নিবন্ধিত সদস্যদের জন্য
+                                    আপনার বাড়ির নিবন্ধিত মালিকের ফোন নম্বর দিন
                                 </div>
 
                                 <button type="submit"
@@ -113,7 +113,7 @@
                         <div class="rounded-2xl bg-amber-50 border border-amber-200 p-3 text-center">
                             <div class="text-[11px] text-amber-700">
                                 <i class="fas fa-flask mr-1"></i>
-                                ডেমো নম্বর: <span class="font-mono font-semibold">01711112222</span> বা <span class="font-mono font-semibold">01787492561</span>
+                                অ্যাডমিন প্যানেলে নিবন্ধিত বাড়ির মালিকের ফোন নম্বর দিয়ে লগইন করুন • OTP: <span class="font-mono font-bold">৯৯৯৯</span>
                             </div>
                         </div>
                     </div>

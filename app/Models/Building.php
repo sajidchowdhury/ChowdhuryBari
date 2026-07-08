@@ -72,13 +72,46 @@ class Building extends Model
 
     /**
      * Monthly due = per_family_amount × effective_billing_family_count
-     *               + sum of flat service charges for this building's category.
+     *               + sum of service charges (respecting charge_type:
+     *                 per_family × family_count, per_floor × floor_count, fixed = amount).
      */
     public function monthlyDue(): int
     {
-        $familyTotal = $this->per_family_amount * $this->effective_billing_family_count;
-        $flatCharges = \App\Models\ServiceCharge::totalForCategory($this->building_category ?? '');
-        return $familyTotal + $flatCharges;
+        $familyCount = $this->effective_billing_family_count;
+        $familyTotal = $this->per_family_amount * $familyCount;
+
+        $charges = \App\Models\ServiceCharge::calculateForBuilding(
+            $this->building_category ?? '',
+            $familyCount,
+            $this->floor_count,
+        );
+
+        return $familyTotal + $charges['total'];
+    }
+
+    /**
+     * Detailed charge breakdown for this building (for the dashboard display).
+     * Returns ['base_family_charge' => int, 'charges' => Collection, 'total' => int]
+     */
+    public function chargeBreakdown(): array
+    {
+        $familyCount = $this->effective_billing_family_count;
+        $baseFamilyCharge = $this->per_family_amount * $familyCount;
+
+        $charges = \App\Models\ServiceCharge::calculateForBuilding(
+            $this->building_category ?? '',
+            $familyCount,
+            $this->floor_count,
+        );
+
+        return [
+            'base_per_family_amount' => $this->per_family_amount,
+            'family_count'           => $familyCount,
+            'base_family_charge'     => $baseFamilyCharge,
+            'charges'                => $charges['breakdown'],
+            'charges_total'          => $charges['total'],
+            'total'                  => $baseFamilyCharge + $charges['total'],
+        ];
     }
 
     protected function casts(): array

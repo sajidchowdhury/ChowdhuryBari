@@ -42,6 +42,7 @@
                     <tr class="text-left text-xs text-slate-500 uppercase tracking-wide">
                         <th class="px-6 py-3 font-semibold">সেবার নাম</th>
                         <th class="px-6 py-3 font-semibold">বাড়ির ধরন</th>
+                        <th class="px-6 py-3 font-semibold">চার্জের ধরন</th>
                         <th class="px-6 py-3 font-semibold text-right">পরিমাণ</th>
                         <th class="px-6 py-3 font-semibold text-center">স্ট্যাটাস</th>
                         <th class="px-6 py-3 font-semibold text-right">অ্যাকশন</th>
@@ -58,6 +59,9 @@
                             </td>
                             <td class="px-6 py-4">
                                 <span class="text-xs bg-sky-50 text-sky-700 px-2.5 py-1 rounded-full font-medium">{{ $charge->category_label }}</span>
+                            </td>
+                            <td class="px-6 py-4">
+                                <span class="text-xs bg-violet-50 text-violet-700 px-2.5 py-1 rounded-full font-medium">{{ $charge->charge_type_label }}</span>
                             </td>
                             <td class="px-6 py-4 text-right font-semibold text-slate-800 tabular-nums">৳ {{ number_format($charge->amount) }}</td>
                             <td class="px-6 py-4 text-center">
@@ -119,7 +123,7 @@
             <div class="grid gap-4 sm:grid-cols-2">
                 <div>
                     <label class="block text-sm font-medium text-slate-700">সেবার নাম <span class="text-red-500">*</span></label>
-                    <input type="text" name="name" value="{{ old('name') }}" placeholder="e.g. মাসিক সদস্য ফি, নিরাপত্তা চার্জ, পরিচ্ছন্নতা চার্জ"
+                    <input type="text" name="name" value="{{ old('name') }}" placeholder="e.g. ময়লা বিল, গার্ড বিল, পরিচ্ছন্নতা"
                            class="mt-1.5 w-full rounded-2xl border border-slate-300 px-4 py-2.5 text-sm" required>
                 </div>
                 <div>
@@ -127,6 +131,19 @@
                     <input type="number" name="amount" min="0" value="{{ old('amount') }}" placeholder="e.g. 300"
                            class="mt-1.5 w-full rounded-2xl border border-slate-300 px-4 py-2.5 text-sm" required>
                 </div>
+            </div>
+            <div>
+                <label class="block text-sm font-medium text-slate-700">চার্জের ধরন <span class="text-red-500">*</span></label>
+                <select name="charge_type" class="mt-1.5 w-full rounded-2xl border border-slate-300 px-4 py-2.5 text-sm bg-white" required>
+                    @foreach(\App\Models\ServiceCharge::CHARGE_TYPES as $key => $label)
+                        <option value="{{ $key }}" @selected(old('charge_type') === $key)>{{ $label }}</option>
+                    @endforeach
+                </select>
+                <p class="text-xs text-slate-500 mt-1">
+                    <strong>প্রতি পরিবার:</strong> পরিমাণ × বিলিং পরিবার সংখ্যা (যেমন ময়লা বিল) •
+                    <strong>প্রতি ফ্লোর:</strong> পরিমাণ × ফ্লোর সংখ্যা •
+                    <strong>মোট:</strong> একবারই (যেমন গার্ড বিল)
+                </p>
             </div>
             <div>
                 <label class="block text-sm font-medium text-slate-700">বিবরণ (ঐচ্ছিক)</label>
@@ -188,6 +205,14 @@
                         <input type="number" name="amount" min="0" value="{{ old('amount', $charge->amount) }}"
                                class="mt-1.5 w-full rounded-2xl border border-slate-300 px-4 py-2.5 text-sm" required>
                     </div>
+                </div>
+                <div>
+                    <label class="block text-sm font-medium text-slate-700">চার্জের ধরন <span class="text-red-500">*</span></label>
+                    <select name="charge_type" class="mt-1.5 w-full rounded-2xl border border-slate-300 px-4 py-2.5 text-sm bg-white" required>
+                        @foreach(\App\Models\ServiceCharge::CHARGE_TYPES as $key => $label)
+                            <option value="{{ $key }}" @selected(old('charge_type', $charge->charge_type) === $key)>{{ $label }}</option>
+                        @endforeach
+                    </select>
                 </div>
                 <div>
                     <label class="block text-sm font-medium text-slate-700">বিবরণ (ঐচ্ছিক)</label>

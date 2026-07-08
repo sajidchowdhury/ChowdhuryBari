@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Building;
 use App\Models\User;
 use App\Models\MemberUpload;
 use App\Models\ServiceCharge;
@@ -9,6 +10,8 @@ use App\Services\SocialValueService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Crypt;
+use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Str;
 
 class MemberAuthController extends Controller
 {
@@ -58,8 +61,9 @@ class MemberAuthController extends Controller
     }
 
     /**
-     * Step 1: Validate the phone number exists in the users table,
-     * then redirect to the OTP step with an encrypted token.
+     * Step 1: Validate the phone number belongs to a registered building
+     * owner (matched against buildings.owner_phone), then redirect to the
+     * OTP step with an encrypted token.
      */
     public function sendOtp(Request $request)
     {
@@ -69,15 +73,14 @@ class MemberAuthController extends Controller
 
         $phone = $this->normalizePhone($validated['phone']);
 
-        $user = User::where('phone', $phone)
-            ->where('role', '!=', 'admin')
-            ->where('is_active', true)
-            ->first();
+        // Look up the building by owner's phone number.
+        // Every building owner can log in — no separate user registration needed.
+        $building = Building::where('owner_phone', $phone)->first();
 
-        if (!$user) {
+        if (!$building) {
             return back()
                 ->withInput()
-                ->withErrors(['phone' => 'এই নম্বরে কোনো নিবন্ধিত সদস্য পাওয়া যায়নি।']);
+                ->withErrors(['phone' => 'এই নম্বরে কোনো নিবন্ধিত বাড়ি পাওয়া যায়নি। অ্যাডমিন আপনার বাড়ি যোগ করলে লগইন করতে পারবেন।']);
         }
 
         // Build an encrypted, time-limited token carrying the verified phone.
@@ -120,14 +123,29 @@ class MemberAuthController extends Controller
                 ->withErrors(['otp' => 'ভুল OTP। ডেমো OTP হলো ৯৯৯৯।']);
         }
 
-        $user = User::where('phone', $phone)
-            ->where('role', '!=', 'admin')
-            ->where('is_active', true)
-            ->first();
-
-        if (!$user) {
+        // Look up the building by owner phone (verified in step 1)
+        $building = Building::where('owner_phone', $phone)->first();
+        if (!$building) {
             return redirect()->route('member.login')
                 ->withErrors(['phone' => 'সদস্য খুঁজে পাওয়া যায়নি।']);
+        }
+
+        // Find or create the user record for this building owner.
+        // Every building owner can log in — no separate registration needed.
+        $user = User::firstOrCreate(
+            ['phone' => $phone],
+            [
+                'name'       => $building->owner_name ?: ('বাড়ি ' . $building->name),
+                'email'      => $phone . '@chowdhuripara.local',
+                'password'   => Hash::make(Str::random(32)),
+                'role'       => 'user',
+                'is_active'  => true,
+            ]
+        );
+
+        if (!$user->is_active) {
+            return redirect()->route('member.login')
+                ->withErrors(['phone' => 'আপনার অ্যাকাউন্ট নিষ্ক্রিয় আছে। অ্যাডমিনের সাথে যোগাযোগ করুন।']);
         }
 
         Auth::guard('member')->login($user, true);
@@ -188,6 +206,7 @@ class MemberAuthController extends Controller
         $billingFamilyCount = 0;
         $perFamilyAmount = 0;
         $monthlyDue = 0;
+        $chargeBreakdown = null;
         $myApplications = collect();
         $hasPendingApplication = false;
 
@@ -200,6 +219,7 @@ class MemberAuthController extends Controller
             $billingFamilyCount = $building->effective_billing_family_count;
             $perFamilyAmount = $building->per_family_amount;
             $monthlyDue = $building->monthlyDue();
+            $chargeBreakdown = $building->chargeBreakdown();
 
             $myApplications = \App\Models\FamilyReductionApplication::where('user_id', $user->id)
                 ->where('building_id', $building->id)
@@ -223,6 +243,7 @@ class MemberAuthController extends Controller
             'billingFamilyCount' => $billingFamilyCount,
             'perFamilyAmount'  => $perFamilyAmount,
             'monthlyDue'       => $monthlyDue,
+            'chargeBreakdown'  => $chargeBreakdown,
             'myApplications'   => $myApplications,
             'hasPendingApplication' => $hasPendingApplication,
 

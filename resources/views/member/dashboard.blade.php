@@ -216,9 +216,9 @@
                                     <i class="fas fa-exclamation-circle"></i> এই মাসের বকেয়া
                                 </div>
                                 <div class="text-4xl sm:text-5xl font-bold text-slate-800 tabular-nums mt-2">৳ {{ number_format($monthlyDue) }}</div>
-                                @if($building && $perFamilyAmount > 0)
+                                @if($chargeBreakdown)
                                     <div class="text-[11px] text-slate-400 mt-1">
-                                        ৳{{ $perFamilyAmount }} × {{ $billingFamilyCount }} পরিবার @if($totalCharge > 0)+ ৳{{ $totalCharge }} (অতিরিক্ত)@endif
+                                        {{ $chargeBreakdown['family_count'] }} পরিবার ও অতিরিক্ত চার্জ সহ
                                     </div>
                                 @endif
                             </div>
@@ -236,35 +236,50 @@
                         <div class="text-[10px] text-slate-400 mt-3 text-center">bKash / Nagad / ব্যাংক ট্রান্সফার সাপোর্টেড</div>
                     </div>
 
-                    <!-- Charge breakdown — based on member's building type -->
+                    <!-- Charge breakdown — based on member's building type + charge types -->
                     <div class="lg:col-span-2 card p-6">
                         <div class="font-semibold text-slate-800 mb-1 flex items-center gap-2 text-sm">
                             <i class="fas fa-file-invoice text-slate-400"></i> সেবা চার্জের বিবরণ
                         </div>
-                        @if($buildingCategory)
+                        @if($chargeBreakdown)
                             <div class="text-[11px] text-sky-700 bg-sky-50 inline-block px-2 py-0.5 rounded-full mb-3">
-                                আপনার বাড়ির ধরন: {{ \App\Models\Building::CATEGORIES[$buildingCategory] ?? '—' }}
+                                বিলিং পরিবার: {{ $chargeBreakdown['family_count'] }}
                             </div>
-                            @if($serviceCharges->isNotEmpty())
-                                <div class="space-y-2.5 text-[13px]">
-                                    @foreach($serviceCharges as $charge)
-                                        <div class="flex justify-between items-center">
-                                            <span class="text-slate-600">{{ $charge->name }}</span>
-                                            <span class="font-medium text-slate-800 tabular-nums">৳ {{ number_format($charge->amount) }}</span>
-                                        </div>
-                                    @endforeach
+                            <div class="space-y-2 text-[13px]">
+                                {{-- Base per-family charge --}}
+                                @if($chargeBreakdown['base_per_family_amount'] > 0)
+                                    <div class="flex justify-between items-center">
+                                        <span class="text-slate-600">
+                                            মাসিক ফি <span class="text-[10px] text-slate-400">({{ $chargeBreakdown['base_per_family_amount'] }} × {{ $chargeBreakdown['family_count'] }})</span>
+                                        </span>
+                                        <span class="font-medium text-slate-800 tabular-nums">৳ {{ number_format($chargeBreakdown['base_family_charge']) }}</span>
+                                    </div>
+                                @endif
+                                {{-- Service charges with type --}}
+                                @foreach($chargeBreakdown['charges'] as $charge)
+                                    <div class="flex justify-between items-center">
+                                        <span class="text-slate-600">
+                                            {{ $charge->name }}
+                                            <span class="text-[10px] text-slate-400 ml-0.5">
+                                                @if($charge->charge_type === 'per_family')({{ $charge->amount }} × {{ $charge->multiplier }})@elseif($charge->charge_type === 'per_floor')({{ $charge->amount }} × {{ $charge->multiplier }})@endif
+                                            </span>
+                                        </span>
+                                        <span class="font-medium text-slate-800 tabular-nums">৳ {{ number_format($charge->line_total) }}</span>
+                                    </div>
+                                @endforeach
+                                @if($chargeBreakdown['base_family_charge'] > 0 || $chargeBreakdown['charges_total'] > 0)
                                     <div class="h-px bg-slate-200 my-2"></div>
                                     <div class="flex justify-between font-semibold text-slate-900">
                                         <span>মোট মাসিক</span>
-                                        <span class="tabular-nums">৳ {{ number_format($totalCharge) }}</span>
+                                        <span class="tabular-nums">৳ {{ number_format($chargeBreakdown['total']) }}</span>
                                     </div>
-                                </div>
-                            @else
-                                <div class="text-center py-6 text-slate-400 text-xs">
-                                    <i class="fas fa-info-circle text-2xl mb-2 block"></i>
-                                    আপনার বাড়ির ধরনের জন্য এখনো কোনো সেবা চার্জ যোগ করা হয়নি।
-                                </div>
-                            @endif
+                                @endif
+                            </div>
+                        @elseif($buildingCategory)
+                            <div class="text-center py-6 text-slate-400 text-xs">
+                                <i class="fas fa-info-circle text-2xl mb-2 block"></i>
+                                আপনার বাড়ির ধরনের জন্য এখনো কোনো সেবা চার্জ যোগ করা হয়নি।
+                            </div>
                         @else
                             <div class="text-center py-6 text-slate-400 text-xs">
                                 <i class="fas fa-info-circle text-2xl mb-2 block"></i>
