@@ -19,6 +19,8 @@ class Building extends Model
         'structure_type',
         'usage_type',
         'building_category',
+        'per_family_amount',
+        'billing_family_count',
         'floor_count',
         'families_per_floor',
         'has_security',
@@ -45,6 +47,38 @@ class Building extends Model
     public function getCategoryLabelAttribute(): string
     {
         return self::CATEGORIES[$this->building_category] ?? '—';
+    }
+
+    /**
+     * The effective family count used for billing.
+     * If billing_family_count is set (admin-controlled), use it.
+     * Otherwise fall back to the auto-calculated active flat count.
+     */
+    public function getEffectiveBillingFamilyCountAttribute(): int
+    {
+        if ($this->billing_family_count !== null) {
+            return $this->billing_family_count;
+        }
+        return $this->getActiveFamilyCount();
+    }
+
+    /**
+     * The expected (total possible) family count = floor_count × families_per_floor.
+     */
+    public function getExpectedFamilyCountAttribute(): int
+    {
+        return $this->floor_count * $this->families_per_floor;
+    }
+
+    /**
+     * Monthly due = per_family_amount × effective_billing_family_count
+     *               + sum of flat service charges for this building's category.
+     */
+    public function monthlyDue(): int
+    {
+        $familyTotal = $this->per_family_amount * $this->effective_billing_family_count;
+        $flatCharges = \App\Models\ServiceCharge::totalForCategory($this->building_category ?? '');
+        return $familyTotal + $flatCharges;
     }
 
     protected function casts(): array

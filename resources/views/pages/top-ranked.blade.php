@@ -11,7 +11,7 @@
         <div>
             <div class="uppercase text-xs tracking-[2px] text-emerald-700 font-semibold mb-1">CLEANEST YARDS</div>
             <h2 class="section-header text-5xl tracking-tighter font-bold heading-serif">মাসের সেরা পরিচ্ছন্ন পরিবার</h2>
-            <p class="text-slate-500 text-sm mt-2 max-w-lg">সদস্যদের আপলোড করা উঠানের ছবি অ্যাডমিন বেনামেভাবে ১-১০ স্টার দেন — গড় স্টার × ১০ = Social Value (১-১০০)। সর্বোচ্চ স্কোরের শীর্ষ ১০ পরিবার।</p>
+            <p class="text-slate-500 text-sm mt-2 max-w-lg">সদস্যদের আপলোড করা উঠানের ছবি অ্যাডমিন বেনামে ১-১০ স্টার দেন — গড় স্টার × ১০ = Social Value (১-১০০)। সর্বোচ্চ স্কোরের শীর্ষ ১০ পরিবার।</p>
         </div>
         <div class="text-xs text-slate-400">
             <i class="fas fa-calendar-alt mr-1"></i> {{ $toBn(now()->format('F')) }} {{ $toBn(now()->format('Y')) }}

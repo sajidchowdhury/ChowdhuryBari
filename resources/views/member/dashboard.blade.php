@@ -90,6 +90,11 @@
                 <i class="fas fa-th-large w-5 text-center text-[13px]"></i>
                 <span>ড্যাশবোর্ড</span>
             </button>
+            <button @click="activeTab='building'" :class="{ 'active': activeTab==='building' }"
+                    class="nav-item w-full flex items-center gap-3 px-4 py-2.5 rounded-xl text-sm text-white/70">
+                <i class="fas fa-home w-5 text-center text-[13px]"></i>
+                <span>আমার বাড়ি</span>
+            </button>
             <button @click="activeTab='dues'" :class="{ 'active': activeTab==='dues' }"
                     class="nav-item w-full flex items-center gap-3 px-4 py-2.5 rounded-xl text-sm text-white/70">
                 <i class="fas fa-wallet w-5 text-center text-[13px]"></i>
@@ -208,9 +213,14 @@
                         <div class="flex justify-between items-start">
                             <div>
                                 <div class="text-amber-600 text-xs font-semibold flex items-center gap-1.5 uppercase tracking-wide">
-                                    <i class="fas fa-exclamation-circle"></i> বর্তমান বকেয়া
+                                    <i class="fas fa-exclamation-circle"></i> এই মাসের বকেয়া
                                 </div>
-                                <div class="text-4xl sm:text-5xl font-bold text-slate-800 tabular-nums mt-2">৳ {{ number_format($totalCharge) }}</div>
+                                <div class="text-4xl sm:text-5xl font-bold text-slate-800 tabular-nums mt-2">৳ {{ number_format($monthlyDue) }}</div>
+                                @if($building && $perFamilyAmount > 0)
+                                    <div class="text-[11px] text-slate-400 mt-1">
+                                        ৳{{ $perFamilyAmount }} × {{ $billingFamilyCount }} পরিবার @if($totalCharge > 0)+ ৳{{ $totalCharge }} (অতিরিক্ত)@endif
+                                    </div>
+                                @endif
                             </div>
                             <div class="text-right">
                                 <span class="inline-flex items-center gap-1 bg-red-50 text-red-600 px-2.5 py-1 rounded-lg text-[11px] font-semibold">
@@ -265,6 +275,200 @@
                 </div>
             </div>
 
+            <!-- ==================== TAB: আমার বাড়ি (BUILDING DETAILS) ==================== -->
+            <div x-show="activeTab==='building'" x-cloak class="tab-content space-y-6">
+                <div>
+                    <h2 class="text-xl font-bold heading-serif text-slate-800">আমার বাড়ি</h2>
+                    <p class="text-slate-500 text-sm mt-1">অ্যাডমিন কর্তৃক সেট করা আপনার বাড়ির তথ্য (শুধু পড়ার জন্য)</p>
+                </div>
+
+                @if($building)
+                    {{-- Building summary --}}
+                    <div class="card p-6">
+                        <div class="grid sm:grid-cols-4 gap-4">
+                            <div>
+                                <div class="text-xs text-slate-400 uppercase tracking-wide">বাড়ির নাম</div>
+                                <div class="font-semibold text-slate-800 mt-1">{{ $building->name }}</div>
+                            </div>
+                            <div>
+                                <div class="text-xs text-slate-400 uppercase tracking-wide">রাস্তা</div>
+                                <div class="font-semibold text-slate-800 mt-1">{{ $building->road?->name ?? '—' }}</div>
+                            </div>
+                            <div>
+                                <div class="text-xs text-slate-400 uppercase tracking-wide">ধরন</div>
+                                <div class="font-semibold text-slate-800 mt-1">{{ $building->category_label }}</div>
+                            </div>
+                            <div>
+                                <div class="text-xs text-slate-400 uppercase tracking-wide">ফ্লোর × পরিবার</div>
+                                <div class="font-semibold text-slate-800 mt-1 tabular-nums">{{ $building->floor_count }} × {{ $building->families_per_floor }} = {{ $expectedFamilyCount }}</div>
+                            </div>
+                        </div>
+                    </div>
+
+                    {{-- Billing summary --}}
+                    <div class="grid sm:grid-cols-3 gap-4">
+                        <div class="card p-5">
+                            <div class="text-xs text-slate-400 uppercase tracking-wide">প্রত্যাশিত পরিবার</div>
+                            <div class="text-2xl font-bold text-slate-800 mt-1 tabular-nums">{{ $expectedFamilyCount }}</div>
+                            <div class="text-[11px] text-slate-400">ফ্লোর × পরিবার/ফ্লোর</div>
+                        </div>
+                        <div class="card p-5">
+                            <div class="text-xs text-emerald-600 uppercase tracking-wide">বিলিং পরিবার</div>
+                            <div class="text-2xl font-bold text-emerald-700 mt-1 tabular-nums">{{ $billingFamilyCount }}</div>
+                            <div class="text-[11px] text-slate-400">@if($building->billing_family_count !== null)অ্যাডমিন নির্ধারিত@else স্বয়ংক্রিয় (সক্রিয় মিটার)@endif</div>
+                        </div>
+                        <div class="card p-5">
+                            <div class="text-xs text-slate-400 uppercase tracking-wide">সক্রিয় মিটার</div>
+                            <div class="text-2xl font-bold text-slate-800 mt-1 tabular-nums">{{ $activeFlatCount }}</div>
+                            <div class="text-[11px] text-slate-400">৪৫ দিনে রিচার্জ হয়েছে</div>
+                        </div>
+                    </div>
+
+                    {{-- Flats + meters table (read-only) --}}
+                    <div class="card overflow-hidden">
+                        <div class="px-6 py-4 border-b border-slate-100 font-semibold text-slate-800 text-sm flex items-center gap-2">
+                            <i class="fas fa-th-large text-emerald-600"></i> ফ্ল্যাট ও মিটার তালিকা
+                        </div>
+                        <div class="overflow-x-auto">
+                            <table class="w-full text-sm">
+                                <thead class="bg-slate-50">
+                                    <tr class="text-left text-xs text-slate-500 uppercase tracking-wide">
+                                        <th class="px-4 py-3 font-semibold">ফ্লোর</th>
+                                        <th class="px-4 py-3 font-semibold">ফ্ল্যাট</th>
+                                        <th class="px-4 py-3 font-semibold">বাসিন্দা</th>
+                                        <th class="px-4 py-3 font-semibold">মিটার নম্বর</th>
+                                        <th class="px-4 py-3 font-semibold text-center">স্ট্যাটাস</th>
+                                    </tr>
+                                </thead>
+                                <tbody class="divide-y divide-slate-100">
+                                    @foreach($buildingFlats as $flat)
+                                        @php $meter = $flat->meters->first(); @endphp
+                                        <tr>
+                                            <td class="px-4 py-3 text-slate-500">{{ $flat->floor_number ?? '—' }}</td>
+                                            <td class="px-4 py-3 font-medium text-slate-800">{{ $flat->flat_number }}</td>
+                                            <td class="px-4 py-3 text-slate-600">
+                                                {{ $flat->resident_name ?: '—' }}
+                                                @if($flat->resident_phone)<div class="text-xs text-slate-400">{{ $flat->resident_phone }}</div>@endif
+                                            </td>
+                                            <td class="px-4 py-3 font-mono text-slate-700">
+                                                @if($meter) {{ $meter->meter_number }} @else <span class="text-slate-300">—</span> @endif
+                                            </td>
+                                            <td class="px-4 py-3 text-center">
+                                                @if(!$flat->is_active)
+                                                    <span class="text-[10px] bg-slate-100 text-slate-500 px-2 py-0.5 rounded-full font-semibold">খালি</span>
+                                                @elseif($flat->isFamilyActive())
+                                                    <span class="text-[10px] bg-emerald-100 text-emerald-700 px-2 py-0.5 rounded-full font-semibold">সক্রিয়</span>
+                                                @else
+                                                    <span class="text-[10px] bg-red-100 text-red-600 px-2 py-0.5 rounded-full font-semibold">মিটার নিষ্ক্রিয়</span>
+                                                @endif
+                                            </td>
+                                        </tr>
+                                    @endforeach
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+
+                    {{-- Family reduction application --}}
+                    @if(session('app_success'))
+                        <div class="rounded-2xl bg-emerald-50 border border-emerald-200 p-4 text-emerald-700 text-sm flex items-center gap-2">
+                            <i class="fas fa-check-circle"></i> {{ session('app_success') }}
+                        </div>
+                    @endif
+                    @if(session('app_error'))
+                        <div class="rounded-2xl bg-red-50 border border-red-200 p-4 text-red-700 text-sm flex items-center gap-2">
+                            <i class="fas fa-exclamation-circle"></i> {{ session('app_error') }}
+                        </div>
+                    @endif
+
+                    @if($hasPendingApplication)
+                        <div class="card border-amber-200 bg-amber-50/50 p-6 text-center">
+                            <i class="fas fa-hourglass-half text-2xl text-amber-500 mb-2"></i>
+                            <div class="font-medium text-slate-700 text-sm">আপনার একটি আবেদন অপেক্ষমাণ অবস্থায় আছে</div>
+                            <div class="text-xs text-slate-400 mt-1">অ্যাডমিন রিভিউ করার পর নতুন আবেদন করতে পারবেন।</div>
+                        </div>
+                    @else
+                        <div class="card p-6">
+                            <div class="font-semibold text-slate-800 mb-1 text-sm flex items-center gap-2">
+                                <i class="fas fa-paper-plane text-emerald-600"></i> পরিবার কমানোর আবেদন
+                            </div>
+                            <p class="text-xs text-slate-500 mb-4">আপনার বাড়ির কিছু পরিবার চলে গেলে এবং মিটার নিষ্ক্রিয় থাকলে বিলিং কমানোর জন্য আবেদন করুন। অ্যাডমিন মিটার নম্বর BPDB-তে যাচাই করে অনুমোদন দেবেন।</p>
+                            <form action="{{ route('member.applications.store') }}" method="POST" class="space-y-4">
+                                @csrf
+                                <div class="grid sm:grid-cols-2 gap-4">
+                                    <div>
+                                        <label class="block text-xs font-semibold text-slate-500 mb-1">বর্তমান বিলিং পরিবার</label>
+                                        <input type="text" value="{{ $billingFamilyCount }}" disabled
+                                               class="w-full rounded-xl border border-slate-200 bg-slate-50 px-4 py-2.5 text-sm text-slate-500">
+                                    </div>
+                                    <div>
+                                        <label class="block text-xs font-semibold text-slate-500 mb-1">অনুরোধ করা পরিবার সংখ্যা <span class="text-red-500">*</span></label>
+                                        <input type="number" name="requested_family_count" min="0" max="{{ $billingFamilyCount }}" required
+                                               placeholder="যেমন: {{ max(0, $billingFamilyCount - 2) }}"
+                                               class="w-full rounded-xl border border-slate-300 px-4 py-2.5 text-sm">
+                                    </div>
+                                </div>
+                                <div>
+                                    <label class="block text-xs font-semibold text-slate-500 mb-1">খালি ফ্ল্যাটগুলো নির্বাচন করুন (ঐচ্ছিক)</label>
+                                    <div class="flex flex-wrap gap-2 mt-1">
+                                        @foreach($buildingFlats as $flat)
+                                            @if(!$flat->is_active || !$flat->isFamilyActive())
+                                                <label class="inline-flex items-center gap-1.5 text-xs border border-slate-200 rounded-lg px-2.5 py-1.5 cursor-pointer hover:bg-slate-50">
+                                                    <input type="checkbox" name="vacant_flat_ids[]" value="{{ $flat->id }}" class="rounded">
+                                                    {{ $flat->flat_number }}
+                                                </label>
+                                            @endif
+                                        @endforeach
+                                    </div>
+                                    <p class="text-[11px] text-slate-400 mt-1">শুধু নিষ্ক্রিয়/খালি ফ্ল্যাটগুলো দেখানো হয়েছে।</p>
+                                </div>
+                                <div>
+                                    <label class="block text-xs font-semibold text-slate-500 mb-1">কারণ <span class="text-red-500">*</span></label>
+                                    <textarea name="reason" rows="2" required placeholder="যেমন: ২টি পরিবার চলে গেছে, মিটার নিষ্ক্রিয়"
+                                              class="w-full rounded-xl border border-slate-300 px-4 py-2.5 text-sm"></textarea>
+                                </div>
+                                <button type="submit" class="px-6 py-2.5 bg-slate-900 hover:bg-slate-800 text-white text-sm font-medium rounded-xl transition active:scale-95">
+                                    <i class="fas fa-paper-plane mr-1"></i> আবেদন জমা দিন
+                                </button>
+                            </form>
+                        </div>
+                    @endif
+
+                    {{-- Application history --}}
+                    @if($myApplications->isNotEmpty())
+                        <div class="card overflow-hidden">
+                            <div class="px-6 py-4 border-b border-slate-100 font-semibold text-slate-800 text-sm flex items-center gap-2">
+                                <i class="fas fa-history text-slate-400"></i> আবেদনের ইতিহাস
+                            </div>
+                            <div class="divide-y divide-slate-100">
+                                @foreach($myApplications as $app)
+                                    <div class="px-6 py-3 flex items-center justify-between">
+                                        <div>
+                                            <div class="text-sm text-slate-700">
+                                                {{ $app->current_family_count }} → <strong>{{ $app->requested_family_count }}</strong> পরিবার
+                                            </div>
+                                            <div class="text-xs text-slate-400">{{ $app->created_at->format('M d, Y') }}</div>
+                                        </div>
+                                        <span class="text-xs px-2.5 py-1 rounded-full font-semibold
+                                            @if($app->status === 'pending') bg-amber-100 text-amber-700
+                                            @elseif($app->status === 'approved') bg-emerald-100 text-emerald-700
+                                            @else bg-red-100 text-red-700 @endif">
+                                            {{ $app->status_label }}
+                                        </span>
+                                    </div>
+                                @endforeach
+                            </div>
+                        </div>
+                    @endif
+                @else
+                    <div class="card p-12 text-center">
+                        <i class="fas fa-home text-5xl text-slate-300 mb-4"></i>
+                        <h3 class="text-lg font-semibold text-slate-700">আপনার কোনো বাড়ি নিবন্ধিত নেই</h3>
+                        <p class="text-slate-500 mt-1 text-sm">অ্যাডমিন আপনার ফোন নম্বর দিয়ে বাড়ি যুক্ত করলে এখানে দেখা যাবে।</p>
+                    </div>
+                @endif
+            </div>
+
             <!-- ==================== TAB: DUES & PAYMENT ==================== -->
             <div x-show="activeTab==='dues'" x-cloak class="tab-content space-y-6">
                 <div>
@@ -287,7 +491,7 @@
                 <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
                     <div class="card p-5">
                         <div class="text-rose-600 text-[11px] font-medium uppercase tracking-wide">মোট বকেয়া</div>
-                        <div class="text-2xl font-bold text-slate-800 mt-1 tabular-nums">৳ {{ number_format($totalCharge) }}</div>
+                        <div class="text-2xl font-bold text-slate-800 mt-1 tabular-nums">৳ {{ number_format($monthlyDue) }}</div>
                     </div>
                     <div class="card p-5">
                         <div class="text-emerald-600 text-[11px] font-medium uppercase tracking-wide">মোট পরিশোধিত</div>
@@ -319,19 +523,19 @@
                                 <tr class="hover:bg-slate-50 transition">
                                     <td class="px-6 py-4 text-slate-600">১৫ জানু ২০২৬</td>
                                     <td class="px-6 py-4 font-medium text-slate-800">জানুয়ারি মাসিক ফি</td>
-                                    <td class="px-6 py-4 text-right font-semibold text-amber-700 tabular-nums">৳ {{ number_format($totalCharge) }}</td>
+                                    <td class="px-6 py-4 text-right font-semibold text-amber-700 tabular-nums">৳ {{ number_format($monthlyDue) }}</td>
                                     <td class="px-6 py-4"><span class="text-[11px] bg-rose-50 text-rose-600 px-2 py-0.5 rounded-full font-semibold">বকেয়া</span></td>
                                 </tr>
                                 <tr class="hover:bg-slate-50 transition">
                                     <td class="px-6 py-4 text-slate-600">২৮ ডিসে ২০২৫</td>
                                     <td class="px-6 py-4 font-medium text-slate-800">ডিসেম্বর মাসিক ফি</td>
-                                    <td class="px-6 py-4 text-right font-semibold text-emerald-700 tabular-nums">৳ {{ number_format($totalCharge) }}</td>
+                                    <td class="px-6 py-4 text-right font-semibold text-emerald-700 tabular-nums">৳ {{ number_format($monthlyDue) }}</td>
                                     <td class="px-6 py-4"><span class="text-[11px] bg-emerald-50 text-emerald-700 px-2 py-0.5 rounded-full font-semibold">পরিশোধিত</span></td>
                                 </tr>
                                 <tr class="hover:bg-slate-50 transition">
                                     <td class="px-6 py-4 text-slate-600">৩০ নভে ২০২৫</td>
                                     <td class="px-6 py-4 font-medium text-slate-800">নভেম্বর মাসিক ফি</td>
-                                    <td class="px-6 py-4 text-right font-semibold text-emerald-700 tabular-nums">৳ {{ number_format($totalCharge) }}</td>
+                                    <td class="px-6 py-4 text-right font-semibold text-emerald-700 tabular-nums">৳ {{ number_format($monthlyDue) }}</td>
                                     <td class="px-6 py-4"><span class="text-[11px] bg-emerald-50 text-emerald-700 px-2 py-0.5 rounded-full font-semibold">পরিশোধিত</span></td>
                                 </tr>
                             </tbody>
@@ -345,7 +549,7 @@
                 <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
                     <div>
                         <h2 class="text-xl font-bold heading-serif text-slate-800">আমার গ্যালারি</h2>
-                        <p class="text-slate-500 text-sm mt-1">সামনের উঠানের ছবি আপলোড করুন — অ্যাডমিন বেনামেভাবে স্কোর দেবেন (১-১০ স্টার)</p>
+                        <p class="text-slate-500 text-sm mt-1">সামনের উঠানের ছবি আপলোড করুন — অ্যাডমিন বেনামে স্কোর দেবেন (১-১০ স্টার)</p>
                     </div>
                     <div class="text-right">
                         <div class="text-xs text-slate-400">এই মাসে আপলোড</div>
@@ -516,7 +720,7 @@
                         </div>
                         <div class="space-y-2.5 text-sm text-slate-600">
                             <div class="flex gap-2"><span class="text-emerald-600 font-bold">১.</span> আপনি উঠানের ছবি আপলোড করেন (মাসে সর্বোচ্চ {{ $uploadLimit }}টি)</div>
-                            <div class="flex gap-2"><span class="text-emerald-600 font-bold">২.</span> অ্যাডমিন <strong>বেনামেভাবে</strong> প্রতিটি ছবিকে ১-১০ স্টার দেন (পরিচ্ছন্নতা, গোছানো, সবুজের উপস্থিতি দেখে)</div>
+                            <div class="flex gap-2"><span class="text-emerald-600 font-bold">২.</span> অ্যাডমিন <strong>বেনামে</strong> প্রতিটি ছবিকে ১-১০ স্টার দেন (পরিচ্ছন্নতা, গোছানো, সবুজের উপস্থিতি দেখে)</div>
                             <div class="flex gap-2"><span class="text-emerald-600 font-bold">৩.</span> আপনার <strong>Social Value</strong> = রেট করা ছবিগুলোর গড় স্টার × ১০ (উদাহরণ: গড় ৮.৫ → স্কোর ৮৫/১০০)</div>
                             <div class="flex gap-2"><span class="text-emerald-600 font-bold">৪.</span> র‍্যাঙ্কিং এই স্কোরের ভিত্তিতে — সমান স্কোর হলে গত মাসের স্কোর বিবেচিত হয়</div>
                             <div class="flex gap-2"><span class="text-emerald-600 font-bold">৫.</span> সর্বোচ্চ স্কোরের সদস্যরা "মাসের সেরা পরিচ্ছন্ন পরিবার" হিসেবে ওয়েবসাইটে প্রদর্শিত হন</div>
@@ -528,11 +732,16 @@
         </main>
 
         <!-- ============ MOBILE BOTTOM NAV ============ -->
-        <nav class="lg:hidden fixed bottom-0 left-0 right-0 bg-white border-t border-slate-200 z-40 grid grid-cols-4 shadow-[0_-4px_12px_rgba(0,0,0,0.04)]">
+        <nav class="lg:hidden fixed bottom-0 left-0 right-0 bg-white border-t border-slate-200 z-40 grid grid-cols-5 shadow-[0_-4px_12px_rgba(0,0,0,0.04)]">
             <button @click="activeTab='dashboard'" :class="{ 'mobile-nav-active': activeTab==='dashboard' }"
                     class="flex flex-col items-center gap-1 py-2.5 text-slate-400 text-[10px] transition">
                 <span class="nav-icon w-8 h-8 rounded-lg flex items-center justify-center transition"><i class="fas fa-th-large text-sm"></i></span>
-                ড্যাশবোর্ড
+                হোম
+            </button>
+            <button @click="activeTab='building'" :class="{ 'mobile-nav-active': activeTab==='building' }"
+                    class="flex flex-col items-center gap-1 py-2.5 text-slate-400 text-[10px] transition">
+                <span class="nav-icon w-8 h-8 rounded-lg flex items-center justify-center transition"><i class="fas fa-home text-sm"></i></span>
+                বাড়ি
             </button>
             <button @click="activeTab='dues'" :class="{ 'mobile-nav-active': activeTab==='dues' }"
                     class="flex flex-col items-center gap-1 py-2.5 text-slate-400 text-[10px] transition">

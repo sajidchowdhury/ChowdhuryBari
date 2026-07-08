@@ -125,6 +125,11 @@
                 <span>Social Value</span>
             </a>
 
+            <a href="{{ route('admin.applications.index') }}" class="sidebar-link flex items-center gap-3 px-5 py-3.5 rounded-2xl text-white font-medium @if(request()->routeIs('admin.applications*')) active @endif">
+                <i class="fas fa-file-alt w-5"></i>
+                <span>অ্যাপ্লিকেশন</span>
+            </a>
+
             <div class="px-5 text-teal-200 text-xs font-semibold mt-6 mb-2">সেটিংস</div>
 
             <a href="{{ route('admin.contact.edit') }}" class="sidebar-link flex items-center gap-3 px-5 py-3.5 rounded-2xl text-white font-medium @if(request()->routeIs('admin.contact*')) active @endif">
@@ -136,28 +141,16 @@
                 <i class="fas fa-sliders-h w-5"></i>
                 <span>Navigation &amp; Footer</span>
             </a>
-        </nav>
 
-        <!-- Bottom Profile -->
-        <div class="p-5 border-t border-white/10 mt-auto">
-            <div class="flex items-center gap-4 p-3 rounded-3xl bg-white/10">
-                <div class="w-11 h-11 bg-gradient-to-br from-amber-400 to-yellow-500 rounded-2xl flex items-center justify-center text-xl font-bold text-teal-900 shadow-inner">
-                    {{ strtoupper(substr(auth()->user()->name ?? 'A', 0, 1)) }}
-                </div>
-                <div class="flex-1">
-                    <p class="font-semibold">{{ auth()->user()->name ?? 'Admin User' }}</p>
-                    <p class="text-teal-200 text-sm">Administrator</p>
-                </div>
-            </div>
-
-            <form method="POST" action="{{ route('logout') }}" class="mt-4">
+            {{-- Logout (minimal, at the bottom of nav — no profile card) --}}
+            <form method="POST" action="{{ route('logout') }}" class="mt-2">
                 @csrf
-                <button type="submit" class="w-full flex items-center justify-center gap-2 py-3 text-red-200 hover:bg-red-500/20 hover:text-white rounded-2xl transition-all">
-                    <i class="fas fa-sign-out-alt"></i>
-                    <span class="font-medium">লগআউট</span>
+                <button type="submit" class="sidebar-link w-full flex items-center gap-3 px-5 py-3.5 rounded-2xl text-white/70 hover:text-white font-medium">
+                    <i class="fas fa-sign-out-alt w-5"></i>
+                    <span>লগআউট</span>
                 </button>
             </form>
-        </div>
+        </nav>
     </aside>
 
     <!-- Main Area -->
@@ -179,12 +172,7 @@
                     <i class="fas fa-search absolute left-5 top-4 text-slate-400"></i>
                 </div>
 
-                <button class="relative text-slate-600 hover:text-teal-600 transition">
-                    <i class="fas fa-bell text-2xl"></i>
-                    <span class="absolute -top-1 -right-1 bg-red-500 text-white text-[10px] w-5 h-5 flex items-center justify-center rounded-full">3</span>
-                </button>
-
-                <a href="/" target="_blank" class="text-slate-600 hover:text-teal-600">
+                <a href="/" target="_blank" class="text-slate-600 hover:text-teal-600" title="ওয়েবসাইট দেখুন">
                     <i class="fas fa-external-link-alt"></i>
                 </a>
             </div>

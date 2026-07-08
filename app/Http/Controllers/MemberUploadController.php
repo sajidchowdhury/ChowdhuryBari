@@ -18,7 +18,7 @@ class MemberUploadController extends Controller
      */
     public function myUploads(Request $request)
     {
-        $user = Auth::user();
+        $user = Auth::guard('member')->user();
         $monthKey = MemberUpload::currentMonthKey();
 
         $uploads = MemberUpload::where('user_id', $user->id)
@@ -48,7 +48,7 @@ class MemberUploadController extends Controller
      */
     public function store(Request $request)
     {
-        $user = Auth::user();
+        $user = Auth::guard('member')->user();
         $monthKey = MemberUpload::currentMonthKey();
 
         // Enforce the 4-per-month limit
@@ -91,7 +91,7 @@ class MemberUploadController extends Controller
      */
     public function destroy(Request $request, MemberUpload $upload)
     {
-        $user = Auth::user();
+        $user = Auth::guard('member')->user();
 
         // Ownership + current month + unrated only
         if ($upload->user_id !== $user->id) {
@@ -156,7 +156,7 @@ class MemberUploadController extends Controller
         $upload->update([
             'star_rating' => $validated['star_rating'],
             'rated_at'    => now(),
-            'rated_by'    => Auth::id(),
+            'rated_by'    => Auth::guard('web')->id(),
         ]);
 
         return redirect()->route('admin.social-value.index')

@@ -425,6 +425,18 @@
                     <p class="text-xs text-slate-500 mt-1">এই ধরনের ভিত্তিতে সদস্যের মাসিক সেবা চার্জ নির্ধারিত হবে।</p>
                 </div>
                 <div>
+                    <label class="block text-sm font-medium text-slate-700">প্রতি পরিবার মাসিক চার্জ (৳)</label>
+                    <input type="number" name="per_family_amount" min="0" value="{{ old('per_family_amount', $building->per_family_amount) }}" placeholder="e.g. 300"
+                           class="mt-1.5 w-full rounded-2xl border border-slate-300 px-4 py-2.5 text-sm">
+                    <p class="text-xs text-slate-500 mt-1">প্রতি পরিবারের জন্য মাসিক ফি। মোট = এই পরিমাণ × বিলিং পরিবার সংখ্যা।</p>
+                </div>
+                <div>
+                    <label class="block text-sm font-medium text-slate-700">বিলিং পরিবার সংখ্যা (admin-set)</label>
+                    <input type="number" name="billing_family_count" min="0" value="{{ old('billing_family_count', $building->billing_family_count) }}" placeholder="auto"
+                           class="mt-1.5 w-full rounded-2xl border border-slate-300 px-4 py-2.5 text-sm">
+                    <p class="text-xs text-slate-500 mt-1">খালি রাখলে স্বয়ংক্রিয়ভাবে সক্রিয় পরিবার গণনা হবে। অনুমোদিত আবেদন এটি আপডেট করে।</p>
+                </div>
+                <div>
                     <label class="block text-sm font-medium text-slate-700">Number of Floors <span class="text-red-500">*</span></label>
                     <input type="number" name="floor_count" min="1" max="50" value="{{ old('floor_count', $building->floor_count) }}" class="mt-1.5 w-full rounded-2xl border border-slate-300 px-4 py-2.5 text-sm" required>
                 </div>

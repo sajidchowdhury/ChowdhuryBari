@@ -7,6 +7,7 @@ use App\Http\Controllers\AdminController;
 use App\Http\Controllers\Admin\UserController;
 use App\Http\Controllers\BuildingController;
 use App\Http\Controllers\ContactController;
+use App\Http\Controllers\FamilyReductionApplicationController;
 use App\Http\Controllers\GalleryController;
 use App\Http\Controllers\MemberAuthController;
 use App\Http\Controllers\MemberController;
@@ -127,6 +128,12 @@ Route::prefix('admin')->name('admin.')->group(function () {
         // Social Value — anonymously rate member yard-photo uploads 1-10 stars
         Route::get('/social-value', [MemberUploadController::class, 'adminIndex'])->name('social-value.index');
         Route::post('/social-value/{upload}/rate', [MemberUploadController::class, 'rate'])->name('social-value.rate');
+
+        // Applications — family-reduction requests from building owners
+        Route::get('/applications', [FamilyReductionApplicationController::class, 'index'])->name('applications.index');
+        Route::get('/applications/{application}', [FamilyReductionApplicationController::class, 'show'])->name('applications.show');
+        Route::post('/applications/{application}/approve', [FamilyReductionApplicationController::class, 'approve'])->name('applications.approve');
+        Route::post('/applications/{application}/reject', [FamilyReductionApplicationController::class, 'reject'])->name('applications.reject');
     });
 });
 
@@ -136,13 +143,16 @@ Route::prefix('member')->name('member.')->group(function () {
     Route::post('/login/otp', [MemberAuthController::class, 'sendOtp'])->name('login.otp');
     Route::post('/login/verify', [MemberAuthController::class, 'verifyOtp'])->name('login.verify');
 
-    Route::middleware(['auth'])->group(function () {
+    Route::middleware(['auth:member'])->group(function () {
         Route::get('/dashboard', [MemberAuthController::class, 'dashboard'])->name('dashboard');
         Route::post('/logout', [MemberAuthController::class, 'logout'])->name('logout');
 
         // Member yard-photo uploads (4 per month, monthly rotation)
         Route::post('/uploads', [MemberUploadController::class, 'store'])->name('uploads.store');
         Route::delete('/uploads/{upload}', [MemberUploadController::class, 'destroy'])->name('uploads.destroy');
+
+        // Family reduction application
+        Route::post('/applications', [FamilyReductionApplicationController::class, 'store'])->name('applications.store');
     });
 });
 

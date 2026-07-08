@@ -18,6 +18,11 @@ return Application::configure(basePath: dirname(__DIR__))
             'super_admin' => \App\Http\Middleware\IsSuperAdmin::class,
         ]);
 
+        // Prepend MemberSessionCookie so it runs BEFORE StartSession.
+        // For member/* routes it swaps the session cookie name, giving
+        // members a completely separate session from admins.
+        $middleware->prepend(\App\Http\Middleware\MemberSessionCookie::class);
+
         // Append PreventDevCache to the web middleware group so it runs
         // on every web request. In local env it sets no-cache headers
         // so the browser always fetches fresh content after git pull.

@@ -26,7 +26,7 @@ class MemberAuthController extends Controller
      */
     public function showLogin(Request $request)
     {
-        if (Auth::check() && Auth::user()->role !== 'admin') {
+        if (Auth::guard('member')->check() && Auth::guard('member')->user()->role !== 'admin') {
             return redirect()->route('member.dashboard');
         }
 
@@ -130,7 +130,7 @@ class MemberAuthController extends Controller
                 ->withErrors(['phone' => 'সদস্য খুঁজে পাওয়া যায়নি।']);
         }
 
-        Auth::login($user, true);
+        Auth::guard('member')->login($user, true);
         $request->session()->regenerate();
 
         return redirect()->route('member.dashboard');
@@ -141,7 +141,7 @@ class MemberAuthController extends Controller
      */
     public function dashboard(SocialValueService $sv)
     {
-        $user = Auth::user();
+        $user = Auth::guard('member')->user();
 
         if (!$user) {
             return redirect()->route('member.login');
@@ -181,12 +181,50 @@ class MemberAuthController extends Controller
             ? ServiceCharge::totalForCategory($buildingCategory)
             : 0;
 
+        // Building billing data (for "আমার বাড়ি" tab + due card)
+        $buildingFlats = collect();
+        $activeFlatCount = 0;
+        $expectedFamilyCount = 0;
+        $billingFamilyCount = 0;
+        $perFamilyAmount = 0;
+        $monthlyDue = 0;
+        $myApplications = collect();
+        $hasPendingApplication = false;
+
+        if ($building) {
+            $building->load(['road', 'flats.meters']);
+            $buildingFlats = $building->flats()->orderBy('floor_number')->orderBy('flat_number')->get();
+            $buildingFlats->load('meters');
+            $activeFlatCount = $building->getActiveFamilyCount();
+            $expectedFamilyCount = $building->expected_family_count;
+            $billingFamilyCount = $building->effective_billing_family_count;
+            $perFamilyAmount = $building->per_family_amount;
+            $monthlyDue = $building->monthlyDue();
+
+            $myApplications = \App\Models\FamilyReductionApplication::where('user_id', $user->id)
+                ->where('building_id', $building->id)
+                ->latest()
+                ->take(10)
+                ->get();
+            $hasPendingApplication = $myApplications->where('status', 'pending')->isNotEmpty();
+        }
+
         return view('member.dashboard', [
             'user'           => $user,
             'serviceCharges' => $serviceCharges,
             'totalCharge'    => $totalCharge,
             'building'       => $building,
             'buildingCategory' => $buildingCategory,
+
+            // Building billing data
+            'buildingFlats'    => $buildingFlats,
+            'activeFlatCount'  => $activeFlatCount,
+            'expectedFamilyCount' => $expectedFamilyCount,
+            'billingFamilyCount' => $billingFamilyCount,
+            'perFamilyAmount'  => $perFamilyAmount,
+            'monthlyDue'       => $monthlyDue,
+            'myApplications'   => $myApplications,
+            'hasPendingApplication' => $hasPendingApplication,
 
             // Gallery / social-value data
             'myUploads'      => $myUploads,
@@ -209,7 +247,7 @@ class MemberAuthController extends Controller
      */
     public function logout(Request $request)
     {
-        Auth::logout();
+        Auth::guard('member')->logout();
         $request->session()->invalidate();
         $request->session()->regenerateToken();
 

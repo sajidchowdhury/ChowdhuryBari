@@ -42,6 +42,15 @@ return [
             'driver' => 'session',
             'provider' => 'users',
         ],
+
+        // Separate guard for members so admin + member sessions are
+        // completely independent (different session cookie — see
+        // MemberSessionCookie middleware). A user can be logged in as
+        // admin in one tab and as member in another tab simultaneously.
+        'member' => [
+            'driver' => 'session',
+            'provider' => 'users',
+        ],
     ],
 
     /*
