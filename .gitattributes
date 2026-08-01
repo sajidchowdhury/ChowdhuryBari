@@ -3,9 +3,21 @@
 *.blade.php diff=html
 *.css diff=css
 *.html diff=html
+*.js diff=javascript
+*.json diff=json
 *.md diff=markdown
 *.php diff=php
+*.sh text eol=lf
 
+# Export-ignore: files not needed in production archives
 /.github export-ignore
+/mcps export-ignore
+/docs export-ignore
 CHANGELOG.md export-ignore
 .styleci.yml export-ignore
+ADMIN_*.md export-ignore
+ARCHITECTURE*.md export-ignore
+PROJECT_CONTEXT.md export-ignore
+AGENTS.md export-ignore
+boost.json export-ignore
+SETUP.md export-ignore

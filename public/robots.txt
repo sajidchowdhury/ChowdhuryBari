@@ -1,2 +1,11 @@
 User-agent: *
-Disallow:
+Allow: /
+Disallow: /admin
+Disallow: /member
+Disallow: /login
+Disallow: /register
+Disallow: /password
+Disallow: /email
+Disallow: /up
+
+Sitemap: https://chowdhurybari.com/sitemap.xml

@@ -8,4 +8,21 @@ export default defineConfig({
             refresh: true,
         }),
     ],
+    build: {
+        // Production optimizations — esbuild minifier is built-in (no extra install)
+        target: 'es2020',
+        minify: 'esbuild',
+        rollupOptions: {
+            output: {
+                // Consistent file naming for cache predictability
+                chunkFileNames: 'assets/[name]-[hash].js',
+                entryFileNames: 'assets/[name]-[hash].js',
+                assetFileNames: 'assets/[name]-[hash][extname]',
+            },
+        },
+    },
+    // Disable sourcemaps in production
+    css: {
+        devSourcemap: false,
+    },
 });

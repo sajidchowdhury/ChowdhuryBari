@@ -1,25 +1,81 @@
-*.log
-.DS_Store
+# ===========================
+# Laravel Production .gitignore
+# ===========================
+
+# Environment files — NEVER commit real credentials
 .env
 .env.backup
+.env.local
 .env.production
+.env.staging
 .phpactor.json
 .phpunit.result.cache
-/.fleet
-/.idea
-/.nova
-/.phpunit.cache
-/.vscode
-/.zed
+
+# Application key cache
+/bootstrap/cache/
+
+# Composer
+/vendor
 /auth.json
+
+# Node / Frontend build artifacts
 /node_modules
 /public/build
 /public/hot
+
+# Storage symlink (created at deploy time)
 /public/storage
 /public/uploads
+
+# Storage runtime & generated files
 /storage/*.key
+/storage/framework/cache/*
+/storage/framework/sessions/*
+/storage/framework/views/*
+/storage/logs/*
 /storage/pail
-/vendor
+
+# Keep storage directory structure with .gitkeep files
+!.gitkeep
+
+# Database dumps — NEVER commit SQL dumps to the repo
+*.sql
+*.sql.gz
+*.sql.bz2
+
+# IDE / Editor files
+/.fleet
+/.idea
+/.nova
+/.vscode
+/.zed
+*.swp
+*.swo
+*~
+
+# OS files
+.DS_Store
+.DS_Store?
+Thumbs.db
+ehthumbs.db
+Desktop.ini
+
+# Laravel Homestead
 Homestead.json
 Homestead.yaml
-Thumbs.db
+
+# Test & CI caches
+/.phpunit.cache
+phpunit.result.cache
+coverage/
+.nyc_output/
+
+# MCP / AI tool configs (local only)
+/mcps
+
+# Download directory (runtime uploads)
+/download/*
+
+# Build artifacts (deployment creates these)
+deploy/last_release.txt
+deploy/maintenance.html
