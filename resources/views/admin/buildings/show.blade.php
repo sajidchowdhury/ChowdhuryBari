@@ -442,7 +442,7 @@
                 </div>
                 <div>
                     <label class="block text-sm font-medium text-slate-700">Families per Floor <span class="text-red-500">*</span></label>
-                    <input type="number" name="families_per_floor" min="1" max="20" value="{{ old('families_per_floor', $building->families_per_floor) }}" class="mt-1.5 w-full rounded-2xl border border-slate-300 px-4 py-2.5 text-sm" required>
+                    <input type="number" name="families_per_floor" min="1" max="100" value="{{ old('families_per_floor', $building->families_per_floor) }}" class="mt-1.5 w-full rounded-2xl border border-slate-300 px-4 py-2.5 text-sm" required>
                 </div>
                 <div class="sm:col-span-2">
                     <label class="block text-sm font-medium text-slate-700">Services</label>

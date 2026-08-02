@@ -136,9 +136,28 @@ class Building extends Model
 
     public function getImageUrlAttribute(): string
     {
-        return $this->image_path
-            ? Storage::disk('public')->url($this->image_path)
-            : 'https://via.placeholder.com/800x600?text=Building+Image';
+        if (!$this->image_path) {
+            return 'https://via.placeholder.com/800x600?text=Building+Image';
+        }
+
+        // New-style path: stored on the public disk (relative to storage/app/public/).
+        // This covers both 'buildings/xxx.jpg' (uploaded via BuildingController)
+        // and 'field-data/xxx.jpg' (uploaded via FieldDataController, then migrated).
+        if (Storage::disk('public')->exists($this->image_path)) {
+            return Storage::disk('public')->url($this->image_path);
+        }
+
+        // Legacy-style path: file lives in public/<path> (e.g. public/uploads/field-data/xxx.jpg).
+        // This happens for buildings created by migrating old field-data records
+        // whose images were stored via File::move to public_path('uploads/field-data').
+        if (file_exists(public_path($this->image_path))) {
+            return asset($this->image_path);
+        }
+
+        // Path doesn't resolve to a real file — return the public-disk URL anyway
+        // so the browser gets a deterministic URL (better than a broken /storage/...
+        // link that masks the underlying issue).
+        return Storage::disk('public')->url($this->image_path);
     }
 
     /**

@@ -62,11 +62,12 @@
         </div>
     </div>
 
-    {{-- List --}}
+    {{-- List — DRAFTS ONLY. Migrated records are intentionally hidden from this list
+         (they are now editable from the Buildings section). --}}
     @if($collections->isNotEmpty())
         <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
             @foreach($collections as $item)
-                <div class="rounded-3xl bg-white border border-slate-200 shadow-sm overflow-hidden @if($item->status === 'migrated') opacity-75 @endif">
+                <div class="rounded-3xl bg-white border border-slate-200 shadow-sm overflow-hidden">
                     {{-- Image --}}
                     <div class="relative h-32 bg-slate-100">
                         @if($item->image_url)
@@ -76,10 +77,8 @@
                                 <i class="fas fa-building text-4xl"></i>
                             </div>
                         @endif
-                        <span class="absolute top-2 right-2 text-[10px] px-2 py-0.5 rounded-full font-semibold
-                            @if($item->status === 'migrated') bg-sky-100 text-sky-700
-                            @else bg-amber-100 text-amber-700 @endif">
-                            @if($item->status === 'migrated') মাইগ্রেটেড @else ড্রাফট @endif
+                        <span class="absolute top-2 right-2 text-[10px] px-2 py-0.5 rounded-full font-semibold bg-amber-100 text-amber-700">
+                            ড্রাফট
                         </span>
                     </div>
 
@@ -95,28 +94,24 @@
                             <span><i class="fas fa-bolt mr-0.5 text-amber-500"></i> {{ $item->meter_count }} মিটার</span>
                         </div>
 
-                        {{-- Actions --}}
+                        {{-- Actions: only drafts reach here, so Edit + Migrate + Delete are always available --}}
                         <div class="mt-4 pt-3 border-t flex items-center gap-2">
                             <a href="{{ route('admin.field-data.edit', $item) }}" class="flex-1 text-center text-xs font-medium text-slate-700 border border-slate-200 hover:bg-slate-50 rounded-lg py-1.5">
                                 <i class="fas fa-edit mr-0.5"></i> এডিট
                             </a>
-                            @if($item->status === 'draft')
-                                <form action="{{ route('admin.field-data.migrate-one', $item) }}" method="POST" onsubmit="return confirm('এই বিল্ডিং মাইগ্রেট করতে চান?')">
-                                    @csrf
-                                    <button type="submit" class="text-xs font-medium text-white bg-emerald-600 hover:bg-emerald-700 rounded-lg px-2.5 py-1.5">
-                                        <i class="fas fa-database"></i>
-                                    </button>
-                                </form>
-                                <form action="{{ route('admin.field-data.destroy', $item) }}" method="POST" onsubmit="return confirm('মুছে ফেলতে চান?')">
-                                    @csrf
-                                    @method('DELETE')
-                                    <button type="submit" class="text-xs font-medium text-red-600 border border-red-200 hover:bg-red-50 rounded-lg px-2.5 py-1.5">
-                                        <i class="fas fa-trash"></i>
-                                    </button>
-                                </form>
-                            @else
-                                <span class="text-xs text-sky-600 px-2"><i class="fas fa-check-circle"></i> সম্পন্ন</span>
-                            @endif
+                            <form action="{{ route('admin.field-data.migrate-one', $item) }}" method="POST" onsubmit="return confirm('এই বিল্ডিং মাইগ্রেট করতে চান?')">
+                                @csrf
+                                <button type="submit" class="text-xs font-medium text-white bg-emerald-600 hover:bg-emerald-700 rounded-lg px-2.5 py-1.5" title="মাইগ্রেট করুন">
+                                    <i class="fas fa-database"></i>
+                                </button>
+                            </form>
+                            <form action="{{ route('admin.field-data.destroy', $item) }}" method="POST" onsubmit="return confirm('মুছে ফেলতে চান?')">
+                                @csrf
+                                @method('DELETE')
+                                <button type="submit" class="text-xs font-medium text-red-600 border border-red-200 hover:bg-red-50 rounded-lg px-2.5 py-1.5" title="মুছে ফেলুন">
+                                    <i class="fas fa-trash"></i>
+                                </button>
+                            </form>
                         </div>
                     </div>
                 </div>
@@ -125,8 +120,20 @@
     @else
         <div class="rounded-3xl bg-white border border-slate-200 shadow-sm p-12 text-center">
             <i class="fas fa-clipboard-list text-5xl text-slate-300 mb-4"></i>
-            <h3 class="text-lg font-semibold text-slate-700">এখনো কোনো ডাটা সংগ্রহ করা হয়নি</h3>
-            <p class="text-slate-500 mt-1">"নতুন ডাটা সংগ্রহ" বাটনে ক্লিক করে প্রথম বিল্ডিং এর তথ্য যোগ করুন।</p>
+            <h3 class="text-lg font-semibold text-slate-700">
+                @if($migratedCount > 0)
+                    সব ডাটা মাইগ্রেট হয়ে গেছে
+                @else
+                    এখনো কোনো ডাটা সংগ্রহ করা হয়নি
+                @endif
+            </h3>
+            <p class="text-slate-500 mt-1">
+                @if($migratedCount > 0)
+                    নতুন বিল্ডিং যোগ করতে "নতুন ডাটা সংগ্রহ" বাটনে ক্লিক করুন। মাইগ্রেটেড বিল্ডিংগুলো বিল্ডিং সেকশন থেকে দেখুন।
+                @else
+                    "নতুন ডাটা সংগ্রহ" বাটনে ক্লিক করে প্রথম বিল্ডিং এর তথ্য যোগ করুন।
+                @endif
+            </p>
         </div>
     @endif
 </div>

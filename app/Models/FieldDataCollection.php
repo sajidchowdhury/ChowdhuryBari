@@ -85,10 +85,34 @@ class FieldDataCollection extends Model
 
     /**
      * Public URL for the building photo.
+     *
+     * Uses the 'public' disk so the URL matches what Storage::disk('public')->url()
+     * returns — this is critical because when this field-data is migrated to a
+     * Building, the Building model's getImageUrlAttribute() also uses the
+     * 'public' disk, and the image_path column is copied verbatim.
+     *
+     * Legacy paths (e.g. 'uploads/field-data/xxx.jpg' stored via File::move in
+     * older versions) are handled as a fallback by serving them from public_path().
      */
     public function getImageUrlAttribute(): string
     {
-        return $this->image_path ? asset($this->image_path) : '';
+        if (!$this->image_path) {
+            return '';
+        }
+
+        // New-style path: stored on the public disk (relative to storage/app/public/)
+        if (\Illuminate\Support\Facades\Storage::disk('public')->exists($this->image_path)) {
+            return \Illuminate\Support\Facades\Storage::disk('public')->url($this->image_path);
+        }
+
+        // Legacy-style path: file lives in public/<path> (e.g. public/uploads/field-data/xxx.jpg)
+        if (file_exists(public_path($this->image_path))) {
+            return asset($this->image_path);
+        }
+
+        // Path doesn't resolve to a real file — return the public-disk URL anyway
+        // so the browser at least gets a deterministic URL (better than empty).
+        return \Illuminate\Support\Facades\Storage::disk('public')->url($this->image_path);
     }
 
     /**

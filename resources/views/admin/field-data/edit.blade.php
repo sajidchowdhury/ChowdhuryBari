@@ -26,7 +26,7 @@
     'caretakerPhone' => $fieldData->caretaker_phone ?? '',
     'extraInfo' => $fieldData->extra_information ?? '',
     'flats' => $fieldData->flats_data ?? [],
-]))">
+]))" x-init="$nextTick(() => renderFlats())">
 
     <div class="flex items-center justify-between">
         <a href="{{ route('admin.field-data.index') }}" class="text-sm text-slate-500 hover:text-slate-700 flex items-center gap-1">
@@ -61,7 +61,7 @@
         </div>
     </div>
 
-    <form action="{{ route('admin.field-data.update', $fieldData) }}" method="POST" enctype="multipart/form-data" id="fieldForm">
+    <form action="{{ route('admin.field-data.update', $fieldData) }}" method="POST" enctype="multipart/form-data" id="fieldForm" @submit="submitForm()">
         @csrf
         @method('PUT')
 
@@ -104,7 +104,7 @@
                     </div>
                     <div>
                         <label class="block text-sm font-medium text-slate-700 mb-1.5">প্রতি ফ্লোরে পরিবার <span class="text-red-500">*</span></label>
-                        <input type="number" name="families_per_floor" x-model.number="familiesPerFloor" min="1" max="20" value="{{ $fieldData->families_per_floor }}" required class="w-full rounded-2xl border border-slate-300 px-4 py-3 text-sm">
+                        <input type="number" name="families_per_floor" x-model.number="familiesPerFloor" min="1" max="100" value="{{ $fieldData->families_per_floor }}" required class="w-full rounded-2xl border border-slate-300 px-4 py-3 text-sm">
                     </div>
                 </div>
                 <div>
@@ -199,7 +199,7 @@
             </div>
             <div class="mt-6 flex justify-between">
                 <button type="button" @click="prevStep()" class="px-6 py-2.5 border border-slate-300 text-slate-700 text-sm font-medium rounded-xl hover:bg-slate-50"><i class="fas fa-arrow-left mr-1"></i> পূর্ববর্তী</button>
-                <button type="submit" @click="submitForm()" class="px-8 py-2.5 bg-emerald-600 hover:bg-emerald-700 text-white text-sm font-semibold rounded-xl transition shadow-sm"><i class="fas fa-save mr-1"></i> আপডেট করুন</button>
+                <button type="submit" class="px-8 py-2.5 bg-emerald-600 hover:bg-emerald-700 text-white text-sm font-semibold rounded-xl transition shadow-sm"><i class="fas fa-save mr-1"></i> আপডেট করুন</button>
             </div>
         </div>
     </form>
@@ -244,7 +244,10 @@ function fieldDataForm(config = {}) {
         autoGenerate() {
             if (!this.floorCount || !this.familiesPerFloor) { alert('প্রথমে ফ্লোর ও পরিবার সংখ্যা দিন'); return; }
             this.flats = [];
-            const letters = ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H'];
+            // Use the full A-Z range (matching the PHP Building::generateFlats()
+            // which uses range('A', 'Z')). For families_per_floor > 26, fall
+            // back to numeric labels so we don't run out of letters.
+            const letters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ'.split('');
             for (let f = 1; f <= this.floorCount; f++) {
                 for (let i = 0; i < this.familiesPerFloor; i++) {
                     const letter = letters[i] || (i + 1);
@@ -278,11 +281,15 @@ function fieldDataForm(config = {}) {
                     <input type="text" placeholder="মিটার নম্বর" value="${flat.meterNumber}" class="w-full text-sm border border-slate-200 rounded-lg px-3 py-2">
                 `;
                 const inputs = div.querySelectorAll('input');
-                inputs[0].onchange = (e) => self.flats[idx].floor = e.target.value;
-                inputs[1].onchange = (e) => self.flats[idx].flatNumber = e.target.value;
-                inputs[2].onchange = (e) => self.flats[idx].residentName = e.target.value;
-                inputs[3].onchange = (e) => self.flats[idx].residentPhone = e.target.value;
-                inputs[4].onchange = (e) => self.flats[idx].meterNumber = e.target.value;
+                // Use 'oninput' (not 'onchange') so that values are captured on
+                // every keystroke. 'onchange' only fires when the input loses
+                // focus, which means if the user types something and immediately
+                // clicks 'Update', the last edit is lost.
+                inputs[0].oninput = (e) => self.flats[idx].floor = e.target.value;
+                inputs[1].oninput = (e) => self.flats[idx].flatNumber = e.target.value;
+                inputs[2].oninput = (e) => self.flats[idx].residentName = e.target.value;
+                inputs[3].oninput = (e) => self.flats[idx].residentPhone = e.target.value;
+                inputs[4].oninput = (e) => self.flats[idx].meterNumber = e.target.value;
                 div.querySelector('button').onclick = () => self.removeFlat(flat.id);
                 container.appendChild(div);
             });
@@ -300,7 +307,11 @@ function fieldDataForm(config = {}) {
             document.getElementById('flatsDataInput').value = JSON.stringify(data);
         },
 
-        init() { this.renderFlats(); }
+        // init() is auto-called by Alpine v3 after the component is initialized.
+        // We also call renderFlats() via x-init="$nextTick(() => renderFlats())"
+        // on the root element as a belt-and-suspenders guarantee that the
+        // flatsContainer DOM node exists before we try to populate it.
+        init() { this.$nextTick(() => this.renderFlats()); }
     };
 }
 

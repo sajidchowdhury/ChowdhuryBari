@@ -9,28 +9,41 @@ use App\Models\Meter;
 use App\Models\Road;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\File;
+use Illuminate\Support\Facades\Storage;
 
 class FieldDataController extends Controller
 {
     /**
-     * Dashboard — summary + list of all field data.
+     * Dashboard — summary + list of DRAFT field data only.
+     *
+     * Records whose status is 'migrated' are intentionally EXCLUDED from the
+     * list — once a field-data record has been pushed into the real
+     * buildings/flats/meters tables, it should be edited from the Buildings
+     * section, not here. Editing a migrated record here would silently
+     * diverge from the migrated Building row.
+     *
+     * The migrated count is still surfaced in the summary cards so the user
+     * can see that their previous migrations succeeded.
      */
     public function index()
     {
+        // List only drafts — these are the ones still editable/pending migration.
         $collections = FieldDataCollection::with(['road', 'collector'])
+            ->where('status', 'draft')
             ->latest()
             ->get();
 
         $roads = Road::orderBy('name')->get();
 
-        // Summary stats
-        $totalBuildings = $collections->count();
-        $totalFlats = $collections->sum(fn($c) => $c->flat_count);
-        $totalMeters = $collections->sum(fn($c) => $c->meter_count);
-        $draftCount = $collections->where('status', 'draft')->count();
-        $migratedCount = $collections->where('status', 'migrated')->count();
-        $roadsCovered = $collections->pluck('road_id')->filter()->unique()->count();
+        // Summary stats — computed across ALL records (drafts + migrated)
+        // so the dashboard still reflects historical totals.
+        $allRecords = FieldDataCollection::all();
+        $totalBuildings = $allRecords->count();
+        $totalFlats = $allRecords->sum(fn($c) => $c->flat_count);
+        $totalMeters = $allRecords->sum(fn($c) => $c->meter_count);
+        $draftCount = $allRecords->where('status', 'draft')->count();
+        $migratedCount = $allRecords->where('status', 'migrated')->count();
+        $roadsCovered = $allRecords->pluck('road_id')->filter()->unique()->count();
 
         return view('admin.field-data.index', compact(
             'collections', 'roads', 'totalBuildings', 'totalFlats', 'totalMeters',
@@ -64,7 +77,7 @@ class FieldDataController extends Controller
             'structure_type'       => ['nullable', 'in:building,tin_shed,other'],
             'usage_type'           => ['nullable', 'in:residential,shop,mixed'],
             'floor_count'          => ['required', 'integer', 'min:1', 'max:50'],
-            'families_per_floor'   => ['required', 'integer', 'min:1', 'max:20'],
+            'families_per_floor'   => ['required', 'integer', 'min:1', 'max:100'],
             'has_security'         => ['nullable', 'boolean'],
             'has_cleaning'         => ['nullable', 'boolean'],
             'google_lt'            => ['nullable', 'string', 'max:255'],
@@ -79,17 +92,14 @@ class FieldDataController extends Controller
             return back()->withInput()->withErrors(['road_id' => 'রাস্তা নির্বাচন করুন বা নতুন রাস্তার নাম দিন।']);
         }
 
-        // Handle building image upload
+        // Handle building image upload — use the 'public' disk so the path
+        // works with Storage::disk('public')->url() (same as BuildingController).
+        // This is critical: when this field-data is migrated to a Building row,
+        // the Building model's getImageUrlAttribute() also uses the 'public'
+        // disk, so the path MUST be relative to storage/app/public/.
         $imagePath = null;
         if ($request->hasFile('image')) {
-            $dir = public_path('uploads/field-data');
-            if (!File::isDirectory($dir)) {
-                File::makeDirectory($dir, 0775, true);
-            }
-            $file = $request->file('image');
-            $filename = 'field_' . time() . '_' . uniqid() . '.' . $file->getClientOriginalExtension();
-            $file->move($dir, $filename);
-            $imagePath = 'uploads/field-data/' . $filename;
+            $imagePath = $request->file('image')->store('field-data', 'public');
         }
 
         // Decode flats_data JSON
@@ -131,18 +141,38 @@ class FieldDataController extends Controller
 
     /**
      * Show edit form.
+     *
+     * Only draft records can be edited. Once a record has been migrated to
+     * the real buildings table, it must be edited from the Buildings section
+     * — otherwise the field-data row and the migrated Building row would
+     * silently diverge.
      */
     public function edit(FieldDataCollection $fieldData)
     {
+        if ($fieldData->status === 'migrated') {
+            return redirect()
+                ->route('admin.field-data.index')
+                ->with('error', "এই ডাটা ইতিমধ্যে মাইগ্রেট হয়েছে — এডিট করা যাবে না। বিল্ডিং সেকশন থেকে এডিট করুন।");
+        }
+
         $roads = Road::orderBy('name')->get();
         return view('admin.field-data.edit', compact('fieldData', 'roads'));
     }
 
     /**
      * Update a field data collection.
+     *
+     * Only drafts are editable. A migrated record is immutable from this
+     * controller — edit the migrated Building row instead.
      */
     public function update(Request $request, FieldDataCollection $fieldData)
     {
+        if ($fieldData->status === 'migrated') {
+            return redirect()
+                ->route('admin.field-data.index')
+                ->with('error', "এই ডাটা ইতিমধ্যে মাইগ্রেট হয়েছে — আপডেট করা যাবে না।");
+        }
+
         $validated = $request->validate([
             'road_id'              => ['nullable', 'exists:roads,id'],
             'new_road_name'        => ['nullable', 'string', 'max:255'],
@@ -155,7 +185,7 @@ class FieldDataController extends Controller
             'structure_type'       => ['nullable', 'in:building,tin_shed,other'],
             'usage_type'           => ['nullable', 'in:residential,shop,mixed'],
             'floor_count'          => ['required', 'integer', 'min:1', 'max:50'],
-            'families_per_floor'   => ['required', 'integer', 'min:1', 'max:20'],
+            'families_per_floor'   => ['required', 'integer', 'min:1', 'max:100'],
             'has_security'         => ['nullable', 'boolean'],
             'has_cleaning'         => ['nullable', 'boolean'],
             'google_lt'            => ['nullable', 'string', 'max:255'],
@@ -165,18 +195,21 @@ class FieldDataController extends Controller
             'flats_data'           => ['nullable', 'string'],
         ]);
 
-        // Handle image
+        // Handle image — use the 'public' disk for consistency with store()
+        // and with BuildingController. The stored path is relative to
+        // storage/app/public/ so it works with Storage::disk('public')->url().
         if ($request->hasFile('image')) {
             if ($fieldData->image_path) {
-                $old = public_path($fieldData->image_path);
-                if (File::exists($old)) File::delete($old);
+                // Delete the old file from the public disk (ignore failures —
+                // the file may have been stored via the legacy File::move path
+                // and won't exist on the public disk).
+                if (Storage::disk('public')->exists($fieldData->image_path)) {
+                    Storage::disk('public')->delete($fieldData->image_path);
+                } elseif (file_exists(public_path($fieldData->image_path))) {
+                    @unlink(public_path($fieldData->image_path));
+                }
             }
-            $dir = public_path('uploads/field-data');
-            if (!File::isDirectory($dir)) File::makeDirectory($dir, 0775, true);
-            $file = $request->file('image');
-            $filename = 'field_' . time() . '_' . uniqid() . '.' . $file->getClientOriginalExtension();
-            $file->move($dir, $filename);
-            $fieldData->image_path = 'uploads/field-data/' . $filename;
+            $fieldData->image_path = $request->file('image')->store('field-data', 'public');
         }
 
         $flatsData = [];
@@ -220,8 +253,11 @@ class FieldDataController extends Controller
         }
 
         if ($fieldData->image_path) {
-            $old = public_path($fieldData->image_path);
-            if (File::exists($old)) File::delete($old);
+            if (Storage::disk('public')->exists($fieldData->image_path)) {
+                Storage::disk('public')->delete($fieldData->image_path);
+            } elseif (file_exists(public_path($fieldData->image_path))) {
+                @unlink(public_path($fieldData->image_path));
+            }
         }
         $name = $fieldData->building_name;
         $fieldData->delete();

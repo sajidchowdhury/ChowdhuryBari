@@ -184,7 +184,7 @@
                         </div>
                         <div>
                             <label class="block text-sm font-medium text-slate-700">Families per Floor <span class="text-red-500">*</span></label>
-                            <input type="number" name="families_per_floor" min="1" max="20" value="{{ old('families_per_floor', 1) }}" class="mt-1.5 w-full rounded-2xl border border-slate-300 px-4 py-2.5 text-sm" required>
+                            <input type="number" name="families_per_floor" min="1" max="100" value="{{ old('families_per_floor', 1) }}" class="mt-1.5 w-full rounded-2xl border border-slate-300 px-4 py-2.5 text-sm" required>
                         </div>
                         <div class="sm:col-span-2">
                             <div class="rounded-2xl bg-emerald-50 border border-emerald-200 p-3 text-xs text-emerald-800">
