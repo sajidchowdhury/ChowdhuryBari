@@ -124,6 +124,10 @@
 
             {{-- Group: সদস্য ব্যবস্থাপনা --}}
             <div class="px-5 text-teal-200 text-xs font-semibold mt-5 mb-1">সদস্য ব্যবস্থাপনা</div>
+            <a href="{{ route('admin.bills.index') }}" class="sidebar-link flex items-center gap-3 px-5 py-3.5 rounded-2xl text-white font-medium @if(request()->routeIs('admin.bills*')) active @endif">
+                <i class="fas fa-file-invoice-dollar w-5"></i>
+                <span>বিল ব্যবস্থাপনা</span>
+            </a>
             <a href="{{ route('admin.service-charges.index') }}" class="sidebar-link flex items-center gap-3 px-5 py-3.5 rounded-2xl text-white font-medium @if(request()->routeIs('admin.service-charges*')) active @endif">
                 <i class="fas fa-receipt w-5"></i>
                 <span>সেবা চার্জ</span>

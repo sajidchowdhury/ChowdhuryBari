@@ -134,6 +134,16 @@ class Building extends Model
         return $this->hasMany(Flat::class)->orderBy('floor_number')->orderBy('flat_number');
     }
 
+    public function bills(): HasMany
+    {
+        return $this->hasMany(Bill::class)->orderBy('billing_month', 'desc');
+    }
+
+    public function familyCountHistories(): HasMany
+    {
+        return $this->hasMany(FamilyCountHistory::class)->orderBy('created_at', 'desc');
+    }
+
     public function getImageUrlAttribute(): string
     {
         if (!$this->image_path) {

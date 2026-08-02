@@ -5,6 +5,7 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\AboutController;
 use App\Http\Controllers\AdminController;
 use App\Http\Controllers\Admin\UserController;
+use App\Http\Controllers\BillController;
 use App\Http\Controllers\BuildingController;
 use App\Http\Controllers\ContactController;
 use App\Http\Controllers\FamilyReductionApplicationController;
@@ -125,6 +126,12 @@ Route::prefix('admin')->name('admin.')->group(function () {
         Route::post('/service-charges', [ServiceChargeController::class, 'store'])->name('service-charges.store');
         Route::put('/service-charges/{serviceCharge}', [ServiceChargeController::class, 'update'])->name('service-charges.update');
         Route::delete('/service-charges/{serviceCharge}', [ServiceChargeController::class, 'destroy'])->name('service-charges.destroy');
+
+        // Bill management — monthly bill creation and assignment per road
+        Route::get('/bills', [BillController::class, 'index'])->name('bills.index');
+        Route::post('/bills', [BillController::class, 'store'])->name('bills.store');
+        Route::put('/bills/{bill}/status', [BillController::class, 'updateStatus'])->name('bills.update-status');
+        Route::get('/bills/history/{building}', [BillController::class, 'history'])->name('bills.history');
 
         // Social Value — anonymously rate member yard-photo uploads 1-10 stars
         Route::get('/social-value', [MemberUploadController::class, 'adminIndex'])->name('social-value.index');

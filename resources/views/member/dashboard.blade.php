@@ -216,16 +216,26 @@
                                     <i class="fas fa-exclamation-circle"></i> এই মাসের বকেয়া
                                 </div>
                                 <div class="text-4xl sm:text-5xl font-bold text-slate-800 tabular-nums mt-2">৳ {{ number_format($monthlyDue) }}</div>
-                                @if($chargeBreakdown)
+                                @if($currentBill)
+                                    <div class="text-[11px] text-slate-400 mt-1">
+                                        {{ $currentBill->actual_family_count }} পরিবার • পরিচ্ছন্নতা ৳{{ number_format($currentBill->cleaning_total) }} + গার্ড ৳{{ number_format($currentBill->security_guard_bill) }}
+                                    </div>
+                                @elseif($chargeBreakdown)
                                     <div class="text-[11px] text-slate-400 mt-1">
                                         {{ $chargeBreakdown['family_count'] }} পরিবার ও অতিরিক্ত চার্জ সহ
                                     </div>
                                 @endif
                             </div>
                             <div class="text-right">
-                                <span class="inline-flex items-center gap-1 bg-red-50 text-red-600 px-2.5 py-1 rounded-lg text-[11px] font-semibold">
-                                    <i class="fas fa-clock text-[10px]"></i> মেয়াদোত্তীর্ণ
-                                </span>
+                                @if($currentBill)
+                                    <span class="inline-flex items-center gap-1 {{ $currentBill->status === 'pending' ? 'bg-red-50 text-red-600' : 'bg-emerald-50 text-emerald-700' }} px-2.5 py-1 rounded-lg text-[11px] font-semibold">
+                                        <i class="fas fa-{{ $currentBill->status === 'pending' ? 'clock' : 'check-circle' }} text-[10px]"></i> {{ $currentBill->status_label }}
+                                    </span>
+                                @else
+                                    <span class="inline-flex items-center gap-1 bg-red-50 text-red-600 px-2.5 py-1 rounded-lg text-[11px] font-semibold">
+                                        <i class="fas fa-clock text-[10px]"></i> বিল তৈরি হয়নি
+                                    </span>
+                                @endif
                                 <div class="text-[11px] text-slate-400 mt-1.5">এই মাসের</div>
                             </div>
                         </div>
@@ -488,72 +498,131 @@
                     <p class="text-slate-500 text-sm mt-1">আপনার সকল পেমেন্ট ও বকেয়ার তালিকা</p>
                 </div>
 
-                {{-- DEMO DATA BANNER --}}
-                <div class="rounded-2xl bg-amber-50 border border-amber-200 p-4 flex items-start gap-3">
-                    <div class="w-9 h-9 bg-amber-100 text-amber-600 rounded-lg flex items-center justify-center flex-shrink-0">
-                        <i class="fas fa-flask"></i>
+                {{-- Current bill highlight --}}
+                @if($currentBill)
+                    <div class="card p-6 border-l-4 border-amber-400">
+                        <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+                            <div>
+                                <div class="text-xs text-slate-400 uppercase tracking-wide">চলতি মাসের বিল</div>
+                                <div class="text-3xl font-bold text-slate-800 mt-1 tabular-nums">৳ {{ number_format($currentBill->total_bill) }}</div>
+                                <div class="text-xs text-slate-500 mt-1">{{ $currentBill->billing_month_label }}</div>
+                            </div>
+                            <div class="flex flex-col items-end gap-2">
+                                <span class="text-xs font-semibold px-3 py-1.5 rounded-full {{ $currentBill->status_badge }}">
+                                    {{ $currentBill->status_label }}
+                                </span>
+                                {{-- Bill breakdown --}}
+                                <div class="text-xs text-slate-500 text-right space-y-0.5">
+                                    <div>পরিচ্ছন্নতা: ৳{{ number_format($currentBill->cleaning_total) }} <span class="text-slate-400">({{ $currentBill->cleaning_rate_per_family }} × {{ $currentBill->actual_family_count }})</span></div>
+                                    <div>গার্ড: ৳{{ number_format($currentBill->security_guard_bill) }}</div>
+                                </div>
+                            </div>
+                        </div>
                     </div>
-                    <div class="text-sm text-amber-800">
-                        <div class="font-semibold">এটি ডেমো ডেটা</div>
-                        <p class="text-amber-700 text-xs mt-0.5 leading-relaxed">নিচের পেমেন্ট ইতিহাস ও বকেয়ার পরিমাণ শুধু প্রদর্শনের জন্য। পেমেন্ট গেটওয়ে (bKash / Nagad / SSL Commerz) যুক্ত হওয়ার পর এখানে আপনার আসল লেনদেনের তথ্য দেখা যাবে — ইনশাআল্লাহ শীঘ্রই।</p>
-                    </div>
-                </div>
+                @endif
 
-                <!-- Summary cards (subtle) -->
+                <!-- Summary cards -->
                 <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
                     <div class="card p-5">
                         <div class="text-rose-600 text-[11px] font-medium uppercase tracking-wide">মোট বকেয়া</div>
-                        <div class="text-2xl font-bold text-slate-800 mt-1 tabular-nums">৳ {{ number_format($monthlyDue) }}</div>
+                        <div class="text-2xl font-bold text-slate-800 mt-1 tabular-nums">৳ {{ number_format($totalDue) }}</div>
+                        <div class="text-[11px] text-slate-400">অপরিশোধিত বিল</div>
                     </div>
                     <div class="card p-5">
                         <div class="text-emerald-600 text-[11px] font-medium uppercase tracking-wide">মোট পরিশোধিত</div>
-                        <div class="text-2xl font-bold text-slate-800 mt-1 tabular-nums">৳ ৫,৪০০</div>
+                        <div class="text-2xl font-bold text-slate-800 mt-1 tabular-nums">৳ {{ number_format($totalPaid) }}</div>
+                        <div class="text-[11px] text-slate-400">পরিশোধ সম্পন্ন</div>
                     </div>
                     <div class="card p-5">
-                        <div class="text-sky-600 text-[11px] font-medium uppercase tracking-wide">এই বছর পরিশোধ</div>
-                        <div class="text-2xl font-bold text-slate-800 mt-1 tabular-nums">৳ ৩,৬০০</div>
+                        <div class="text-sky-600 text-[11px] font-medium uppercase tracking-wide">বিলিং পরিবার</div>
+                        <div class="text-2xl font-bold text-slate-800 mt-1 tabular-nums">{{ $billingFamilyCount }}</div>
+                        <div class="text-[11px] text-slate-400">@if($building && $building->billing_family_count !== null)অ্যাডমিন নির্ধারিত@elseস্বয়ংক্রিয়@endif</div>
                     </div>
                 </div>
 
-                <!-- Payment history table -->
+                <!-- Bill history table -->
                 <div class="card overflow-hidden">
                     <div class="px-6 py-4 border-b border-slate-100 flex items-center gap-2">
                         <i class="fas fa-history text-emerald-700 text-sm"></i>
-                        <span class="font-semibold text-slate-800 text-sm">পেমেন্ট ইতিহাস</span>
+                        <span class="font-semibold text-slate-800 text-sm">বিল ইতিহাস</span>
                     </div>
-                    <div class="overflow-x-auto">
-                        <table class="w-full text-sm">
-                            <thead class="bg-slate-50">
-                                <tr class="text-left text-[11px] text-slate-500 uppercase tracking-wide">
-                                    <th class="px-6 py-3 font-semibold">তারিখ</th>
-                                    <th class="px-6 py-3 font-semibold">বিবরণ</th>
-                                    <th class="px-6 py-3 font-semibold text-right">পরিমাণ</th>
-                                    <th class="px-6 py-3 font-semibold">স্ট্যাটাস</th>
-                                </tr>
-                            </thead>
-                            <tbody class="divide-y divide-slate-100">
-                                <tr class="hover:bg-slate-50 transition">
-                                    <td class="px-6 py-4 text-slate-600">১৫ জানু ২০২৬</td>
-                                    <td class="px-6 py-4 font-medium text-slate-800">জানুয়ারি মাসিক ফি</td>
-                                    <td class="px-6 py-4 text-right font-semibold text-amber-700 tabular-nums">৳ {{ number_format($monthlyDue) }}</td>
-                                    <td class="px-6 py-4"><span class="text-[11px] bg-rose-50 text-rose-600 px-2 py-0.5 rounded-full font-semibold">বকেয়া</span></td>
-                                </tr>
-                                <tr class="hover:bg-slate-50 transition">
-                                    <td class="px-6 py-4 text-slate-600">২৮ ডিসে ২০২৫</td>
-                                    <td class="px-6 py-4 font-medium text-slate-800">ডিসেম্বর মাসিক ফি</td>
-                                    <td class="px-6 py-4 text-right font-semibold text-emerald-700 tabular-nums">৳ {{ number_format($monthlyDue) }}</td>
-                                    <td class="px-6 py-4"><span class="text-[11px] bg-emerald-50 text-emerald-700 px-2 py-0.5 rounded-full font-semibold">পরিশোধিত</span></td>
-                                </tr>
-                                <tr class="hover:bg-slate-50 transition">
-                                    <td class="px-6 py-4 text-slate-600">৩০ নভে ২০২৫</td>
-                                    <td class="px-6 py-4 font-medium text-slate-800">নভেম্বর মাসিক ফি</td>
-                                    <td class="px-6 py-4 text-right font-semibold text-emerald-700 tabular-nums">৳ {{ number_format($monthlyDue) }}</td>
-                                    <td class="px-6 py-4"><span class="text-[11px] bg-emerald-50 text-emerald-700 px-2 py-0.5 rounded-full font-semibold">পরিশোধিত</span></td>
-                                </tr>
-                            </tbody>
-                        </table>
-                    </div>
+                    @if($billHistory->isNotEmpty())
+                        <div class="overflow-x-auto">
+                            <table class="w-full text-sm">
+                                <thead class="bg-slate-50">
+                                    <tr class="text-left text-[11px] text-slate-500 uppercase tracking-wide">
+                                        <th class="px-6 py-3 font-semibold">মাস</th>
+                                        <th class="px-6 py-3 font-semibold">পরিবার</th>
+                                        <th class="px-6 py-3 font-semibold text-right">পরিচ্ছন্নতা</th>
+                                        <th class="px-6 py-3 font-semibold text-right">গার্ড</th>
+                                        <th class="px-6 py-3 font-semibold text-right">মোট</th>
+                                        <th class="px-6 py-3 font-semibold">স্ট্যাটাস</th>
+                                    </tr>
+                                </thead>
+                                <tbody class="divide-y divide-slate-100">
+                                    @foreach($billHistory as $bill)
+                                        <tr class="hover:bg-slate-50 transition">
+                                            <td class="px-6 py-4 text-slate-700 font-medium">{{ $bill->billing_month_label }}</td>
+                                            <td class="px-6 py-4 text-slate-600 tabular-nums">{{ $bill->actual_family_count }}</td>
+                                            <td class="px-6 py-4 text-right text-slate-600 tabular-nums">৳ {{ number_format($bill->cleaning_total) }}</td>
+                                            <td class="px-6 py-4 text-right text-slate-600 tabular-nums">৳ {{ number_format($bill->security_guard_bill) }}</td>
+                                            <td class="px-6 py-4 text-right font-semibold tabular-nums {{ $bill->status === 'pending' ? 'text-rose-600' : 'text-emerald-700' }}">৳ {{ number_format($bill->total_bill) }}</td>
+                                            <td class="px-6 py-4">
+                                                <span class="text-[11px] {{ $bill->status_badge }} px-2 py-0.5 rounded-full font-semibold">
+                                                    {{ $bill->status_label }}
+                                                </span>
+                                            </td>
+                                        </tr>
+                                    @endforeach
+                                </tbody>
+                            </table>
+                        </div>
+                    @else
+                        <div class="p-12 text-center">
+                            <i class="fas fa-file-invoice text-4xl text-slate-300 mb-3"></i>
+                            <div class="text-slate-500 text-sm">এখনো কোনো বিল তৈরি হয়নি</div>
+                            <div class="text-slate-400 text-xs mt-1">অ্যাডমিন বিল তৈরি করলে এখানে দেখা যাবে।</div>
+                        </div>
+                    @endif
                 </div>
+
+                {{-- Family count change history --}}
+                @if($familyCountHistories->isNotEmpty())
+                    <div class="card overflow-hidden">
+                        <div class="px-6 py-4 border-b border-slate-100 flex items-center gap-2">
+                            <i class="fas fa-exchange-alt text-amber-600 text-sm"></i>
+                            <span class="font-semibold text-slate-800 text-sm">পরিবার সংখ্যা পরিবর্তনের ইতিহাস</span>
+                        </div>
+                        <div class="divide-y divide-slate-100">
+                            @foreach($familyCountHistories as $history)
+                                @php $diff = $history->new_count - $history->previous_count; @endphp
+                                <div class="px-6 py-4 flex items-center justify-between">
+                                    <div class="flex items-center gap-3">
+                                        <div class="w-9 h-9 rounded-lg flex items-center justify-center {{ $diff > 0 ? 'bg-rose-50 text-rose-500' : 'bg-emerald-50 text-emerald-500' }}">
+                                            <i class="fas fa-{{ $diff > 0 ? 'arrow-up' : 'arrow-down' }} text-sm"></i>
+                                        </div>
+                                        <div>
+                                            <div class="text-sm text-slate-700">
+                                                <span class="text-slate-400">{{ $history->previous_count }}</span>
+                                                <i class="fas fa-arrow-right text-[10px] mx-1 text-slate-400"></i>
+                                                <strong>{{ $history->new_count }}</strong> পরিবার
+                                            </div>
+                                            <div class="text-xs text-slate-400">{{ $history->created_at->format('d M Y') }}</div>
+                                        </div>
+                                    </div>
+                                    <div class="text-right">
+                                        <span class="text-xs font-semibold px-2 py-0.5 rounded-full {{ $diff > 0 ? 'bg-rose-50 text-rose-600' : 'bg-emerald-50 text-emerald-600' }}">
+                                            {{ $diff > 0 ? '+' : '' }}{{ $diff }}
+                                        </span>
+                                        @if($history->reason)
+                                            <div class="text-[10px] text-slate-400 mt-1 max-w-[200px] truncate">{{ $history->reason }}</div>
+                                        @endif
+                                    </div>
+                                </div>
+                            @endforeach
+                        </div>
+                    </div>
+                @endif
             </div>
 
             <!-- ==================== TAB: MY GALLERY ==================== -->

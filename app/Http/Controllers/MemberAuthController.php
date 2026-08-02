@@ -210,6 +210,13 @@ class MemberAuthController extends Controller
         $myApplications = collect();
         $hasPendingApplication = false;
 
+        // Bill data (for "ডিউ ও পেমেন্ট" tab)
+        $currentBill = null;
+        $billHistory = collect();
+        $familyCountHistories = collect();
+        $totalPaid = 0;
+        $totalDue = 0;
+
         if ($building) {
             $building->load(['road', 'flats.meters']);
             $buildingFlats = $building->flats()->orderBy('floor_number')->orderBy('flat_number')->get();
@@ -227,6 +234,35 @@ class MemberAuthController extends Controller
                 ->take(10)
                 ->get();
             $hasPendingApplication = $myApplications->where('status', 'pending')->isNotEmpty();
+
+            // Get current month's bill
+            $currentBill = \App\Models\Bill::where('building_id', $building->id)
+                ->where('billing_month', \App\Models\Bill::currentMonthKey())
+                ->first();
+
+            // If no current bill, use the calculated monthly due
+            if (!$currentBill) {
+                $monthlyDue = $building->monthlyDue();
+            } else {
+                $monthlyDue = $currentBill->total_bill;
+            }
+
+            // Get bill history (last 12 months)
+            $billHistory = \App\Models\Bill::where('building_id', $building->id)
+                ->orderBy('billing_month', 'desc')
+                ->take(12)
+                ->get();
+
+            // Calculate totals
+            $totalPaid = $billHistory->where('status', 'paid')->sum('total_bill');
+            $totalDue = $billHistory->where('status', 'pending')->sum('total_bill');
+
+            // Get family count change history
+            $familyCountHistories = \App\Models\FamilyCountHistory::where('building_id', $building->id)
+                ->with('changer')
+                ->latest()
+                ->take(10)
+                ->get();
         }
 
         return view('member.dashboard', [
@@ -246,6 +282,13 @@ class MemberAuthController extends Controller
             'chargeBreakdown'  => $chargeBreakdown,
             'myApplications'   => $myApplications,
             'hasPendingApplication' => $hasPendingApplication,
+
+            // Bill data
+            'currentBill'           => $currentBill,
+            'billHistory'           => $billHistory,
+            'familyCountHistories'  => $familyCountHistories,
+            'totalPaid'             => $totalPaid,
+            'totalDue'              => $totalDue,
 
             // Gallery / social-value data
             'myUploads'      => $myUploads,
